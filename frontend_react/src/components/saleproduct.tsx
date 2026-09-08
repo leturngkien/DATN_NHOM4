@@ -1,7 +1,6 @@
-import React from "react";
 import { Button, Card, message } from "antd";
 import Slider from "react-slick";
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -21,7 +20,6 @@ interface Product {
 
 export default function SaleProduct({ data }: { data: Product[] }) {
   console.warn(data, "Thanh");
-  const [windowWidth, setWindowWidth] = useState(0);
   const sliderRef = useRef<any>(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,15 +45,6 @@ export default function SaleProduct({ data }: { data: Product[] }) {
     navigate("/checkout");
   };
 
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // Hàm điều hướng
   const handlePrevSlide = () => {

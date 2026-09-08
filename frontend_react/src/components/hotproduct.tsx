@@ -1,8 +1,7 @@
-import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Button, Card, message } from "antd";
 import Slider from "react-slick";
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,7 +18,6 @@ interface Product {
 }
 
 export default function HotProduct({ data }: { data: Product[] }) {
-  const [windowWidth, setWindowWidth] = useState(0);
   const sliderRef = useRef<any>(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();

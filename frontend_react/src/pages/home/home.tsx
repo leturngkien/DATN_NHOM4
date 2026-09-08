@@ -69,6 +69,7 @@ const SectionHeading = ({
 );
  
 export default function Home() {
+  const [loading, setLoading] = useState(true);
   const [newProduct, setNewProduct] = useState([]);
   const [saleProduct, setSaleProduct] = useState([]);
   const [hotProduct, setHotProduct] = useState([]);
@@ -112,6 +113,8 @@ export default function Home() {
       } catch (error) {
         console.error("Error fetching products:", error);
         setCategories([]);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProducts();
@@ -237,7 +240,13 @@ export default function Home() {
       {/* Sản phẩm mới */}
       <div className="mt-10 px-4 sm:px-[40px] lg:px-[154px]">
         <SectionHeading title="Sản phẩm mới" accent="#E4572E" />
-        <NewProduct data={newProduct} />
+        {loading ? (
+          <div className="flex min-h-[180px] items-center justify-center rounded-2xl border border-[#E7E1D7] bg-white/70">
+            <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#E4572E]/20 border-t-[#E4572E]" />
+          </div>
+        ) : (
+          <NewProduct data={newProduct} />
+        )}
       </div>
  
       {/* Sản phẩm giảm giá — dải nền vàng mù tạt nhạt để tách biệt "khu giảm giá" */}
