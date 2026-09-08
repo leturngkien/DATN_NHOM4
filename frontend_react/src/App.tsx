@@ -1,36 +1,238 @@
-import './App.css'
+import React from "react";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import Home from "./pages/home/home";
+import PageLayout from "./components/layout/PageLayout";
+import Login from "./pages/login/login";
+import SignUp from "./pages/signup/signup";
+import Products from "./pages/product/product";
+import DetailProduct from "./pages/detail/detail";
+import Cart from "./pages/cart/cart";
+import UserProfile from "./pages/userprofile/userprofile";
+import AdminLayout from "./components/layout/AdminLayout";
+import ProductList from "./admin/product/product";
+import CategoryList from "./admin/category/category";
+import UserList from "./admin/user/user";
+import AboutUs from "./pages/about-us/about-us";
+import BrandManager from "./admin/brand/brand";
+import TagManager from "./admin/tag/tag";
+import BannerList from "./admin/banner/banner";
+import BlogList from "./admin/blog/blog";
+import BlogCategoryList from "./admin/blog_category/blog_category";
+import DocsPage from "./admin/docs/docs";
+import VerifyOtp from "./pages/verifyOTP/verifyOTP";
+import Search from "./pages/search/search";
+import NotFound from "./pages/404/404"; // Import trang 404
+import Dashboard from "./admin/dashboard/dashboard";
+import Revenue from "./admin/revenue/revenue";
+import CouponList from "./admin/coupon/coupon";
+import DeliveryList from "./admin/delivery/delivery";
+import PaymentTypeList from "./admin/paymentType/paymentType";
+import OrderList from "./admin/order/order";
+import Payment from "./pages/payment/payment";
+import CancelPage from "./pages/orders/cancel";
+import SuccessPage from "./pages/orders/success";
+import Blog from "./pages/blog/blog";
+import BlogDetail from "./pages/blogDetail/blogDetail";
 
-const products = [
-  { name: 'Hạt dinh dưỡng cho chó trưởng thành', price: '289.000 đ', image: 'https://images.unsplash.com/photo-1589924691106-0c821d727a45?auto=format&fit=crop&w=700&q=80', tag: 'Bán chạy' },
-  { name: 'Bộ đồ chơi gặm nướu cho thú cưng', price: '159.000 đ', image: 'https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?auto=format&fit=crop&w=700&q=80', tag: 'Mới' },
-  { name: 'Vòng cổ da thủ công màu nâu', price: '199.000 đ', image: 'https://images.unsplash.com/photo-1558929996-da64ba858215?auto=format&fit=crop&w=700&q=80', tag: 'Yêu thích' },
-]
-
-function App() {
-  return (
-    <main className="home-page">
-      <div className="announcement">Miễn phí giao hàng cho đơn từ 500.000 đ</div>
-      <header className="site-header">
-        <a className="brand" href="/" aria-label="Pet Corner trang chủ"><span className="brand-mark">PC</span><span>Pet Corner</span></a>
-        <nav className="main-nav" aria-label="Điều hướng chính"><a href="#products">Sản phẩm</a><a href="#categories">Danh mục</a><a href="#story">Về Pet Corner</a></nav>
-        <div className="header-actions"><button className="icon-button" type="button" aria-label="Tìm kiếm">⌕</button><button className="icon-button cart-button" type="button" aria-label="Giỏ hàng">♧<span>0</span></button></div>
-      </header>
-
-      <section className="hero-section">
-        <div className="hero-copy"><p className="eyebrow">MÓN QUÀ NHỎ, NIỀM VUI LỚN</p><h1>Mỗi ngày của bé<br /><em>đều đáng yêu hơn.</em></h1><p className="hero-description">Đồ ăn ngon, phụ kiện xinh và những sản phẩm được chọn kỹ cho người bạn bốn chân của bạn.</p><a className="primary-button" href="#products">Khám phá sản phẩm <span>→</span></a></div>
-        <div className="hero-image" role="img" aria-label="Chú chó đáng yêu trong không gian ấm áp" /><div className="hero-note"><strong>01</strong><span>Chăm sóc<br />từ trái tim</span></div>
-      </section>
-
-      <section className="trust-row" aria-label="Dịch vụ Pet Corner"><div><strong>Được chọn bởi người yêu thú cưng</strong><span>Sản phẩm an toàn, nguồn gốc rõ ràng</span></div><div><strong>Giao hàng tận nơi</strong><span>Đóng gói cẩn thận toàn quốc</span></div><div><strong>Tư vấn tận tâm</strong><span>Luôn sẵn sàng đồng hành cùng bạn</span></div></section>
-
-      <section className="content-section" id="categories"><div className="section-heading"><div><p className="eyebrow">MUA SẮM THEO NHU CẦU</p><h2>Chọn điều bé thích</h2></div><a href="#products" className="text-link">Xem tất cả <span>→</span></a></div><div className="category-grid"><a className="category-card cat-food" href="#products"><span>01</span><strong>Thức ăn</strong><small>Cho bé khỏe mạnh mỗi ngày</small></a><a className="category-card cat-toy" href="#products"><span>02</span><strong>Đồ chơi</strong><small>Vui chơi, vận động, khám phá</small></a><a className="category-card cat-care" href="#products"><span>03</span><strong>Chăm sóc</strong><small>Thêm sạch sẽ và thoải mái</small></a></div></section>
-
-      <section className="content-section products-section" id="products"><div className="section-heading"><div><p className="eyebrow">ĐƯỢC YÊU THÍCH NHẤT</p><h2>Gợi ý cho bé hôm nay</h2></div><a href="#products" className="text-link">Xem cửa hàng <span>→</span></a></div><div className="product-grid">{products.map((product) => <article className="product-card" key={product.name}><div className="product-image"><img src={product.image} alt={product.name} /><span>{product.tag}</span><button type="button" aria-label={`Thêm ${product.name} vào giỏ`}>+</button></div><p className="product-category">PET CORNER / ESSENTIALS</p><h3>{product.name}</h3><strong className="product-price">{product.price}</strong></article>)}</div></section>
-
-      <section className="story-section" id="story"><div><p className="eyebrow">CÂU CHUYỆN CỦA CHÚNG MÌNH</p><h2>Vì bé xứng đáng<br />được yêu thương<br /><em>mỗi ngày.</em></h2><a className="text-link light-link" href="#story">Tìm hiểu thêm <span>→</span></a></div><p>Pet Corner bắt đầu từ tình yêu dành cho những người bạn nhỏ. Chúng mình tìm kiếm những sản phẩm tử tế để việc chăm sóc bé trở nên dễ dàng, vui vẻ và đầy gắn kết.</p></section>
-      <footer className="site-footer"><strong>Pet Corner</strong><span>Made with care for every little friend.</span><span>© 2026 Pet Corner</span></footer>
-    </main>
-  )
+interface User {
+  id: string;
+  email: string;
+  fullname: string;
+  avatar?: string;
+  role: string;
+  status: string;
 }
 
-export default App
+const ProtectedRoute = ({
+  children,
+  allowedRole,
+  path,
+}: {
+  children: JSX.Element;
+  allowedRole?: string;
+  path?: string;
+}) => {
+  const userData = localStorage.getItem("userData");
+  const user: User | null = userData ? JSON.parse(userData) : null;
+  return children;
+};
+
+const PublicRoute = ({ children }: { children: JSX.Element }) => {
+  return children;
+};
+
+function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/login",
+      element: (
+        <PublicRoute>
+          <Login />
+        </PublicRoute>
+      ),
+    },
+    {
+      path: "/signup",
+      element: (
+        <PublicRoute>
+          <SignUp />
+        </PublicRoute>
+      ),
+    },
+    {
+      path: "/verify-otp",
+      element: (
+        <PublicRoute>
+          <VerifyOtp />
+        </PublicRoute>
+      ),
+    },
+    {
+      path: "/admin",
+      element: (
+        <ProtectedRoute path="/admin">
+          <AdminLayout />
+        </ProtectedRoute>
+      ),
+      children: [
+        { path: "", element: <Dashboard /> },
+        { path: "dashboard", element: <Dashboard /> },
+        { path: "revenue", element: <Revenue /> },
+        { path: "categories", element: <CategoryList /> },
+        { path: "products", element: <ProductList /> },
+        { path: "brands", element: <BrandManager /> },
+        { path: "tags", element: <TagManager /> },
+        { path: "banners", element: <BannerList /> },
+        { path: "blogs", element: <BlogList /> },
+        { path: "blog-categories", element: <BlogCategoryList /> },
+        { path: "coupon", element: <CouponList /> },
+        { path: "deliveries", element: <DeliveryList /> },
+        { path: "payment-types", element: <PaymentTypeList /> },
+        { path: "orders", element: <OrderList /> },
+        { path: "users", element: <UserList /> },
+      ],
+    },
+    {
+      path: "/docs",
+      element: (
+        <ProtectedRoute path="/docs">
+          <DocsPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "",
+      element: <PageLayout />,
+      children: [
+        {
+          path: "/",
+          element: (
+            <PublicRoute>
+              <Home />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/product",
+          element: (
+            <PublicRoute>
+              <Products />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/detail/:id",
+          element: (
+            <PublicRoute>
+              <DetailProduct />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/about-us",
+          element: (
+            <PublicRoute>
+              <AboutUs />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/cart",
+          element: (
+            <PublicRoute>
+              <Cart />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/checkout",
+          element: (
+            <PublicRoute>
+              <Payment />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/cancel",
+          element: (
+            <PublicRoute>
+              <CancelPage />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/success",
+          element: (
+            <PublicRoute>
+              <SuccessPage />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/userprofile/*", // Route con cho userprofile
+          element: (
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/search",
+          element: (
+            <PublicRoute>
+              <Search />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/blogs",
+          element: (
+            <PublicRoute>
+              <Blog />
+            </PublicRoute>
+          ),
+        },
+        {
+          path: "/blogs/:id",
+          element: (
+            <PublicRoute>
+              <BlogDetail />
+            </PublicRoute>
+          ),
+        },
+        { path: "*", element: <NotFound /> }, // Route 404 cho các trang con
+      ],
+    },
+    {
+      path: "*", // Route mặc định cho các đường dẫn không tồn tại
+      element: <NotFound />, // Hiển thị trang 404
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
+}
+
+export default App;
