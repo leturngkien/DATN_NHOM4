@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "antd";
 import type { ReactNode } from "react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import Slider from "react-slick";

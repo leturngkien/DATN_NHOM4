@@ -7,8 +7,3 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
-
-declare module "*.js" {
-  const apiModule: any;
-  export default apiModule;
-}
