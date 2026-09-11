@@ -2617,10 +2617,6 @@ function Home() {
               Liên hệ
             </a>
 
-            <a href="#shipping">
-              Chính sách giao hàng
-            </a>
-
             <a href="#return">
               Đổi trả & hoàn tiền
             </a>
