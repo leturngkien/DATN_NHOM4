@@ -77,50 +77,44 @@ function Signup() {
 
   return (
     <main className="auth-page">
-      <section className="auth-card">
-        <Link to="/" className="auth-back">← Về trang chủ</Link>
-        <span className="auth-kicker">PET CORNER</span>
-        <h1>{needsOtp ? "Xác thực email" : "Tạo tài khoản"}</h1>
-        <p>{needsOtp ? `Nhập mã OTP đã gửi tới ${email}.` : "Đăng ký để mua sắm thuận tiện hơn."}</p>
+      <section className="auth-layout">
+        <aside className="auth-showcase">
+          <div className="auth-showcase-copy">
+            <span className="auth-kicker">PET CORNER</span>
+            <h2>Chăm thú cưng từ những điều nhỏ nhất.</h2>
+            <p>Sản phẩm được chọn kỹ, giao tận nhà và luôn có người đồng hành cùng bạn.</p>
+          </div>
+          <img className="auth-showcase-image" src="/images/cat&dog.png" alt="Thú cưng" />
+          <ul className="auth-showcase-list">
+            <li>Ưu đãi riêng cho thành viên</li>
+            <li>Theo dõi đơn hàng dễ dàng</li>
+          </ul>
+        </aside>
+        <section className="auth-card">
+          <Link to="/" className="auth-back">← Về trang chủ</Link>
+          <span className="auth-kicker">TẠO TÀI KHOẢN</span>
+          <h1>{needsOtp ? "Xác thực email" : "Chào mừng bạn"}</h1>
+          <p>{needsOtp ? `Nhập mã OTP đã gửi tới ${email}.` : "Đăng ký để mua sắm thuận tiện hơn."}</p>
 
-        {!needsOtp ? (
-          <form className="auth-form" onSubmit={handleSignup}>
-            <label>
-              Họ và tên
-              <input value={fullname} onChange={(event) => setFullname(event.target.value)} minLength={3} required />
-            </label>
-            <label>
-              Email
-              <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
-            </label>
-            <label>
-              Mật khẩu
-              <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={6} required />
-            </label>
-            <label>
-              Xác nhận mật khẩu
-              <input type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} minLength={6} required />
-            </label>
-            {error && <p className="auth-error">{error}</p>}
-            <button className="auth-submit" type="submit" disabled={loading}>
-              {loading ? "Đang đăng ký..." : "Đăng ký"}
-            </button>
-          </form>
-        ) : (
-          <form className="auth-form" onSubmit={handleVerifyOtp}>
-            <label>
-              Mã OTP
-              <input value={otp} onChange={(event) => setOtp(event.target.value.replace(/\D/g, ""))} inputMode="numeric" pattern="[0-9]{6}" maxLength={6} required />
-            </label>
-            {error && <p className="auth-error">{error}</p>}
-            <button className="auth-submit" type="submit" disabled={loading}>
-              {loading ? "Đang xác thực..." : "Xác thực OTP"}
-            </button>
-          </form>
-        )}
-
-        {success && <p className="auth-success">{success}</p>}
-        <p className="auth-switch">Đã có tài khoản? <Link to="/login">Đăng nhập</Link></p>
+          {!needsOtp ? (
+            <form className="auth-form" onSubmit={handleSignup}>
+              <label>Họ và tên<input value={fullname} onChange={(event) => setFullname(event.target.value)} minLength={3} required /></label>
+              <label>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required /></label>
+              <label>Mật khẩu<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={6} required /></label>
+              <label>Xác nhận mật khẩu<input type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} minLength={6} required /></label>
+              {error && <p className="auth-error">{error}</p>}
+              <button className="auth-submit" type="submit" disabled={loading}>{loading ? "Đang đăng ký..." : "Đăng ký"}</button>
+            </form>
+          ) : (
+            <form className="auth-form" onSubmit={handleVerifyOtp}>
+              <label>Mã OTP<input value={otp} onChange={(event) => setOtp(event.target.value.replace(/\D/g, ""))} inputMode="numeric" pattern="[0-9]{6}" maxLength={6} required /></label>
+              {error && <p className="auth-error">{error}</p>}
+              <button className="auth-submit" type="submit" disabled={loading}>{loading ? "Đang xác thực..." : "Xác thực OTP"}</button>
+            </form>
+          )}
+          {success && <p className="auth-success">{success}</p>}
+          <p className="auth-switch">Đã có tài khoản? <Link to="/login">Đăng nhập</Link></p>
+        </section>
       </section>
     </main>
   );
