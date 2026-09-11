@@ -6,6 +6,10 @@ import "./home.css";
 import productsApi from "../../api/productsApi";
 import categoryApi from "../../api/categoryApi";
 import bannerApi from "../../api/bannerApi";
+import SaleProduct from "../../components/saleproduct";
+import HotProduct from "../../components/hotproduct";
+import NewProduct from "../../components/newproduct";
+import CateProduct from "../../components/cateproduct";
 
 type ApiProduct = {
   _id?: string;
@@ -23,7 +27,7 @@ type ApiProduct = {
   old_price?: number;
 
   image?: string;
-  image_url?: string;
+  image_url?: string[];
 
   images?: string[];
 
@@ -33,6 +37,16 @@ type ApiProduct = {
 
   discount?: number;
   badge?: string;
+  quantity?: number;
+};
+
+type ComponentProduct = {
+  _id: string;
+  name: string;
+  price: number;
+  image_url: string[];
+  discount: number;
+  quantity: number;
 };
 
 type Product = {
@@ -99,7 +113,7 @@ const mapProduct = (
     price,
     oldPrice,
     image:
-      item.image_url ||
+      item.image_url?.[0] ||
       item.image ||
       item.images?.[0] ||
       "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&w=700&q=80",
@@ -108,6 +122,17 @@ const mapProduct = (
     badge,
   };
 };
+
+const mapComponentProduct = (
+  item: ApiProduct
+): ComponentProduct => ({
+  _id: String(item._id || item.id || ""),
+  name: item.name || item.title || "Sản phẩm",
+  price: Number(item.price || 0),
+  image_url: item.image_url || item.images || [],
+  discount: Number(item.discount || 0),
+  quantity: Number(item.quantity || 0),
+});
 
 function Home() {
   /* =========================
@@ -122,11 +147,21 @@ function Home() {
   const [saleProducts, setSaleProducts] = useState<Product[]>([]);
   const [hotProducts, setHotProducts] = useState<Product[]>([]);
 
+  const [newProductItems, setNewProductItems] =
+    useState<ComponentProduct[]>([]);
+  const [saleProductItems, setSaleProductItems] =
+    useState<ComponentProduct[]>([]);
+  const [hotProductItems, setHotProductItems] =
+    useState<ComponentProduct[]>([]);
+
   const [categories, setCategories] = useState<Category[]>([]);
 
   const [productsByCategory, setProductsByCategory] = useState<
     Record<string, Product[]>
   >({});
+
+  const [componentProductsByCategory, setComponentProductsByCategory] =
+    useState<Record<string, ComponentProduct[]>>({});
 
   const [banners, setBanners] = useState<Banner[]>([]);
 
@@ -175,6 +210,12 @@ function Home() {
         const newProductData =
           newProductResponse?.data?.result || [];
 
+        setNewProductItems(
+          newProductData.map((item: ApiProduct) =>
+            mapComponentProduct(item)
+          )
+        );
+
         const mappedNewProducts = newProductData.map(
           (item: ApiProduct) =>
             mapProduct(item)
@@ -193,6 +234,12 @@ function Home() {
 
         const saleProductData =
           saleProductResponse?.data?.result || [];
+
+        setSaleProductItems(
+          saleProductData.map((item: ApiProduct) =>
+            mapComponentProduct(item)
+          )
+        );
 
         const mappedSaleProducts = saleProductData.map(
           (item: ApiProduct) =>
@@ -213,6 +260,12 @@ function Home() {
         const hotProductData =
           hotProductResponse?.data?.result || [];
 
+        setHotProductItems(
+          hotProductData.map((item: ApiProduct) =>
+            mapComponentProduct(item)
+          )
+        );
+
         const mappedHotProducts = hotProductData.map(
           (item: ApiProduct) =>
             mapProduct(item)
@@ -222,43 +275,18 @@ function Home() {
 
 
         try {
-          if (
-            typeof productsApi.getProducts === "function"
-          ) {
-            const productsResponse =
-              await productsApi.getProducts();
+          const productsResponse =
+            await productsApi.getAll();
 
-            const productsData =
-              productsResponse?.data?.result || [];
+          const productsData =
+            productsResponse?.data?.result || [];
 
-            const mappedProducts =
-              productsData.map((item: ApiProduct) =>
-                mapProduct(item)
-              );
-
-            setProducts(mappedProducts);
-          } else {
-            /*
-             * Nếu không có getProducts(),
-             * gom sản phẩm từ 3 API có sẵn.
-             */
-
-            const allProducts = [
-              ...mappedNewProducts,
-              ...mappedSaleProducts,
-              ...mappedHotProducts,
-            ];
-
-            const uniqueProducts = allProducts.filter(
-              (product, index, self) =>
-                index ===
-                self.findIndex(
-                  (p) => p.id === product.id
-                )
+          const mappedProducts =
+            productsData.map((item: ApiProduct) =>
+              mapProduct(item)
             );
 
-            setProducts(uniqueProducts);
-          }
+          setProducts(mappedProducts);
         } catch (error) {
           console.error(
             "Không lấy được tất cả sản phẩm:",
@@ -314,6 +342,9 @@ function Home() {
         setNewProducts([]);
         setSaleProducts([]);
         setHotProducts([]);
+        setNewProductItems([]);
+        setSaleProductItems([]);
+        setHotProductItems([]);
       } finally {
         setLoading(false);
       }
@@ -347,9 +378,10 @@ function Home() {
               const data =
                 response?.data?.result || [];
 
+              const limitedData = data.slice(0, 8);
+
               const limitedProducts =
-                data
-                  .slice(0, 8)
+                limitedData
                   .map((item: ApiProduct) =>
                     mapProduct(
                       item,
@@ -360,6 +392,10 @@ function Home() {
               return {
                 name: category.name,
                 products: limitedProducts,
+                componentProducts: limitedData.map(
+                  (item: ApiProduct) =>
+                    mapComponentProduct(item)
+                ),
               };
             } catch (error) {
               console.error(
@@ -370,6 +406,7 @@ function Home() {
               return {
                 name: category.name,
                 products: [],
+                componentProducts: [],
               };
             }
           });
@@ -381,13 +418,20 @@ function Home() {
           string,
           Product[]
         > = {};
+        const componentProductsMap: Record<
+          string,
+          ComponentProduct[]
+        > = {};
 
         results.forEach((item) => {
           productsMap[item.name] =
             item.products;
+          componentProductsMap[item.name] =
+            item.componentProducts;
         });
 
         setProductsByCategory(productsMap);
+        setComponentProductsByCategory(componentProductsMap);
       } catch (error) {
         console.error(
           "Error fetching products by category:",
@@ -395,6 +439,7 @@ function Home() {
         );
 
         setProductsByCategory({});
+        setComponentProductsByCategory({});
       }
     };
 
@@ -747,8 +792,11 @@ function Home() {
               <div className="hero-circle"></div>
 
               <img
-                src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1000&q=85"
-                alt="Happy dog"
+                src={
+                  banners[0]?.image_url ||
+                  "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1000&q=85"
+                }
+                alt={banners[0]?.title || "Happy dog"}
               />
 
               <div className="floating-card floating-card-one">
@@ -1319,10 +1367,12 @@ function Home() {
 
             </div>
 
+            <NewProduct data={newProductItems} />
+
 
             <div className="products-grid">
 
-              {newProducts.map(
+              {false && newProducts.map(
                 (product) => (
 
                   <article
@@ -1547,10 +1597,12 @@ function Home() {
 
             </div>
 
+            <SaleProduct data={saleProductItems} />
+
 
             <div className="products-grid">
 
-              {saleProducts.map(
+              {false && saleProducts.map(
                 (product) => (
 
                   <article
@@ -1705,10 +1757,12 @@ function Home() {
 
             </div>
 
+            <HotProduct data={hotProductItems} />
+
 
             <div className="products-grid">
 
-              {hotProducts.map(
+              {false && hotProducts.map(
                 (product) => (
 
                   <article
@@ -1889,8 +1943,16 @@ function Home() {
 
                   </div>
 
+                  <CateProduct
+                    data={
+                      componentProductsByCategory[
+                        category.name
+                      ] || []
+                    }
+                  />
 
-                  {categoryProducts.length >
+
+                  {false && categoryProducts.length >
                   0 ? (
 
                     <div className="products-grid">
