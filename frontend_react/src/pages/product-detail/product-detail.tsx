@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import parse from "html-react-parser";
 import { addToCart } from "../../redux/slices/cartslice";
 import productsApi from "../../api/productsApi";
 import Loader from "../../components/loader";
@@ -155,9 +156,11 @@ function ProductDetail() {
               </p>
             </div>
 
-            <p className="product-description">
-              {product.description || "Sản phẩm chất lượng dành cho thú cưng của bạn."}
-            </p>
+            <div className="product-description">
+              {product.description
+                ? parse(product.description)
+                : "Sản phẩm chất lượng dành cho thú cưng của bạn."}
+            </div>
 
             <div className="product-detail-actions">
               <div className="quantity-control">
@@ -195,7 +198,11 @@ function ProductDetail() {
               {details.map((detail, index) => <li key={`${detail}-${index}`}>{detail}</li>)}
             </ul>
           ) : (
-            <p>{product.description || "Thông tin sản phẩm đang được cập nhật."}</p>
+            <div>
+              {product.description
+                ? parse(product.description)
+                : "Thông tin sản phẩm đang được cập nhật."}
+            </div>
           )}
         </section>
       </div>
