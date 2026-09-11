@@ -621,7 +621,7 @@ function Home() {
               Trang chủ
             </a>
 
-            <a href="#products">
+            <a href="/products">
               Sản phẩm
             </a>
 
@@ -731,7 +731,7 @@ function Home() {
               <div className="hero-buttons">
 
                 <a
-                  href="#products"
+                  href="/products"
                   className="primary-button"
                 >
                   Khám phá sản phẩm
@@ -960,7 +960,7 @@ function Home() {
               </div>
 
               <a
-                href="#products"
+                href="/products"
                 className="view-all"
               >
                 Xem tất cả →
@@ -1329,7 +1329,10 @@ function Home() {
 
             <div className="center-button">
 
-              <button className="outline-button">
+              <button
+                className="outline-button"
+                onClick={() => window.location.assign("/products")}
+              >
                 Xem tất cả sản phẩm →
               </button>
 
@@ -2585,7 +2588,7 @@ function Home() {
               Trang chủ
             </a>
 
-            <a href="#products">
+            <a href="/products">
               Sản phẩm
             </a>
 
