@@ -681,9 +681,9 @@ function Home() {
               </span>
             </button>
 
-            <button className="login-button">
+            <a className="login-button" href="/login">
               Đăng nhập
-            </button>
+            </a>
 
           </div>
 

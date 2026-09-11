@@ -9,11 +9,21 @@ import Products from "./pages/products/products";
 import Cart from "./pages/cart/cart";
 import CancelPage from "./pages/orders/cancel";
 import SuccessPage from "./pages/orders/success";
+import Login from "./pages/auth/login";
+import Signup from "./pages/auth/signup";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
   },
   {
     path: "/cart",
