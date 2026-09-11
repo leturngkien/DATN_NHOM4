@@ -19,7 +19,7 @@ type ApiProduct = {
   title?: string;
 
   category?: string;
-  category_id?: string;
+  category_id?: string | { _id?: string; name?: string } | null;
   categoryId?: string;
 
   price?: number;
@@ -86,6 +86,10 @@ const mapProduct = (
   categoryName = "Sản phẩm"
 ): Product => {
   const price = Number(item.price || 0);
+  const populatedCategory =
+    typeof item.category_id === "object" && item.category_id !== null
+      ? item.category_id.name
+      : item.category_id;
 
   const oldPrice =
     Number(item.oldPrice || item.old_price || 0) > price
@@ -109,7 +113,7 @@ const mapProduct = (
   return {
     id: item._id || item.id || Math.random(),
     name: item.name || item.title || "Sản phẩm",
-    category: item.category || categoryName,
+    category: item.category || populatedCategory || item.categoryId || categoryName,
     price,
     oldPrice,
     image:

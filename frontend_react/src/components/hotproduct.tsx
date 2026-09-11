@@ -22,6 +22,15 @@ export default function HotProduct({ data }: { data: Product[] }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const openProductDetail = (productId: string) => {
+    const normalizedId = String(productId || "").trim();
+    if (!normalizedId || normalizedId === "undefined" || normalizedId === "null") {
+      message.error("Sản phẩm chưa có mã chi tiết.");
+      return;
+    }
+    navigate(`/detail/${normalizedId}`);
+  };
+
   const handleBuyNow = (product: Product) => {
     const quantity = 1;
     const stockQuantity = product.quantity || Infinity;
@@ -151,7 +160,12 @@ export default function HotProduct({ data }: { data: Product[] }) {
                   </Link>
                 </div>
                 <div className="flex w-3/4 flex-col justify-between p-2">
-                  <p className="text-xs font-bold sm:text-sm">{product.name}</p>
+                  <Link
+                    to={`/detail/${String(product._id)}`}
+                    className="text-xs font-bold text-gray-800 transition-colors hover:text-[#FFA500] sm:text-sm"
+                  >
+                    {product.name}
+                  </Link>
                   <div className="mt-2 flex items-center gap-2">
                     <p className="text-sm font-bold text-[#FFA500] transition-colors duration-300 sm:text-base">
                       {new Intl.NumberFormat("vi-VN", {
@@ -175,12 +189,24 @@ export default function HotProduct({ data }: { data: Product[] }) {
                       </div>
                     )}
                   </div>
-                  <Button
-                    className="mt-2 w-[90px] bg-[#FFA500] hover:bg-[#1890ff] hover:border-[#FFA500] rounded-lg text-white text-xs sm:w-[120px] sm:text-sm"
-                    onClick={() => handleBuyNow(product)}
-                  >
-                    Mua ngay
-                  </Button>
+                  <div className="mt-2 flex items-center gap-2">
+                    <Link
+                      to={`/detail/${String(product._id)}`}
+                      className="rounded-lg border border-[#FFA500] px-2 py-1 text-center text-xs text-[#D88400] transition-colors hover:bg-[#FFA500] hover:text-white sm:px-3 sm:text-sm"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        openProductDetail(product._id);
+                      }}
+                    >
+                      Xem chi tiết
+                    </Link>
+                    <Button
+                      className="w-[82px] rounded-lg bg-[#FFA500] text-xs text-white hover:border-[#FFA500] hover:bg-[#1890ff] sm:w-[100px] sm:text-sm"
+                      onClick={() => handleBuyNow(product)}
+                    >
+                      Mua ngay
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Card>

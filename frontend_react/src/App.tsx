@@ -1,6 +1,5 @@
 import {
   createBrowserRouter,
-  Navigate,
   RouterProvider,
 } from "react-router-dom";
 import Home from "./pages/home/home";
@@ -11,6 +10,7 @@ import CancelPage from "./pages/orders/cancel";
 import SuccessPage from "./pages/orders/success";
 import Login from "./pages/auth/login";
 import Signup from "./pages/auth/signup";
+import NotFound from "./pages/404/404";
 
 const router = createBrowserRouter([
   {
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Navigate to="/" replace />,
+    element: <NotFound />,
   },
 ]);
 
