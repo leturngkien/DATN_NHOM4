@@ -1372,7 +1372,8 @@ function Home() {
 
             <div className="products-grid">
 
-              {false && newProducts.map(
+              {newProductItems.length === 0 &&
+                newProducts.map(
                 (product) => (
 
                   <article
@@ -1602,7 +1603,8 @@ function Home() {
 
             <div className="products-grid">
 
-              {false && saleProducts.map(
+              {saleProductItems.length === 0 &&
+                saleProducts.map(
                 (product) => (
 
                   <article
@@ -1762,7 +1764,8 @@ function Home() {
 
             <div className="products-grid">
 
-              {false && hotProducts.map(
+              {hotProductItems.length === 0 &&
+                hotProducts.map(
                 (product) => (
 
                   <article
@@ -1952,8 +1955,10 @@ function Home() {
                   />
 
 
-                  {false && categoryProducts.length >
-                  0 ? (
+                  {componentProductsByCategory[
+                    category.name
+                  ]?.length === 0 &&
+                  categoryProducts.length > 0 ? (
 
                     <div className="products-grid">
 

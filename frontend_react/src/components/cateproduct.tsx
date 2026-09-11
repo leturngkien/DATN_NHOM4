@@ -1,7 +1,6 @@
-import React from "react";
 import { Badge, Button, Card, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { BsHandbag, BsHeart, BsStarFill } from "react-icons/bs";
+import { BsHandbag } from "react-icons/bs";
 import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/slices/cartslice";
@@ -41,7 +40,7 @@ export default function CateProduct({ data }: { data: APIProduct[] }) {
   };
 
   return (
-    <div className="container md:px-4">
+    <div className="api-category-products">
       <div className="mt-4 grid grid-cols-2 gap-4 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
         {data.map((product) => (
           <motion.div

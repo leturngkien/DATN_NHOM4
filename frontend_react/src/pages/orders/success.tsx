@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { message, Button } from "antd";
 import paymentApi from "../../api/paymentApi";
 import { clearProduct } from "../../redux/slices/cartslice";
 import { useDispatch } from "react-redux";
-import Loader from "../../components/LoaderPayment";
+import Loader from "../../components/loader";
 
 const SuccessPage = () => {
   const location = useLocation();
@@ -41,7 +41,7 @@ const SuccessPage = () => {
           setTimeout(() => navigate("/userprofile/orders"), 3000);
         } else if (res.verified) {
           message.error("Thanh toán thất bại");
-          setTimeout(() => navigate("/cancel"), 1000);
+          setTimeout(() => navigate("/orders/cancel"), 1000);
         } else {
           message.error(
             "Không xác thực được giao dịch. Vui lòng liên hệ hỗ trợ nếu bạn đã thanh toán."

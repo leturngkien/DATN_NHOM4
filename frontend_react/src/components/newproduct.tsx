@@ -103,7 +103,7 @@ export default function NewProduct({ data }: { data: Product[] }) {
   }
 
   return (
-    <>
+    <div className="api-product-section">
       <div className="flex items-center justify-between">
         <div className="relative ml-[15px] w-[200px] rounded-t-lg border-l border-r border-t border-[#FFA500] px-2 py-2 sm:ml-[30px] sm:w-[250px] sm:px-4 md:w-[300px]">
           <div className="absolute -top-7 left-3 z-10 bg-white px-2">
@@ -193,6 +193,6 @@ export default function NewProduct({ data }: { data: Product[] }) {
           ))}
         </Slider>
       </div>
-    </>
+    </div>
   );
 }

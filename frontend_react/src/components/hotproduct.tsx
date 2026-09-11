@@ -96,7 +96,7 @@ export default function HotProduct({ data }: { data: Product[] }) {
   }
 
   return (
-    <>
+    <div className="api-product-section">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="relative ml-[15px] w-[200px] rounded-t-lg border-l border-r border-t border-[#FFA500] px-2 py-2 sm:ml-[30px] sm:w-[250px] sm:px-4 md:w-[300px]">
@@ -187,6 +187,6 @@ export default function HotProduct({ data }: { data: Product[] }) {
           ))}
         </Slider>
       </div>
-    </>
+    </div>
   );
 }

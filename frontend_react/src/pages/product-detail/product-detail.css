@@ -1,0 +1,274 @@
+.product-detail-page {
+  min-height: 100vh;
+  padding: 32px 20px 72px;
+  background: #fffdf9;
+  color: #26352d;
+}
+
+.product-detail-container {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.product-detail-back {
+  display: inline-block;
+  margin-bottom: 28px;
+  color: #64756a;
+  text-decoration: none;
+}
+
+.product-detail-back:hover {
+  color: #df754f;
+}
+
+.product-detail-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 56px;
+  padding: 32px;
+  background: #fff;
+  border: 1px solid #ece8df;
+  border-radius: 8px;
+}
+
+.product-gallery {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 16px;
+  min-width: 0;
+}
+
+.product-thumbnails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.thumbnail {
+  width: 86px;
+  height: 86px;
+  padding: 4px;
+  overflow: hidden;
+  border: 1px solid #e8e2d8;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.thumbnail.active {
+  border: 2px solid #df754f;
+}
+
+.thumbnail img,
+.product-main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-main-image {
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f7f4ed;
+}
+
+.product-detail-info {
+  padding: 12px 0;
+}
+
+.product-detail-label {
+  color: #df754f;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.product-detail-info h1 {
+  margin: 12px 0 20px;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.1;
+}
+
+.product-detail-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #ece8df;
+}
+
+.product-detail-price strong {
+  color: #df754f;
+  font-size: 28px;
+}
+
+.product-detail-price del {
+  color: #9ba39e;
+}
+
+.product-detail-price span {
+  padding: 4px 8px;
+  color: #fff;
+  background: #df754f;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.product-meta {
+  margin: 22px 0;
+  color: #64756a;
+  line-height: 1.6;
+}
+
+.product-meta p {
+  margin: 6px 0;
+}
+
+.product-meta b {
+  color: #26352d;
+}
+
+.in-stock {
+  color: #37815b;
+}
+
+.out-of-stock {
+  color: #c64c46;
+}
+
+.product-description {
+  color: #64756a;
+  line-height: 1.7;
+}
+
+.product-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd7cd;
+  border-radius: 4px;
+}
+
+.quantity-control button,
+.quantity-control span {
+  width: 38px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: #fff;
+}
+
+.quantity-control button {
+  color: #64756a;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.add-to-cart-button,
+.buy-now-button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid #df754f;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.add-to-cart-button {
+  color: #df754f;
+  background: #fff;
+}
+
+.buy-now-button {
+  color: #fff;
+  background: #df754f;
+}
+
+.add-to-cart-button:disabled,
+.buy-now-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.product-description-section {
+  margin-top: 32px;
+  padding: 28px 32px;
+  background: #fff;
+  border: 1px solid #ece8df;
+  border-radius: 8px;
+}
+
+.product-description-section h2 {
+  margin: 0 0 16px;
+  font-size: 24px;
+}
+
+.product-description-section p,
+.product-description-section li {
+  color: #64756a;
+  line-height: 1.7;
+}
+
+.product-description-section ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.product-detail-state {
+  display: grid;
+  min-height: 60vh;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .product-detail-page {
+    padding: 20px 14px 48px;
+  }
+
+  .product-detail-main {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 18px;
+  }
+
+  .product-detail-info h1 {
+    font-size: 30px;
+  }
+
+  .product-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .product-thumbnails {
+    order: 2;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .thumbnail {
+    flex: 0 0 70px;
+    width: 70px;
+    height: 70px;
+  }
+
+  .product-description-section {
+    padding: 22px 18px;
+  }
+
+  .product-detail-actions > button {
+    flex: 1 1 140px;
+  }
+}

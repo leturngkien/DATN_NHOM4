@@ -1573,3 +1573,240 @@ a {
     gap: 15px;
   }
 }
+
+/* API product sections */
+.api-product-section {
+  margin-top: 24px;
+}
+
+.api-product-section > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.api-product-section > div:first-child > div:first-child {
+  position: relative;
+  width: auto;
+  min-width: 190px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.api-product-section > div:first-child h2 {
+  margin: 0;
+  color: #26352d;
+  font-size: 18px;
+  letter-spacing: 0;
+}
+
+.api-product-section > div:first-child img {
+  display: none;
+}
+
+.api-product-section > div:first-child > div:last-child {
+  display: flex;
+  gap: 8px;
+}
+
+.api-product-section > div:first-child .ant-btn {
+  width: 34px;
+  height: 34px;
+  border-color: #dfe6da;
+  color: #5d7351;
+  box-shadow: none;
+}
+
+.api-product-section > div:nth-child(2) {
+  padding: 14px 8px 22px;
+  overflow: hidden;
+  border: 1px solid #e8ece4;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.api-product-section .slick-list {
+  margin: 0 -8px;
+}
+
+.api-product-section .slick-slide {
+  padding: 0 8px;
+}
+
+.api-product-section .slick-slide > div,
+.api-product-section .ant-card {
+  height: 100%;
+}
+
+.api-product-section .ant-card {
+  overflow: hidden;
+  border: 1px solid #edf0eb;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.api-product-section .ant-card-body {
+  height: 100%;
+  padding: 0 !important;
+}
+
+.api-product-section .ant-card-body > div {
+  display: flex;
+  min-height: 166px;
+}
+
+.api-product-section .ant-card-body > div > div:first-child {
+  flex: 0 0 38%;
+  overflow: hidden;
+  background: #f7f8f3;
+}
+
+.api-product-section .ant-card-body > div > div:first-child img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 166px;
+  object-fit: contain;
+}
+
+.api-product-section .ant-card-body > div > div:last-child {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px;
+}
+
+.api-product-section .ant-card-body p {
+  margin: 0;
+}
+
+.api-product-section .ant-card-body > div > div:last-child > p:first-child {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #26352d;
+  font-size: 13px;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.api-product-section .ant-card-body .ant-btn {
+  width: 100%;
+  min-height: 32px;
+  margin: 0;
+  border: 1px solid #df754f;
+  border-radius: 4px;
+  color: #df754f;
+  background: #fff;
+  font-size: 11px;
+}
+
+.api-product-section .ant-card-body .ant-btn:hover {
+  color: #fff;
+  background: #df754f;
+}
+
+.api-product-section .slick-dots {
+  bottom: -18px;
+}
+
+.api-product-section .slick-dots li button:before {
+  color: #91ad62;
+  font-size: 7px;
+}
+
+.api-category-products {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.api-category-products > div {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+
+.api-category-products .ant-card {
+  height: 100%;
+  border: 1px solid #e8ece4;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.api-category-products .ant-card-body {
+  height: 100%;
+  padding: 12px !important;
+}
+
+.api-category-products .ant-card-body > a:first-child > div {
+  position: relative;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 12px;
+  padding: 0;
+  border-radius: 7px;
+  background: #f7f8f3;
+}
+
+.api-category-products .ant-card-body > a:first-child img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.api-category-products .ant-card-body > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: auto;
+  padding: 0;
+}
+
+.api-category-products .ant-card-body h3 {
+  min-height: 38px;
+  margin: 0;
+  color: #26352d;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.api-category-products .ant-card-body p {
+  margin: 0;
+}
+
+.api-category-products .ant-card-body .ant-btn {
+  min-height: 34px;
+  border: 1px solid #df754f;
+  border-radius: 4px;
+  color: #df754f;
+  background: #fff;
+  font-size: 11px;
+}
+
+@media (max-width: 760px) {
+  .api-product-section > div:first-child h2 {
+    font-size: 16px;
+  }
+
+  .api-product-section .ant-card-body > div {
+    min-height: 145px;
+  }
+
+  .api-product-section .ant-card-body > div > div:first-child img {
+    min-height: 145px;
+  }
+
+  .api-category-products > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
