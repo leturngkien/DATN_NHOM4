@@ -47,6 +47,9 @@ interface BlogFormValues {
 	status: "active" | "inactive";
 }
 
+const removeAccents = (value: string) =>
+	value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+
 const Post: React.FC = () => {
 	const [form] = Form.useForm<BlogFormValues>();
 	const [posts, setPosts] = useState<Blog[]>([]);
@@ -65,8 +68,8 @@ const Post: React.FC = () => {
 				blogApi.getAllBlogs(),
 				blogCategoryApi.getAll(),
 			]);
-			setPosts(postResponse.data.data || []);
-			setCategories(categoryResponse.data.result || []);
+			setPosts(Array.isArray(postResponse.data.data) ? postResponse.data.data : []);
+			setCategories(Array.isArray(categoryResponse.data.result) ? categoryResponse.data.result : []);
 		} catch (error) {
 			console.error("Không thể tải dữ liệu bài viết:", error);
 			message.error("Không thể tải dữ liệu bài viết");
@@ -154,9 +157,14 @@ const Post: React.FC = () => {
 			cancelText: "Huỷ",
 			okButtonProps: { danger: true },
 			onOk: async () => {
-				await blogApi.delete(post._id);
-				message.success("Đã xoá bài viết");
-				await loadData();
+				try {
+					await blogApi.delete(post._id);
+					message.success("Đã xoá bài viết");
+					await loadData();
+				} catch (error) {
+					console.error("Không thể xoá bài viết:", error);
+					message.error("Không thể xoá bài viết");
+				}
 			},
 		});
 	};
@@ -171,7 +179,7 @@ const Post: React.FC = () => {
 	};
 
 	const filteredPosts = posts.filter((post) => {
-		const matchesSearch = post.title.toLowerCase().includes(search.toLowerCase());
+		const matchesSearch = removeAccents(post.title.toLowerCase()).includes(removeAccents(search.toLowerCase()));
 		return matchesSearch && (!status || post.status === status);
 	});
 

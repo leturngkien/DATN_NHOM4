@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { useState, type FC } from "react";
 import { Button, Card, Col, Form, Input, Row, Typography, message } from "antd";
 import {
 	EnvironmentOutlined,
@@ -8,6 +8,7 @@ import {
 	PhoneOutlined,
 	SendOutlined,
 } from "@ant-design/icons";
+import contactApi from "../../api/contactApi";
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -41,16 +42,20 @@ const contactItems = [
 
 const Contact: FC = () => {
 	const [form] = Form.useForm<ContactFormValues>();
+	const [submitting, setSubmitting] = useState(false);
 
-	const handleSubmit = (values: ContactFormValues) => {
-		const subject = encodeURIComponent(`Liên hệ từ ${values.name}`);
-		const body = encodeURIComponent(
-			`Họ tên: ${values.name}\nEmail: ${values.email}\nSố điện thoại: ${values.phone || "Không cung cấp"}\n\n${values.message}`,
-		);
-
-		window.location.href = `mailto:petcorner993@gmail.com?subject=${subject}&body=${body}`;
-		message.success("Đã mở ứng dụng email của bạn");
-		form.resetFields();
+	const handleSubmit = async (values: ContactFormValues) => {
+		setSubmitting(true);
+		try {
+			await contactApi.send(values);
+			message.success("Gửi liên hệ thành công");
+			form.resetFields();
+		} catch (error: any) {
+			console.error("Không thể gửi liên hệ:", error);
+			message.error(error?.response?.data?.message || "Không thể gửi liên hệ lúc này");
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	return (
@@ -131,7 +136,7 @@ const Contact: FC = () => {
 								<Form.Item name="message" label="Nội dung" rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}>
 									<Input.TextArea rows={6} placeholder="Bạn muốn Pet Corner hỗ trợ điều gì?" />
 								</Form.Item>
-								<Button type="primary" htmlType="submit" icon={<SendOutlined />} size="large">
+								<Button type="primary" htmlType="submit" icon={<SendOutlined />} size="large" loading={submitting}>
 									Gửi liên hệ
 								</Button>
 							</Form>
