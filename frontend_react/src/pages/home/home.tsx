@@ -1607,6 +1607,297 @@ function Home() {
 
             <SaleProduct data={saleProductItems} />
 
+
+            <div className="products-grid">
+
+              {saleProductItems.length === 0 &&
+                saleProducts.map(
+                (product) => (
+
+                  <article
+                    className="product-card"
+                    key={`sale-${product.id}`}
+                  >
+
+                    <div className="product-image">
+
+                      {product.badge && (
+                        <span className="product-badge">
+                          {product.badge}
+                        </span>
+                      )}
+
+                      <button
+                        className="favorite"
+                        onClick={() =>
+                          toggleLike(
+                            product.id
+                          )
+                        }
+                      >
+                        {likedProducts.includes(
+                          product.id
+                        )
+                          ? "♥"
+                          : "♡"}
+                      </button>
+
+                      <img
+                        src={
+                          product.image
+                        }
+                        alt={
+                          product.name
+                        }
+                      />
+
+                      <button
+                        className="quick-view"
+                        onClick={() =>
+                          addToCart(
+                            product
+                          )
+                        }
+                      >
+                        + Thêm vào giỏ
+                      </button>
+
+                    </div>
+
+
+                    <div className="product-info">
+
+                      <span className="product-category">
+                        {
+                          product.category
+                        }
+                      </span>
+
+                      <h3>
+                        {product.name}
+                      </h3>
+
+                      <div className="rating">
+
+                        <span>
+                          {"★".repeat(
+                            product.rating
+                          )}
+                        </span>
+
+                        <small>
+                          ({product.sold} đã bán)
+                        </small>
+
+                      </div>
+
+
+                      <div className="product-bottom">
+
+                        <div className="price">
+
+                          <strong>
+                            {formatPrice(
+                              product.price
+                            )}
+                          </strong>
+
+                          {product.oldPrice && (
+                            <del>
+                              {formatPrice(
+                                product.oldPrice
+                              )}
+                            </del>
+                          )}
+
+                        </div>
+
+                        <button
+                          className="add-cart"
+                          onClick={() =>
+                            addToCart(
+                              product
+                            )
+                          }
+                        >
+                          +
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  </article>
+
+                )
+              )}
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =====================================================
+            HOT PRODUCTS
+        ===================================================== */}
+
+        <section className="section">
+
+          <div className="container">
+
+            <div className="section-heading">
+
+              <div>
+
+                <span className="section-label">
+                  BÁN CHẠY
+                </span>
+
+                <h2>
+                  Sản phẩm{" "}
+                  <span>
+                    bán chạy
+                  </span>
+                </h2>
+
+              </div>
+
+            </div>
+
+            <HotProduct data={hotProductItems} />
+
+
+            <div className="products-grid">
+
+              {hotProductItems.length === 0 &&
+                hotProducts.map(
+                (product) => (
+
+                  <article
+                    className="product-card"
+                    key={`hot-${product.id}`}
+                  >
+
+                    <div className="product-image">
+
+                      <span className="product-badge">
+                        Bán chạy
+                      </span>
+
+                      <button
+                        className="favorite"
+                        onClick={() =>
+                          toggleLike(
+                            product.id
+                          )
+                        }
+                      >
+                        {likedProducts.includes(
+                          product.id
+                        )
+                          ? "♥"
+                          : "♡"}
+                      </button>
+
+                      <img
+                        src={
+                          product.image
+                        }
+                        alt={
+                          product.name
+                        }
+                      />
+
+                      <button
+                        className="quick-view"
+                        onClick={() =>
+                          addToCart(
+                            product
+                          )
+                        }
+                      >
+                        + Thêm vào giỏ
+                      </button>
+
+                    </div>
+
+
+                    <div className="product-info">
+
+                      <span className="product-category">
+                        {
+                          product.category
+                        }
+                      </span>
+
+                      <h3>
+                        {product.name}
+                      </h3>
+
+                      <div className="rating">
+
+                        <span>
+                          {"★".repeat(
+                            product.rating
+                          )}
+                        </span>
+
+                        <small>
+                          ({product.sold} đã bán)
+                        </small>
+
+                      </div>
+
+
+                      <div className="product-bottom">
+
+                        <div className="price">
+
+                          <strong>
+                            {formatPrice(
+                              product.price
+                            )}
+                          </strong>
+
+                          {product.oldPrice && (
+                            <del>
+                              {formatPrice(
+                                product.oldPrice
+                              )}
+                            </del>
+                          )}
+
+                        </div>
+
+                        <button
+                          className="add-cart"
+                          onClick={() =>
+                            addToCart(
+                              product
+                            )
+                          }
+                        >
+                          +
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  </article>
+
+                )
+              )}
+
+            </div>
+
+          </div>
+
+        </section>
+
+
         {/* =====================================================
             PRODUCTS BY CATEGORY
         ===================================================== */}
@@ -1703,7 +1994,90 @@ function Home() {
                                     product.id
                                   )
                                 }
-                            
+                              >
+                                {likedProducts.includes(
+                                  product.id
+                                )
+                                  ? "♥"
+                                  : "♡"}
+                              </button>
+
+                              <img
+                                src={
+                                  product.image
+                                }
+                                alt={
+                                  product.name
+                                }
+                              />
+
+                              <button
+                                className="quick-view"
+                                onClick={() =>
+                                  addToCart(
+                                    product
+                                  )
+                                }
+                              >
+                                + Thêm vào giỏ
+                              </button>
+
+                            </div>
+
+
+                            <div className="product-info">
+
+                              <span className="product-category">
+                                {
+                                  product.category
+                                }
+                              </span>
+
+                              <h3>
+                                {
+                                  product.name
+                                }
+                              </h3>
+
+                              <div className="rating">
+
+                                <span>
+                                  {"★".repeat(
+                                    product.rating
+                                  )}
+                                </span>
+
+                                <small>
+                                  (
+                                  {
+                                    product.sold
+                                  }{" "}
+                                  đã bán)
+                                </small>
+
+                              </div>
+
+
+                              <div className="product-bottom">
+
+                                <div className="price">
+
+                                  <strong>
+                                    {formatPrice(
+                                      product.price
+                                    )}
+                                  </strong>
+
+                                  {product.oldPrice && (
+                                    <del>
+                                      {formatPrice(
+                                        product.oldPrice
+                                      )}
+                                    </del>
+                                  )}
+
+                                </div>
+
 
                                 <button
                                   className="add-cart"
@@ -1747,6 +2121,149 @@ function Home() {
             );
           }
         )}
+
+
+        {/* =====================================================
+            SERVICES
+        ===================================================== */}
+
+        <section
+          className="section services-section"
+          id="services"
+        >
+
+          <div className="container">
+
+            <div className="center-heading">
+
+              <span className="section-label">
+                DỊCH VỤ
+              </span>
+
+              <h2>
+                Chăm sóc bé{" "}
+                <span>
+                  toàn diện
+                </span>
+              </h2>
+
+              <p>
+                Không chỉ bán sản phẩm,
+                Pet Corner đồng hành cùng bạn
+                <br />
+                trong từng khoảnh khắc chăm sóc
+                thú cưng.
+              </p>
+
+            </div>
+
+
+            <div className="service-cards">
+
+              <div className="big-service-card">
+
+                <div className="big-service-icon">
+                  🛁
+                </div>
+
+                <h3>
+                  Grooming & Spa
+                </h3>
+
+                <p>
+                  Tắm, cắt tỉa và chăm sóc
+                  lông chuyên nghiệp cho thú cưng.
+                </p>
+
+                <a href="#services">
+                  Tìm hiểu thêm →
+                </a>
+
+              </div>
+
+
+              <div className="big-service-card">
+
+                <div className="big-service-icon">
+                  🏥
+                </div>
+
+                <h3>
+                  Chăm sóc sức khỏe
+                </h3>
+
+                <p>
+                  Tư vấn dinh dưỡng và chăm sóc
+                  sức khỏe cho người bạn nhỏ.
+                </p>
+
+                <a href="#services">
+                  Tìm hiểu thêm →
+                </a>
+
+              </div>
+
+
+              <div className="big-service-card">
+
+                <div className="big-service-icon">
+                  🏠
+                </div>
+
+                <h3>
+                  Pet Hotel
+                </h3>
+
+                <p>
+                  Không gian nghỉ dưỡng an toàn,
+                  sạch sẽ và đầy yêu thương.
+                </p>
+
+                <a href="#services">
+                  Tìm hiểu thêm →
+                </a>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =====================================================
+            ABOUT
+        ===================================================== */}
+
+        <section
+          className="about-section"
+          id="about"
+        >
+
+          <div className="container about-grid">
+
+            <div className="about-images">
+
+              <img
+                className="about-main-image"
+                src="https://images.unsplash.com/photo-1601758064133-2d8f3a3f1f16?auto=format&fit=crop&w=900&q=85"
+                alt="Pet Corner"
+              />
+
+              <div className="about-small-card">
+
+                <strong>
+                  5+
+                </strong>
+
+                <span>
+                  Năm đồng hành
+                </span>
+
+              </div>
+
+            </div>
 
 
             <div className="about-content">
