@@ -6,10 +6,15 @@ import "./home.css";
 import productsApi from "../../api/productsApi";
 import categoryApi from "../../api/categoryApi";
 import bannerApi from "../../api/bannerApi";
+
 import SaleProduct from "../../components/saleproduct";
 import HotProduct from "../../components/hotproduct";
 import NewProduct from "../../components/newproduct";
 import CateProduct from "../../components/cateproduct";
+
+/* =========================================================
+   TYPES
+========================================================= */
 
 type ApiProduct = {
   _id?: string;
@@ -19,7 +24,15 @@ type ApiProduct = {
   title?: string;
 
   category?: string;
-  category_id?: string | { _id?: string; name?: string } | null;
+
+  category_id?:
+    | string
+    | {
+        _id?: string;
+        name?: string;
+      }
+    | null;
+
   categoryId?: string;
 
   price?: number;
@@ -28,76 +41,115 @@ type ApiProduct = {
 
   image?: string;
   image_url?: string[];
-
   images?: string[];
 
   rating?: number;
+
   sold?: number;
   sold_count?: number;
 
   discount?: number;
   badge?: string;
-  quantity?: number;
-};
 
-type ComponentProduct = {
-  _id: string;
-  name: string;
-  price: number;
-  image_url: string[];
-  discount: number;
-  quantity: number;
+  /* Số lượng tồn kho */
+  quantity?: number;
+  stock?: number;
+  stock_quantity?: number;
 };
 
 type Product = {
   id: string | number;
+
   name: string;
+
   category: string;
+
   price: number;
+
   oldPrice?: number;
+
   image: string;
+
   rating: number;
+
   sold: number;
+
   badge?: string;
+
+  /* Số lượng tồn kho */
+  quantity: number;
+};
+
+type CartItem = Product & {
+  quantity: number;
+};
+
+type ComponentProduct = {
+  _id: string;
+
+  name: string;
+
+  price: number;
+
+  image_url: string[];
+
+  discount: number;
+
+  quantity: number;
 };
 
 type Category = {
   _id: string;
+
   name: string;
 };
 
 type Banner = {
   _id?: string;
+
   title?: string;
+
   image_url: string;
+
   link_url?: string;
 };
+
+/* =========================================================
+   FORMAT PRICE
+========================================================= */
 
 const formatPrice = (price: number) => {
   return Number(price || 0).toLocaleString("vi-VN") + "đ";
 };
 
-/**
- * Chuyển dữ liệu sản phẩm từ API
- * về đúng format mà giao diện mới đang sử dụng.
- */
+/* =========================================================
+   MAP PRODUCT FROM API
+========================================================= */
+
 const mapProduct = (
   item: ApiProduct,
   categoryName = "Sản phẩm"
 ): Product => {
   const price = Number(item.price || 0);
+
   const populatedCategory =
-    typeof item.category_id === "object" && item.category_id !== null
+    typeof item.category_id === "object" &&
+    item.category_id !== null
       ? item.category_id.name
       : item.category_id;
 
+  const oldPriceValue = Number(
+    item.oldPrice || item.old_price || 0
+  );
+
   const oldPrice =
-    Number(item.oldPrice || item.old_price || 0) > price
-      ? Number(item.oldPrice || item.old_price)
+    oldPriceValue > price
+      ? oldPriceValue
       : undefined;
 
   let badge = item.badge;
 
+  /* Tính phần trăm giảm giá */
   if (!badge && oldPrice && oldPrice > price) {
     const discount = Math.round(
       ((oldPrice - price) / oldPrice) * 100
@@ -110,187 +162,339 @@ const mapProduct = (
     badge = `-${item.discount}%`;
   }
 
+  /* Lấy số lượng tồn kho */
+  const quantity = Number(
+    item.quantity ??
+      item.stock ??
+      item.stock_quantity ??
+      0
+  );
+
   return {
     id: item._id || item.id || Math.random(),
-    name: item.name || item.title || "Sản phẩm",
-    category: item.category || populatedCategory || item.categoryId || categoryName,
+
+    name:
+      item.name ||
+      item.title ||
+      "Sản phẩm",
+
+    category:
+      item.category ||
+      populatedCategory ||
+      item.categoryId ||
+      categoryName,
+
     price,
+
     oldPrice,
+
     image:
       item.image_url?.[0] ||
       item.image ||
       item.images?.[0] ||
       "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&w=700&q=80",
+
     rating: Number(item.rating || 5),
-    sold: Number(item.sold || item.sold_count || 0),
+
+    sold: Number(
+      item.sold ||
+        item.sold_count ||
+        0
+    ),
+
     badge,
+
+    quantity,
   };
 };
 
+/* =========================================================
+   MAP COMPONENT PRODUCT
+========================================================= */
+
 const mapComponentProduct = (
   item: ApiProduct
-): ComponentProduct => ({
-  _id: String(item._id || item.id || ""),
-  name: item.name || item.title || "Sản phẩm",
-  price: Number(item.price || 0),
-  image_url: item.image_url || item.images || [],
-  discount: Number(item.discount || 0),
-  quantity: Number(item.quantity || 0),
-});
+): ComponentProduct => {
+  return {
+    _id: String(
+      item._id ||
+        item.id ||
+        ""
+    ),
+
+    name:
+      item.name ||
+      item.title ||
+      "Sản phẩm",
+
+    price: Number(
+      item.price || 0
+    ),
+
+    image_url:
+      item.image_url ||
+      item.images ||
+      [],
+
+    discount: Number(
+      item.discount || 0
+    ),
+
+    quantity: Number(
+      item.quantity ??
+        item.stock ??
+        item.stock_quantity ??
+        0
+    ),
+  };
+};
+
+/* =========================================================
+   HOME COMPONENT
+========================================================= */
 
 function Home() {
-  /* =========================
+  /* =========================================================
      STATE
-  ========================= */
+  ========================================================= */
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] =
+    useState(true);
 
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] =
+    useState<Product[]>([]);
 
-  const [newProducts, setNewProducts] = useState<Product[]>([]);
-  const [saleProducts, setSaleProducts] = useState<Product[]>([]);
-  const [hotProducts, setHotProducts] = useState<Product[]>([]);
+  const [newProducts, setNewProducts] =
+    useState<Product[]>([]);
+
+  const [saleProducts, setSaleProducts] =
+    useState<Product[]>([]);
+
+  const [hotProducts, setHotProducts] =
+    useState<Product[]>([]);
 
   const [newProductItems, setNewProductItems] =
     useState<ComponentProduct[]>([]);
+
   const [saleProductItems, setSaleProductItems] =
     useState<ComponentProduct[]>([]);
+
   const [hotProductItems, setHotProductItems] =
     useState<ComponentProduct[]>([]);
 
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] =
+    useState<Category[]>([]);
 
-  const [productsByCategory, setProductsByCategory] = useState<
-    Record<string, Product[]>
+  const [productsByCategory, setProductsByCategory] =
+    useState<Record<string, Product[]>>({});
+
+  const [
+    componentProductsByCategory,
+    setComponentProductsByCategory,
+  ] = useState<
+    Record<string, ComponentProduct[]>
   >({});
 
-  const [componentProductsByCategory, setComponentProductsByCategory] =
-    useState<Record<string, ComponentProduct[]>>({});
+  const [banners, setBanners] =
+    useState<Banner[]>([]);
 
-  const [banners, setBanners] = useState<Banner[]>([]);
+  /* =========================================================
+     CART
+  ========================================================= */
 
-  const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] =
+    useState<CartItem[]>([]);
 
-  const [search, setSearch] = useState("");
+  const [cartCount, setCartCount] =
+    useState(0);
+
+  /* =========================================================
+     SEARCH
+  ========================================================= */
+
+  const [search, setSearch] =
+    useState("");
+
+  /* =========================================================
+     CATEGORY
+  ========================================================= */
 
   const [activeCategory, setActiveCategory] =
     useState("Tất cả");
 
+  /* =========================================================
+     LIKE
+  ========================================================= */
+
   const [likedProducts, setLikedProducts] =
     useState<Array<string | number>>([]);
 
-  /* =========================
+  /* =========================================================
+     LOAD CART
+  ========================================================= */
+
+  useEffect(() => {
+    try {
+      const savedCart =
+        localStorage.getItem("cart");
+
+      if (!savedCart) {
+        return;
+      }
+
+      const cart: CartItem[] =
+        JSON.parse(savedCart);
+
+      setCartItems(cart);
+
+      const totalQuantity =
+        cart.reduce(
+          (total, item) =>
+            total + Number(item.quantity || 0),
+          0
+        );
+
+      setCartCount(totalQuantity);
+    } catch (error) {
+      console.error(
+        "Lỗi lấy giỏ hàng:",
+        error
+      );
+
+      setCartItems([]);
+      setCartCount(0);
+    }
+  }, []);
+
+  /* =========================================================
      LOAD DATA
-  ========================= */
+  ========================================================= */
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        /*
-         * =========================
-         * LẤY DANH MỤC
-         * =========================
-         */
+        /* =====================================================
+           CATEGORY
+        ===================================================== */
 
         const categoriesResponse =
           await categoryApi.getCategoriesActive();
 
         const categoriesData =
-          categoriesResponse?.data?.result || [];
+          categoriesResponse?.data?.result ||
+          [];
 
-        setCategories(categoriesData);
+        setCategories(
+          categoriesData
+        );
 
-        /*
-         * =========================
-         * LẤY SẢN PHẨM MỚI
-         * =========================
-         */
+        /* =====================================================
+           NEW PRODUCTS
+        ===================================================== */
 
         const newProductResponse =
           await productsApi.getNewProducts();
 
         const newProductData =
-          newProductResponse?.data?.result || [];
+          newProductResponse?.data?.result ||
+          [];
 
         setNewProductItems(
-          newProductData.map((item: ApiProduct) =>
-            mapComponentProduct(item)
+          newProductData.map(
+            (item: ApiProduct) =>
+              mapComponentProduct(item)
           )
         );
 
-        const mappedNewProducts = newProductData.map(
-          (item: ApiProduct) =>
-            mapProduct(item)
+        const mappedNewProducts =
+          newProductData.map(
+            (item: ApiProduct) =>
+              mapProduct(item)
+          );
+
+        setNewProducts(
+          mappedNewProducts
         );
 
-        setNewProducts(mappedNewProducts);
-
-        /*
-         * =========================
-         * LẤY SẢN PHẨM SALE
-         * =========================
-         */
+        /* =====================================================
+           SALE PRODUCTS
+        ===================================================== */
 
         const saleProductResponse =
           await productsApi.getSaleproducts();
 
         const saleProductData =
-          saleProductResponse?.data?.result || [];
+          saleProductResponse?.data?.result ||
+          [];
 
         setSaleProductItems(
-          saleProductData.map((item: ApiProduct) =>
-            mapComponentProduct(item)
+          saleProductData.map(
+            (item: ApiProduct) =>
+              mapComponentProduct(item)
           )
         );
 
-        const mappedSaleProducts = saleProductData.map(
-          (item: ApiProduct) =>
-            mapProduct(item)
+        const mappedSaleProducts =
+          saleProductData.map(
+            (item: ApiProduct) =>
+              mapProduct(item)
+          );
+
+        setSaleProducts(
+          mappedSaleProducts
         );
 
-        setSaleProducts(mappedSaleProducts);
-
-        /*
-         * =========================
-         * LẤY SẢN PHẨM HOT
-         * =========================
-         */
+        /* =====================================================
+           HOT PRODUCTS
+        ===================================================== */
 
         const hotProductResponse =
           await productsApi.getHotproducts();
 
         const hotProductData =
-          hotProductResponse?.data?.result || [];
+          hotProductResponse?.data?.result ||
+          [];
 
         setHotProductItems(
-          hotProductData.map((item: ApiProduct) =>
-            mapComponentProduct(item)
+          hotProductData.map(
+            (item: ApiProduct) =>
+              mapComponentProduct(item)
           )
         );
 
-        const mappedHotProducts = hotProductData.map(
-          (item: ApiProduct) =>
-            mapProduct(item)
+        const mappedHotProducts =
+          hotProductData.map(
+            (item: ApiProduct) =>
+              mapProduct(item)
+          );
+
+        setHotProducts(
+          mappedHotProducts
         );
 
-        setHotProducts(mappedHotProducts);
-
+        /* =====================================================
+           ALL PRODUCTS
+        ===================================================== */
 
         try {
           const productsResponse =
             await productsApi.getAll();
 
           const productsData =
-            productsResponse?.data?.result || [];
+            productsResponse?.data?.result ||
+            [];
 
           const mappedProducts =
-            productsData.map((item: ApiProduct) =>
-              mapProduct(item)
+            productsData.map(
+              (item: ApiProduct) =>
+                mapProduct(item)
             );
 
-          setProducts(mappedProducts);
+          setProducts(
+            mappedProducts
+          );
         } catch (error) {
           console.error(
             "Không lấy được tất cả sản phẩm:",
@@ -303,31 +507,36 @@ function Home() {
             ...mappedHotProducts,
           ];
 
-          const uniqueProducts = allProducts.filter(
-            (product, index, self) =>
-              index ===
-              self.findIndex(
-                (p) => p.id === product.id
-              )
-          );
+          const uniqueProducts =
+            allProducts.filter(
+              (product, index, self) =>
+                index ===
+                self.findIndex(
+                  (p) =>
+                    p.id === product.id
+                )
+            );
 
-          setProducts(uniqueProducts);
+          setProducts(
+            uniqueProducts
+          );
         }
 
-        /*
-         * =========================
-         * LẤY BANNER
-         * =========================
-         */
+        /* =====================================================
+           BANNER
+        ===================================================== */
 
         try {
           const bannerResponse =
             await bannerApi.getActive();
 
           const bannerData =
-            bannerResponse?.data?.data || [];
+            bannerResponse?.data?.data ||
+            [];
 
-          setBanners(bannerData);
+          setBanners(
+            bannerData
+          );
         } catch (error) {
           console.error(
             "Không lấy được banner:",
@@ -343,12 +552,20 @@ function Home() {
         );
 
         setCategories([]);
+
         setNewProducts([]);
+
         setSaleProducts([]);
+
         setHotProducts([]);
+
         setNewProductItems([]);
+
         setSaleProductItems([]);
+
         setHotProductItems([]);
+
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -357,161 +574,343 @@ function Home() {
     fetchData();
   }, []);
 
-  /*
-   * =========================
-   * LẤY SẢN PHẨM THEO CATEGORY
-   * =========================
-   */
+  /* =========================================================
+     PRODUCTS BY CATEGORY
+  ========================================================= */
 
   useEffect(() => {
-    const fetchProductsByCategory = async () => {
-      if (!categories.length) {
-        setProductsByCategory({});
-        return;
-      }
+    const fetchProductsByCategory =
+      async () => {
+        if (!categories.length) {
+          setProductsByCategory({});
+          setComponentProductsByCategory({});
+          return;
+        }
 
-      try {
-        const categoryPromises =
-          categories.map(async (category) => {
-            try {
-              const response =
-                await productsApi.getProductByCategoryID(
-                  category._id
-                );
+        try {
+          const categoryPromises =
+            categories.map(
+              async (category) => {
+                try {
+                  const response =
+                    await productsApi.getProductByCategoryID(
+                      category._id
+                    );
 
-              const data =
-                response?.data?.result || [];
+                  const data =
+                    response?.data?.result ||
+                    [];
 
-              const limitedData = data.slice(0, 8);
+                  const limitedData =
+                    data.slice(0, 8);
 
-              const limitedProducts =
-                limitedData
-                  .map((item: ApiProduct) =>
-                    mapProduct(
-                      item,
-                      category.name
-                    )
+                  const limitedProducts =
+                    limitedData.map(
+                      (item: ApiProduct) =>
+                        mapProduct(
+                          item,
+                          category.name
+                        )
+                    );
+
+                  return {
+                    name:
+                      category.name,
+
+                    products:
+                      limitedProducts,
+
+                    componentProducts:
+                      limitedData.map(
+                        (
+                          item: ApiProduct
+                        ) =>
+                          mapComponentProduct(
+                            item
+                          )
+                      ),
+                  };
+                } catch (error) {
+                  console.error(
+                    `Lỗi lấy sản phẩm category ${category.name}:`,
+                    error
                   );
 
-              return {
-                name: category.name,
-                products: limitedProducts,
-                componentProducts: limitedData.map(
-                  (item: ApiProduct) =>
-                    mapComponentProduct(item)
-                ),
-              };
-            } catch (error) {
-              console.error(
-                `Lỗi lấy sản phẩm category ${category.name}:`,
-                error
-              );
+                  return {
+                    name:
+                      category.name,
 
-              return {
-                name: category.name,
-                products: [],
-                componentProducts: [],
-              };
+                    products: [],
+
+                    componentProducts:
+                      [],
+                  };
+                }
+              }
+            );
+
+          const results =
+            await Promise.all(
+              categoryPromises
+            );
+
+          const productsMap: Record<
+            string,
+            Product[]
+          > = {};
+
+          const componentProductsMap: Record<
+            string,
+            ComponentProduct[]
+          > = {};
+
+          results.forEach(
+            (item) => {
+              productsMap[
+                item.name
+              ] = item.products;
+
+              componentProductsMap[
+                item.name
+              ] =
+                item.componentProducts;
             }
-          });
+          );
 
-        const results =
-          await Promise.all(categoryPromises);
+          setProductsByCategory(
+            productsMap
+          );
 
-        const productsMap: Record<
-          string,
-          Product[]
-        > = {};
-        const componentProductsMap: Record<
-          string,
-          ComponentProduct[]
-        > = {};
+          setComponentProductsByCategory(
+            componentProductsMap
+          );
+        } catch (error) {
+          console.error(
+            "Error fetching products by category:",
+            error
+          );
 
-        results.forEach((item) => {
-          productsMap[item.name] =
-            item.products;
-          componentProductsMap[item.name] =
-            item.componentProducts;
-        });
+          setProductsByCategory({});
 
-        setProductsByCategory(productsMap);
-        setComponentProductsByCategory(componentProductsMap);
-      } catch (error) {
-        console.error(
-          "Error fetching products by category:",
-          error
-        );
-
-        setProductsByCategory({});
-        setComponentProductsByCategory({});
-      }
-    };
+          setComponentProductsByCategory(
+            {}
+          );
+        }
+      };
 
     fetchProductsByCategory();
   }, [categories]);
 
-  /* =========================
+  /* =========================================================
      CATEGORY FILTER
-  ========================= */
+  ========================================================= */
 
   const categoriesFilter = [
     "Tất cả",
     ...categories.map(
-      (category) => category.name
+      (category) =>
+        category.name
     ),
   ];
 
-  /*
-   * =========================
-   * FILTER PRODUCTS
-   * =========================
-   */
+  /* =========================================================
+     FILTER PRODUCTS
+  ========================================================= */
 
-  const filteredProducts = products.filter(
-    (product) => {
-      const matchSearch =
-        product.name
-          .toLowerCase()
-          .includes(search.toLowerCase());
+  const filteredProducts =
+    products.filter(
+      (product) => {
+        const matchSearch =
+          product.name
+            .toLowerCase()
+            .includes(
+              search.toLowerCase()
+            );
 
-      const matchCategory =
-        activeCategory === "Tất cả" ||
-        product.category === activeCategory;
+        const matchCategory =
+          activeCategory ===
+            "Tất cả" ||
+          product.category ===
+            activeCategory;
 
-      return (
-        matchSearch &&
-        matchCategory
-      );
-    }
-  );
+        return (
+          matchSearch &&
+          matchCategory
+        );
+      }
+    );
 
-  /* =========================
-     CART
-  ========================= */
+  /* =========================================================
+     ADD TO CART
+  ========================================================= */
 
   const addToCart = (
     product?: Product
   ) => {
-    setCartCount(
-      (prev) => prev + 1
-    );
+    if (!product) return;
 
-    /*
-     * Nếu muốn lưu cart vào localStorage
-     * thì có thể xử lý tại đây.
-     */
+    /* Kiểm tra hết hàng */
 
-    if (product) {
-      console.log(
-        "Thêm vào giỏ:",
-        product
+    if (product.quantity <= 0) {
+      alert(
+        `Sản phẩm "${product.name}" đã hết hàng!`
+      );
+
+      return;
+    }
+
+    try {
+      const savedCart =
+        localStorage.getItem("cart");
+
+      const currentCart: CartItem[] =
+        savedCart
+          ? JSON.parse(savedCart)
+          : [];
+
+      const existingProduct =
+        currentCart.find(
+          (item) =>
+            item.id === product.id
+        );
+
+      let updatedCart: CartItem[];
+
+      if (existingProduct) {
+        /* Nếu đã có trong giỏ */
+
+        if (
+          existingProduct.quantity >=
+          product.quantity
+        ) {
+          alert(
+            `Sản phẩm "${product.name}" chỉ còn ${product.quantity} sản phẩm!`
+          );
+
+          return;
+        }
+
+        updatedCart =
+          currentCart.map(
+            (item) =>
+              item.id ===
+              product.id
+                ? {
+                    ...item,
+                    quantity:
+                      item.quantity +
+                      1,
+                  }
+                : item
+          );
+      } else {
+        /* Thêm sản phẩm mới */
+
+        updatedCart = [
+          ...currentCart,
+
+          {
+            ...product,
+
+            quantity: 1,
+          },
+        ];
+      }
+
+      /* Lưu localStorage */
+
+      localStorage.setItem(
+        "cart",
+        JSON.stringify(
+          updatedCart
+        )
+      );
+
+      /* Cập nhật state */
+
+      setCartItems(
+        updatedCart
+      );
+
+      const totalQuantity =
+        updatedCart.reduce(
+          (total, item) =>
+            total +
+            Number(
+              item.quantity || 0
+            ),
+          0
+        );
+
+      setCartCount(
+        totalQuantity
+      );
+
+      alert(
+        `Đã thêm "${product.name}" vào giỏ hàng!`
+      );
+    } catch (error) {
+      console.error(
+        "Lỗi thêm vào giỏ hàng:",
+        error
       );
     }
   };
 
-  /* =========================
+  /* =========================================================
+     BUY NOW
+  ========================================================= */
+
+  const buyNow = (
+    product?: Product
+  ) => {
+    if (!product) return;
+
+    /* Kiểm tra tồn kho */
+
+    if (product.quantity <= 0) {
+      alert(
+        "Sản phẩm đã hết hàng!"
+      );
+
+      return;
+    }
+
+    try {
+      const buyNowItem: CartItem = {
+        ...product,
+
+        quantity: 1,
+      };
+
+      /*
+       * Lưu sản phẩm mua ngay
+       */
+
+      localStorage.setItem(
+        "buyNow",
+        JSON.stringify(
+          buyNowItem
+        )
+      );
+
+      /*
+       * Chuyển sang checkout
+       */
+
+      window.location.href =
+        "/checkout";
+    } catch (error) {
+      console.error(
+        "Lỗi mua ngay:",
+        error
+      );
+    }
+  };
+
+  /* =========================================================
      LIKE
-  ========================= */
+  ========================================================= */
 
   const toggleLike = (
     id: string | number
@@ -523,13 +922,16 @@ function Home() {
               (productId) =>
                 productId !== id
             )
-          : [...prev, id]
+          : [
+              ...prev,
+              id,
+            ]
     );
   };
 
-  /* =========================
+  /* =========================================================
      SCROLL CATEGORY
-  ========================= */
+  ========================================================= */
 
   const scrollToCategory = (
     categoryName: string
@@ -540,12 +942,211 @@ function Home() {
 
     setTimeout(() => {
       document
-        .getElementById("products")
+        .getElementById(
+          "products"
+        )
         ?.scrollIntoView({
           behavior: "smooth",
         });
     }, 100);
   };
+
+  /* =========================================================
+     PRODUCT CARD
+  ========================================================= */
+
+  const renderProductCard = (
+    product: Product,
+    key?: string
+  ) => {
+    const isLiked =
+      likedProducts.includes(
+        product.id
+      );
+
+    const isOutOfStock =
+      product.quantity <= 0;
+
+    return (
+      <article
+        className="product-card"
+        key={
+          key ||
+          String(product.id)
+        }
+      >
+        <div className="product-image">
+          {product.badge && (
+            <span className="product-badge">
+              {product.badge}
+            </span>
+          )}
+
+          <button
+            className={
+              isLiked
+                ? "favorite active"
+                : "favorite"
+            }
+            onClick={() =>
+              toggleLike(
+                product.id
+              )
+            }
+          >
+            {isLiked
+              ? "♥"
+              : "♡"}
+          </button>
+
+          <img
+            src={
+              product.image
+            }
+            alt={
+              product.name
+            }
+          />
+
+          <button
+            className="quick-view"
+            disabled={
+              isOutOfStock
+            }
+            onClick={() =>
+              addToCart(
+                product
+              )
+            }
+          >
+            {isOutOfStock
+              ? "Hết hàng"
+              : "+ Thêm vào giỏ"}
+          </button>
+        </div>
+
+        <div className="product-info">
+          <span className="product-category">
+            {
+              product.category
+            }
+          </span>
+
+          <h3>
+            {product.name}
+          </h3>
+
+          <div className="rating">
+            <span>
+              {"★".repeat(
+                Math.min(
+                  5,
+                  Math.max(
+                    0,
+                    Math.round(
+                      product.rating
+                    )
+                  )
+                )
+              )}
+
+              {"☆".repeat(
+                5 -
+                  Math.min(
+                    5,
+                    Math.max(
+                      0,
+                      Math.round(
+                        product.rating
+                      )
+                    )
+                  )
+              )}
+            </span>
+
+            <small>
+              (
+              {
+                product.sold
+              }{" "}
+              đã bán)
+            </small>
+          </div>
+
+          {/* SỐ LƯỢNG TỒN KHO */}
+
+          <div className="product-stock">
+            {product.quantity >
+            0 ? (
+              <span>
+                Còn{" "}
+                {
+                  product.quantity
+                }{" "}
+                sản phẩm
+              </span>
+            ) : (
+              <span className="out-of-stock">
+                Hết hàng
+              </span>
+            )}
+          </div>
+
+          <div className="product-bottom">
+            <div className="price">
+              <strong>
+                {formatPrice(
+                  product.price
+                )}
+              </strong>
+
+              {product.oldPrice && (
+                <del>
+                  {formatPrice(
+                    product.oldPrice
+                  )}
+                </del>
+              )}
+            </div>
+
+            <div className="product-actions">
+              <button
+                className="add-cart"
+                disabled={
+                  isOutOfStock
+                }
+                onClick={() =>
+                  addToCart(
+                    product
+                  )
+                }
+              >
+                +
+              </button>
+
+              <button
+                className="buy-now"
+                disabled={
+                  isOutOfStock
+                }
+                onClick={() =>
+                  buyNow(
+                    product
+                  )
+                }
+              >
+                Mua ngay
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    );
+  };
+
+  /* =========================================================
+     RETURN
+  ========================================================= */
 
   return (
     <div className="pet-page">
@@ -556,7 +1157,6 @@ function Home() {
 
       <div className="topbar">
         <div className="container topbar-inner">
-
           <div>
             <span>
               📞 Hotline:{" "}
@@ -569,8 +1169,8 @@ function Home() {
 
           <div className="topbar-right">
             <span>
-              Miễn phí vận chuyển cho
-              đơn từ 500K
+              Miễn phí vận chuyển
+              cho đơn từ 500K
             </span>
 
             <span>•</span>
@@ -579,30 +1179,25 @@ function Home() {
               Hỗ trợ 24/7
             </span>
           </div>
-
         </div>
       </div>
-
 
       {/* =====================================================
           HEADER
       ===================================================== */}
 
       <header className="header">
-
         <div className="container header-inner">
 
           <a
             className="logo"
             href="#home"
           >
-
             <div className="logo-icon">
               🐾
             </div>
 
             <div>
-
               <div className="logo-name">
                 PET CORNER
               </div>
@@ -610,14 +1205,10 @@ function Home() {
               <div className="logo-sub">
                 YOUR PET'S HAPPY PLACE
               </div>
-
             </div>
-
           </a>
 
-
           <nav className="navigation">
-
             <a
               className="active"
               href="#home"
@@ -640,9 +1231,7 @@ function Home() {
             <a href="#about">
               Về chúng tôi
             </a>
-
           </nav>
-
 
           <div className="header-actions">
 
@@ -663,7 +1252,10 @@ function Home() {
               className="icon-button"
               onClick={() =>
                 alert(
-                  "Danh sách yêu thích"
+                  likedProducts.length >
+                    0
+                    ? `Bạn có ${likedProducts.length} sản phẩm yêu thích`
+                    : "Bạn chưa có sản phẩm yêu thích"
                 )
               }
             >
@@ -673,9 +1265,8 @@ function Home() {
             <button
               className="cart-button"
               onClick={() =>
-                alert(
-                  `Bạn có ${cartCount} sản phẩm trong giỏ`
-                )
+                (window.location.href =
+                  "/cart")
               }
             >
               🛒
@@ -685,16 +1276,15 @@ function Home() {
               </span>
             </button>
 
-            <a className="login-button" href="/login">
+            <a
+              className="login-button"
+              href="/login"
+            >
               Đăng nhập
             </a>
-
           </div>
-
         </div>
-
       </header>
-
 
       <main>
 
@@ -706,7 +1296,6 @@ function Home() {
           className="hero"
           id="home"
         >
-
           <div className="container hero-content">
 
             <div className="hero-text">
@@ -726,10 +1315,12 @@ function Home() {
               </h1>
 
               <p>
-                Tất cả những gì thú cưng
-                của bạn cần,
+                Tất cả những gì
+                thú cưng của bạn
+                cần,
                 <br />
-                được chọn lọc bằng tình yêu.
+                được chọn lọc
+                bằng tình yêu.
               </p>
 
               <div className="hero-buttons">
@@ -751,7 +1342,6 @@ function Home() {
 
               </div>
 
-
               <div className="hero-features">
 
                 <div>
@@ -766,7 +1356,8 @@ function Home() {
 
                 <div>
                   <strong>
-                    {products.length > 0
+                    {products.length >
+                    0
                       ? `${products.length}+`
                       : "500+"}
                   </strong>
@@ -790,17 +1381,21 @@ function Home() {
 
             </div>
 
-
             <div className="hero-image">
 
               <div className="hero-circle"></div>
 
               <img
                 src={
-                  banners[0]?.image_url ||
+                  banners[0]
+                    ?.image_url ||
                   "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1000&q=85"
                 }
-                alt={banners[0]?.title || "Happy dog"}
+                alt={
+                  banners[0]
+                    ?.title ||
+                  "Happy dog"
+                }
               />
 
               <div className="floating-card floating-card-one">
@@ -820,7 +1415,6 @@ function Home() {
                 </div>
 
               </div>
-
 
               <div className="floating-card floating-card-two">
 
@@ -843,20 +1437,16 @@ function Home() {
             </div>
 
           </div>
-
         </section>
-
 
         {/* =====================================================
             SERVICE STRIP
         ===================================================== */}
 
         <section className="service-strip">
-
           <div className="container service-grid">
 
             <div className="service-item">
-
               <div className="service-icon">
                 🚚
               </div>
@@ -867,15 +1457,13 @@ function Home() {
                 </strong>
 
                 <span>
-                  Toàn quốc trong 1-3 ngày
+                  Toàn quốc trong
+                  1-3 ngày
                 </span>
               </div>
-
             </div>
 
-
             <div className="service-item">
-
               <div className="service-icon">
                 🛡️
               </div>
@@ -886,15 +1474,13 @@ function Home() {
                 </strong>
 
                 <span>
-                  Cam kết chất lượng 100%
+                  Cam kết chất lượng
+                  100%
                 </span>
               </div>
-
             </div>
 
-
             <div className="service-item">
-
               <div className="service-icon">
                 💬
               </div>
@@ -908,12 +1494,9 @@ function Home() {
                   Đội ngũ hỗ trợ 24/7
                 </span>
               </div>
-
             </div>
 
-
             <div className="service-item">
-
               <div className="service-icon">
                 ↩️
               </div>
@@ -927,13 +1510,10 @@ function Home() {
                   Trong vòng 7 ngày
                 </span>
               </div>
-
             </div>
 
           </div>
-
         </section>
-
 
         {/* =====================================================
             CATEGORIES
@@ -943,13 +1523,10 @@ function Home() {
           className="section categories-section"
           id="categories"
         >
-
           <div className="container">
 
             <div className="section-heading">
-
               <div>
-
                 <span className="section-label">
                   DANH MỤC
                 </span>
@@ -960,7 +1537,6 @@ function Home() {
                     nhu cầu
                   </span>
                 </h2>
-
               </div>
 
               <a
@@ -969,29 +1545,25 @@ function Home() {
               >
                 Xem tất cả →
               </a>
-
             </div>
-
 
             <div className="category-grid">
 
               {loading ? (
-
                 <div className="empty-products">
                   Đang tải danh mục...
                 </div>
-
-              ) : categories.length === 0 ? (
-
+              ) : categories.length ===
+                0 ? (
                 <div className="empty-products">
                   Chưa có danh mục
                 </div>
-
               ) : (
-
                 categories.map(
-                  (category, index) => {
-
+                  (
+                    category,
+                    index
+                  ) => {
                     const icons = [
                       "🐶",
                       "🐱",
@@ -1004,14 +1576,15 @@ function Home() {
                     return (
                       <button
                         className="category-card"
-                        key={category._id}
+                        key={
+                          category._id
+                        }
                         onClick={() =>
                           scrollToCategory(
                             category.name
                           )
                         }
                       >
-
                         <div className="category-icon">
                           {
                             icons[
@@ -1022,29 +1595,29 @@ function Home() {
                         </div>
 
                         <strong>
-                          {category.name}
+                          {
+                            category.name
+                          }
                         </strong>
 
                         <span>
-                          {productsByCategory[
-                            category.name
-                          ]?.length || 0}{" "}
+                          {
+                            productsByCategory[
+                              category.name
+                            ]?.length ||
+                            0
+                          }{" "}
                           sản phẩm
                         </span>
-
                       </button>
                     );
                   }
                 )
-
               )}
 
             </div>
-
           </div>
-
         </section>
-
 
         {/* =====================================================
             PRODUCTS
@@ -1054,13 +1627,11 @@ function Home() {
           className="section products-section"
           id="products"
         >
-
           <div className="container">
 
             <div className="section-heading">
 
               <div>
-
                 <span className="section-label">
                   SẢN PHẨM
                 </span>
@@ -1071,12 +1642,9 @@ function Home() {
                     nổi bật
                   </span>
                 </h2>
-
               </div>
 
-
               <div className="search-box">
-
                 <span>
                   🔍
                 </span>
@@ -1092,19 +1660,15 @@ function Home() {
                     )
                   }
                 />
-
               </div>
 
             </div>
 
-
             {/* FILTER */}
 
             <div className="filter-list">
-
               {categoriesFilter.map(
                 (category) => (
-
                   <button
                     key={category}
                     className={
@@ -1121,19 +1685,14 @@ function Home() {
                   >
                     {category}
                   </button>
-
                 )
               )}
-
             </div>
-
 
             {/* PRODUCTS */}
 
             {loading ? (
-
               <div className="empty-products">
-
                 <div>
                   ⏳
                 </div>
@@ -1145,172 +1704,23 @@ function Home() {
                 <p>
                   Vui lòng chờ một chút.
                 </p>
-
               </div>
-
             ) : (
-
               <div className="products-grid">
 
                 {filteredProducts.map(
-                  (product) => (
-
-                    <article
-                      className="product-card"
-                      key={product.id}
-                    >
-
-                      <div className="product-image">
-
-                        {product.badge && (
-                          <span className="product-badge">
-                            {product.badge}
-                          </span>
-                        )}
-
-
-                        <button
-                          className={
-                            likedProducts.includes(
-                              product.id
-                            )
-                              ? "favorite active"
-                              : "favorite"
-                          }
-                          onClick={() =>
-                            toggleLike(
-                              product.id
-                            )
-                          }
-                        >
-                          {likedProducts.includes(
-                            product.id
-                          )
-                            ? "♥"
-                            : "♡"}
-                        </button>
-
-
-                        <img
-                          src={
-                            product.image
-                          }
-                          alt={
-                            product.name
-                          }
-                        />
-
-
-                        <button
-                          className="quick-view"
-                          onClick={() =>
-                            addToCart(
-                              product
-                            )
-                          }
-                        >
-                          + Thêm vào giỏ
-                        </button>
-
-                      </div>
-
-
-                      <div className="product-info">
-
-                        <span className="product-category">
-                          {
-                            product.category
-                          }
-                        </span>
-
-
-                        <h3>
-                          {product.name}
-                        </h3>
-
-
-                        <div className="rating">
-
-                          <span>
-                            {"★".repeat(
-                              Math.min(
-                                5,
-                                Math.max(
-                                  0,
-                                  product.rating
-                                )
-                              )
-                            )}
-
-                            {"☆".repeat(
-                              5 -
-                                Math.min(
-                                  5,
-                                  Math.max(
-                                    0,
-                                    product.rating
-                                  )
-                                )
-                            )}
-                          </span>
-
-                          <small>
-                            ({product.sold} đã bán)
-                          </small>
-
-                        </div>
-
-
-                        <div className="product-bottom">
-
-                          <div className="price">
-
-                            <strong>
-                              {formatPrice(
-                                product.price
-                              )}
-                            </strong>
-
-                            {product.oldPrice && (
-                              <del>
-                                {formatPrice(
-                                  product.oldPrice
-                                )}
-                              </del>
-                            )}
-
-                          </div>
-
-
-                          <button
-                            className="add-cart"
-                            onClick={() =>
-                              addToCart(
-                                product
-                              )
-                            }
-                          >
-                            +
-                          </button>
-
-                        </div>
-
-                      </div>
-
-                    </article>
-
-                  )
+                  (product) =>
+                    renderProductCard(
+                      product
+                    )
                 )}
 
               </div>
-
             )}
-
 
             {!loading &&
               filteredProducts.length ===
                 0 && (
-
                 <div className="empty-products">
 
                   <div>
@@ -1327,15 +1737,16 @@ function Home() {
                   </p>
 
                 </div>
-
               )}
-
 
             <div className="center-button">
 
               <button
                 className="outline-button"
-                onClick={() => window.location.assign("/products")}
+                onClick={() =>
+                  (window.location.href =
+                    "/products")
+                }
               >
                 Xem tất cả sản phẩm →
               </button>
@@ -1343,22 +1754,18 @@ function Home() {
             </div>
 
           </div>
-
         </section>
 
-
         {/* =====================================================
-            SẢN PHẨM MỚI TỪ API
+            NEW PRODUCTS
         ===================================================== */}
 
         <section className="section">
-
           <div className="container">
 
             <div className="section-heading">
 
               <div>
-
                 <span className="section-label">
                   MỚI NHẤT
                 </span>
@@ -1369,155 +1776,37 @@ function Home() {
                     mới
                   </span>
                 </h2>
-
               </div>
 
             </div>
 
-            <NewProduct data={newProductItems} />
+            <NewProduct
+              data={
+                newProductItems
+              }
+            />
 
-
-            <div className="products-grid">
-
-              {newProductItems.length === 0 &&
-                newProducts.map(
-                (product) => (
-
-                  <article
-                    className="product-card"
-                    key={`new-${product.id}`}
-                  >
-
-                    <div className="product-image">
-
-                      <span className="product-badge">
-                        Mới
-                      </span>
-
-                      <button
-                        className={
-                          likedProducts.includes(
-                            product.id
-                          )
-                            ? "favorite active"
-                            : "favorite"
-                        }
-                        onClick={() =>
-                          toggleLike(
-                            product.id
-                          )
-                        }
-                      >
-                        {likedProducts.includes(
-                          product.id
-                        )
-                          ? "♥"
-                          : "♡"}
-                      </button>
-
-                      <img
-                        src={
-                          product.image
-                        }
-                        alt={
-                          product.name
-                        }
-                      />
-
-                      <button
-                        className="quick-view"
-                        onClick={() =>
-                          addToCart(
-                            product
-                          )
-                        }
-                      >
-                        + Thêm vào giỏ
-                      </button>
-
-                    </div>
-
-
-                    <div className="product-info">
-
-                      <span className="product-category">
-                        {
-                          product.category
-                        }
-                      </span>
-
-                      <h3>
-                        {product.name}
-                      </h3>
-
-                      <div className="rating">
-
-                        <span>
-                          {"★".repeat(
-                            product.rating
-                          )}
-                        </span>
-
-                        <small>
-                          ({product.sold} đã bán)
-                        </small>
-
-                      </div>
-
-
-                      <div className="product-bottom">
-
-                        <div className="price">
-
-                          <strong>
-                            {formatPrice(
-                              product.price
-                            )}
-                          </strong>
-
-                          {product.oldPrice && (
-                            <del>
-                              {formatPrice(
-                                product.oldPrice
-                              )}
-                            </del>
-                          )}
-
-                        </div>
-
-                        <button
-                          className="add-cart"
-                          onClick={() =>
-                            addToCart(
-                              product
-                            )
-                          }
-                        >
-                          +
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  </article>
-
-                )
-              )}
-
-            </div>
+            {newProductItems.length ===
+              0 && (
+              <div className="products-grid">
+                {newProducts.map(
+                  (product) =>
+                    renderProductCard(
+                      product,
+                      `new-${product.id}`
+                    )
+                )}
+              </div>
+            )}
 
           </div>
-
         </section>
 
-
         {/* =====================================================
-            SALE
+            PROMOTION
         ===================================================== */}
 
         <section className="promotion">
-
           <div className="container promotion-inner">
 
             <div className="promotion-content">
@@ -1536,31 +1825,34 @@ function Home() {
               </h2>
 
               <p>
-                Giảm ngay 20% cho đơn hàng
-                đầu tiên.
+                Giảm ngay 20% cho
+                đơn hàng đầu tiên.
                 <br />
-                Áp dụng cho tất cả sản phẩm.
+                Áp dụng cho tất cả
+                sản phẩm.
               </p>
 
-              <button className="white-button">
+              <a
+                href="/products"
+                className="white-button"
+              >
                 Mua sắm ngay →
-              </button>
+              </a>
 
             </div>
-
 
             <div className="promotion-image">
 
               <img
                 src={
-                  saleProducts[0]?.image ||
+                  saleProducts[0]
+                    ?.image ||
                   "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=1000&q=85"
                 }
                 alt="Pet promotion"
               />
 
               <div className="discount-circle">
-
                 <strong>
                   20%
                 </strong>
@@ -1568,26 +1860,21 @@ function Home() {
                 <span>
                   OFF
                 </span>
-
               </div>
 
             </div>
 
           </div>
-
         </section>
-
 
         {/* =====================================================
             SALE PRODUCTS
         ===================================================== */}
 
         <section className="section">
-
           <div className="container">
 
             <div className="section-heading">
-
               <div>
 
                 <span className="section-label">
@@ -1602,153 +1889,38 @@ function Home() {
                 </h2>
 
               </div>
-
             </div>
 
-            <SaleProduct data={saleProductItems} />
+            <SaleProduct
+              data={
+                saleProductItems
+              }
+            />
 
-
-            <div className="products-grid">
-
-              {saleProductItems.length === 0 &&
-                saleProducts.map(
-                (product) => (
-
-                  <article
-                    className="product-card"
-                    key={`sale-${product.id}`}
-                  >
-
-                    <div className="product-image">
-
-                      {product.badge && (
-                        <span className="product-badge">
-                          {product.badge}
-                        </span>
-                      )}
-
-                      <button
-                        className="favorite"
-                        onClick={() =>
-                          toggleLike(
-                            product.id
-                          )
-                        }
-                      >
-                        {likedProducts.includes(
-                          product.id
-                        )
-                          ? "♥"
-                          : "♡"}
-                      </button>
-
-                      <img
-                        src={
-                          product.image
-                        }
-                        alt={
-                          product.name
-                        }
-                      />
-
-                      <button
-                        className="quick-view"
-                        onClick={() =>
-                          addToCart(
-                            product
-                          )
-                        }
-                      >
-                        + Thêm vào giỏ
-                      </button>
-
-                    </div>
-
-
-                    <div className="product-info">
-
-                      <span className="product-category">
-                        {
-                          product.category
-                        }
-                      </span>
-
-                      <h3>
-                        {product.name}
-                      </h3>
-
-                      <div className="rating">
-
-                        <span>
-                          {"★".repeat(
-                            product.rating
-                          )}
-                        </span>
-
-                        <small>
-                          ({product.sold} đã bán)
-                        </small>
-
-                      </div>
-
-
-                      <div className="product-bottom">
-
-                        <div className="price">
-
-                          <strong>
-                            {formatPrice(
-                              product.price
-                            )}
-                          </strong>
-
-                          {product.oldPrice && (
-                            <del>
-                              {formatPrice(
-                                product.oldPrice
-                              )}
-                            </del>
-                          )}
-
-                        </div>
-
-                        <button
-                          className="add-cart"
-                          onClick={() =>
-                            addToCart(
-                              product
-                            )
-                          }
-                        >
-                          +
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  </article>
-
-                )
-              )}
-
-            </div>
+            {saleProductItems.length ===
+              0 && (
+              <div className="products-grid">
+                {saleProducts.map(
+                  (product) =>
+                    renderProductCard(
+                      product,
+                      `sale-${product.id}`
+                    )
+                )}
+              </div>
+            )}
 
           </div>
-
         </section>
-
 
         {/* =====================================================
             HOT PRODUCTS
         ===================================================== */}
 
         <section className="section">
-
           <div className="container">
 
             <div className="section-heading">
-
               <div>
 
                 <span className="section-label">
@@ -1763,140 +1935,29 @@ function Home() {
                 </h2>
 
               </div>
-
             </div>
 
-            <HotProduct data={hotProductItems} />
+            <HotProduct
+              data={
+                hotProductItems
+              }
+            />
 
-
-            <div className="products-grid">
-
-              {hotProductItems.length === 0 &&
-                hotProducts.map(
-                (product) => (
-
-                  <article
-                    className="product-card"
-                    key={`hot-${product.id}`}
-                  >
-
-                    <div className="product-image">
-
-                      <span className="product-badge">
-                        Bán chạy
-                      </span>
-
-                      <button
-                        className="favorite"
-                        onClick={() =>
-                          toggleLike(
-                            product.id
-                          )
-                        }
-                      >
-                        {likedProducts.includes(
-                          product.id
-                        )
-                          ? "♥"
-                          : "♡"}
-                      </button>
-
-                      <img
-                        src={
-                          product.image
-                        }
-                        alt={
-                          product.name
-                        }
-                      />
-
-                      <button
-                        className="quick-view"
-                        onClick={() =>
-                          addToCart(
-                            product
-                          )
-                        }
-                      >
-                        + Thêm vào giỏ
-                      </button>
-
-                    </div>
-
-
-                    <div className="product-info">
-
-                      <span className="product-category">
-                        {
-                          product.category
-                        }
-                      </span>
-
-                      <h3>
-                        {product.name}
-                      </h3>
-
-                      <div className="rating">
-
-                        <span>
-                          {"★".repeat(
-                            product.rating
-                          )}
-                        </span>
-
-                        <small>
-                          ({product.sold} đã bán)
-                        </small>
-
-                      </div>
-
-
-                      <div className="product-bottom">
-
-                        <div className="price">
-
-                          <strong>
-                            {formatPrice(
-                              product.price
-                            )}
-                          </strong>
-
-                          {product.oldPrice && (
-                            <del>
-                              {formatPrice(
-                                product.oldPrice
-                              )}
-                            </del>
-                          )}
-
-                        </div>
-
-                        <button
-                          className="add-cart"
-                          onClick={() =>
-                            addToCart(
-                              product
-                            )
-                          }
-                        >
-                          +
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  </article>
-
-                )
-              )}
-
-            </div>
+            {hotProductItems.length ===
+              0 && (
+              <div className="products-grid">
+                {hotProducts.map(
+                  (product) =>
+                    renderProductCard(
+                      product,
+                      `hot-${product.id}`
+                    )
+                )}
+              </div>
+            )}
 
           </div>
-
         </section>
-
 
         {/* =====================================================
             PRODUCTS BY CATEGORY
@@ -1904,23 +1965,27 @@ function Home() {
 
         {categories.map(
           (category, index) => {
-
             const categoryProducts =
               productsByCategory[
                 category.name
               ] || [];
 
-            return (
+            const categoryComponentProducts =
+              componentProductsByCategory[
+                category.name
+              ] || [];
 
+            return (
               <section
                 className={`section ${
                   index % 2 === 1
                     ? "category-white-section"
                     : ""
                 }`}
-                key={category._id}
+                key={
+                  category._id
+                }
               >
-
                 <div className="container">
 
                   <div className="section-heading">
@@ -1934,7 +1999,9 @@ function Home() {
                       <h2>
                         Dành cho{" "}
                         <span>
-                          {category.name}
+                          {
+                            category.name
+                          }
                         </span>
                       </h2>
 
@@ -1955,173 +2022,41 @@ function Home() {
 
                   <CateProduct
                     data={
-                      componentProductsByCategory[
-                        category.name
-                      ] || []
+                      categoryComponentProducts
                     }
                   />
 
-
-                  {componentProductsByCategory[
-                    category.name
-                  ]?.length === 0 &&
-                  categoryProducts.length > 0 ? (
-
+                  {categoryComponentProducts.length ===
+                    0 &&
+                  categoryProducts.length >
+                    0 ? (
                     <div className="products-grid">
 
                       {categoryProducts.map(
-                        (product) => (
-
-                          <article
-                            className="product-card"
-                            key={`category-${product.id}`}
-                          >
-
-                            <div className="product-image">
-
-                              {product.badge && (
-                                <span className="product-badge">
-                                  {
-                                    product.badge
-                                  }
-                                </span>
-                              )}
-
-                              <button
-                                className="favorite"
-                                onClick={() =>
-                                  toggleLike(
-                                    product.id
-                                  )
-                                }
-                              >
-                                {likedProducts.includes(
-                                  product.id
-                                )
-                                  ? "♥"
-                                  : "♡"}
-                              </button>
-
-                              <img
-                                src={
-                                  product.image
-                                }
-                                alt={
-                                  product.name
-                                }
-                              />
-
-                              <button
-                                className="quick-view"
-                                onClick={() =>
-                                  addToCart(
-                                    product
-                                  )
-                                }
-                              >
-                                + Thêm vào giỏ
-                              </button>
-
-                            </div>
-
-
-                            <div className="product-info">
-
-                              <span className="product-category">
-                                {
-                                  product.category
-                                }
-                              </span>
-
-                              <h3>
-                                {
-                                  product.name
-                                }
-                              </h3>
-
-                              <div className="rating">
-
-                                <span>
-                                  {"★".repeat(
-                                    product.rating
-                                  )}
-                                </span>
-
-                                <small>
-                                  (
-                                  {
-                                    product.sold
-                                  }{" "}
-                                  đã bán)
-                                </small>
-
-                              </div>
-
-
-                              <div className="product-bottom">
-
-                                <div className="price">
-
-                                  <strong>
-                                    {formatPrice(
-                                      product.price
-                                    )}
-                                  </strong>
-
-                                  {product.oldPrice && (
-                                    <del>
-                                      {formatPrice(
-                                        product.oldPrice
-                                      )}
-                                    </del>
-                                  )}
-
-                                </div>
-
-
-                                <button
-                                  className="add-cart"
-                                  onClick={() =>
-                                    addToCart(
-                                      product
-                                    )
-                                  }
-                                >
-                                  +
-                                </button>
-
-                              </div>
-
-                            </div>
-
-                          </article>
-
-                        )
+                        (product) =>
+                          renderProductCard(
+                            product,
+                            `category-${product.id}`
+                          )
                       )}
 
                     </div>
-
-                  ) : (
-
+                  ) : categoryComponentProducts.length ===
+                    0 ? (
                     <div className="empty-products">
-
                       <p>
                         Chưa có sản phẩm
-                        trong danh mục này.
+                        trong danh mục
+                        này.
                       </p>
-
                     </div>
-
-                  )}
+                  ) : null}
 
                 </div>
-
               </section>
-
             );
           }
         )}
-
 
         {/* =====================================================
             SERVICES
@@ -2131,7 +2066,6 @@ function Home() {
           className="section services-section"
           id="services"
         >
-
           <div className="container">
 
             <div className="center-heading">
@@ -2149,14 +2083,14 @@ function Home() {
 
               <p>
                 Không chỉ bán sản phẩm,
-                Pet Corner đồng hành cùng bạn
+                Pet Corner đồng hành
+                cùng bạn
                 <br />
-                trong từng khoảnh khắc chăm sóc
-                thú cưng.
+                trong từng khoảnh khắc
+                chăm sóc thú cưng.
               </p>
 
             </div>
-
 
             <div className="service-cards">
 
@@ -2171,8 +2105,9 @@ function Home() {
                 </h3>
 
                 <p>
-                  Tắm, cắt tỉa và chăm sóc
-                  lông chuyên nghiệp cho thú cưng.
+                  Tắm, cắt tỉa và chăm
+                  sóc lông chuyên nghiệp
+                  cho thú cưng.
                 </p>
 
                 <a href="#services">
@@ -2180,7 +2115,6 @@ function Home() {
                 </a>
 
               </div>
-
 
               <div className="big-service-card">
 
@@ -2193,8 +2127,9 @@ function Home() {
                 </h3>
 
                 <p>
-                  Tư vấn dinh dưỡng và chăm sóc
-                  sức khỏe cho người bạn nhỏ.
+                  Tư vấn dinh dưỡng và
+                  chăm sóc sức khỏe cho
+                  người bạn nhỏ.
                 </p>
 
                 <a href="#services">
@@ -2202,7 +2137,6 @@ function Home() {
                 </a>
 
               </div>
-
 
               <div className="big-service-card">
 
@@ -2215,8 +2149,9 @@ function Home() {
                 </h3>
 
                 <p>
-                  Không gian nghỉ dưỡng an toàn,
-                  sạch sẽ và đầy yêu thương.
+                  Không gian nghỉ dưỡng
+                  an toàn, sạch sẽ và
+                  đầy yêu thương.
                 </p>
 
                 <a href="#services">
@@ -2228,9 +2163,7 @@ function Home() {
             </div>
 
           </div>
-
         </section>
-
 
         {/* =====================================================
             ABOUT
@@ -2240,7 +2173,6 @@ function Home() {
           className="about-section"
           id="about"
         >
-
           <div className="container about-grid">
 
             <div className="about-images">
@@ -2265,7 +2197,6 @@ function Home() {
 
             </div>
 
-
             <div className="about-content">
 
               <span className="section-label">
@@ -2277,7 +2208,8 @@ function Home() {
                 <br />
 
                 <span>
-                  mọi chú pet đều xứng đáng
+                  mọi chú pet đều
+                  xứng đáng
                 </span>
 
                 <br />
@@ -2286,40 +2218,45 @@ function Home() {
               </h2>
 
               <p>
-                Pet Corner được tạo ra với một
-                mục tiêu đơn giản: giúp những
-                người yêu thú cưng dễ dàng tìm
-                được sản phẩm tốt, dịch vụ chất
-                lượng và những lời tư vấn đáng
-                tin cậy.
+                Pet Corner được tạo ra
+                với một mục tiêu đơn
+                giản: giúp những người
+                yêu thú cưng dễ dàng tìm
+                được sản phẩm tốt, dịch
+                vụ chất lượng và những
+                lời tư vấn đáng tin cậy.
               </p>
-
 
               <div className="about-list">
 
                 <div>
                   <span>✓</span>
+
                   <p>
-                    Sản phẩm được chọn lọc kỹ càng
+                    Sản phẩm được chọn
+                    lọc kỹ càng
                   </p>
                 </div>
 
                 <div>
                   <span>✓</span>
+
                   <p>
-                    Đội ngũ am hiểu và yêu thú cưng
+                    Đội ngũ am hiểu và
+                    yêu thú cưng
                   </p>
                 </div>
 
                 <div>
                   <span>✓</span>
+
                   <p>
-                    Luôn đặt sức khỏe của pet lên đầu
+                    Luôn đặt sức khỏe
+                    của pet lên đầu
                   </p>
                 </div>
 
               </div>
-
 
               <button className="primary-button">
                 Tìm hiểu về chúng tôi →
@@ -2328,16 +2265,13 @@ function Home() {
             </div>
 
           </div>
-
         </section>
-
 
         {/* =====================================================
             REVIEWS
         ===================================================== */}
 
         <section className="section reviews-section">
-
           <div className="container">
 
             <div className="center-heading">
@@ -2355,7 +2289,6 @@ function Home() {
 
             </div>
 
-
             <div className="reviews-grid">
 
               <div className="review-card">
@@ -2365,10 +2298,12 @@ function Home() {
                 </div>
 
                 <p>
-                  "Sản phẩm rất chất lượng,
-                  đóng gói cẩn thận. Bé nhà mình
-                  cực kỳ thích loại hạt này.
-                  Chắc chắn sẽ quay lại mua tiếp!"
+                  "Sản phẩm rất chất
+                  lượng, đóng gói cẩn
+                  thận. Bé nhà mình cực
+                  kỳ thích loại hạt này.
+                  Chắc chắn sẽ quay lại
+                  mua tiếp!"
                 </p>
 
                 <div className="review-user">
@@ -2391,7 +2326,6 @@ function Home() {
 
               </div>
 
-
               <div className="review-card">
 
                 <div className="review-stars">
@@ -2399,10 +2333,11 @@ function Home() {
                 </div>
 
                 <p>
-                  "Nhân viên tư vấn cực kỳ
-                  nhiệt tình. Mình không biết
-                  chọn loại thức ăn nào cho mèo
-                  và được tư vấn rất kỹ."
+                  "Nhân viên tư vấn cực
+                  kỳ nhiệt tình. Mình
+                  không biết chọn loại
+                  thức ăn nào cho mèo và
+                  được tư vấn rất kỹ."
                 </p>
 
                 <div className="review-user">
@@ -2425,7 +2360,6 @@ function Home() {
 
               </div>
 
-
               <div className="review-card">
 
                 <div className="review-stars">
@@ -2433,10 +2367,12 @@ function Home() {
                 </div>
 
                 <p>
-                  "Giao hàng nhanh, sản phẩm đúng
-                  mô tả. Website cũng rất dễ sử dụng.
-                  Mình đã giới thiệu Pet Corner cho
-                  rất nhiều bạn."
+                  "Giao hàng nhanh, sản
+                  phẩm đúng mô tả.
+                  Website cũng rất dễ sử
+                  dụng. Mình đã giới thiệu
+                  Pet Corner cho rất nhiều
+                  bạn."
                 </p>
 
                 <div className="review-user">
@@ -2462,9 +2398,7 @@ function Home() {
             </div>
 
           </div>
-
         </section>
-
 
         {/* =====================================================
             NEWSLETTER
@@ -2481,17 +2415,17 @@ function Home() {
               </span>
 
               <h2>
-                Đừng bỏ lỡ những điều tốt nhất
-                cho bé!
+                Đừng bỏ lỡ những điều
+                tốt nhất cho bé!
               </h2>
 
               <p>
-                Đăng ký email để nhận ưu đãi
-                và thông tin mới nhất.
+                Đăng ký email để nhận
+                ưu đãi và thông tin mới
+                nhất.
               </p>
 
             </div>
-
 
             <form
               className="newsletter-form"
@@ -2499,7 +2433,6 @@ function Home() {
                 e.preventDefault()
               }
             >
-
               <input
                 type="email"
                 placeholder="Email của bạn..."
@@ -2508,15 +2441,12 @@ function Home() {
               <button type="submit">
                 Đăng ký
               </button>
-
             </form>
 
           </div>
-
         </section>
 
       </main>
-
 
       {/* =====================================================
           FOOTER
@@ -2532,7 +2462,6 @@ function Home() {
               className="logo footer-logo"
               href="#home"
             >
-
               <div className="logo-icon">
                 🐾
               </div>
@@ -2548,16 +2477,14 @@ function Home() {
                 </div>
 
               </div>
-
             </a>
 
-
             <p>
-              Nơi mọi người yêu thú cưng tìm thấy
-              những sản phẩm tốt nhất và dịch vụ
+              Nơi mọi người yêu thú
+              cưng tìm thấy những sản
+              phẩm tốt nhất và dịch vụ
               tận tâm nhất.
             </p>
-
 
             <div className="socials">
 
@@ -2580,7 +2507,6 @@ function Home() {
             </div>
 
           </div>
-
 
           <div className="footer-column">
 
@@ -2606,7 +2532,6 @@ function Home() {
 
           </div>
 
-
           <div className="footer-column">
 
             <h3>
@@ -2627,7 +2552,6 @@ function Home() {
 
           </div>
 
-
           <div className="footer-column">
 
             <h3>
@@ -2647,7 +2571,6 @@ function Home() {
 
             </div>
 
-
             <div className="contact-item">
 
               <span>
@@ -2659,7 +2582,6 @@ function Home() {
               </p>
 
             </div>
-
 
             <div className="contact-item">
 
@@ -2676,7 +2598,6 @@ function Home() {
           </div>
 
         </div>
-
 
         <div className="footer-bottom">
 
