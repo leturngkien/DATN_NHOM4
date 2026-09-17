@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Input,
@@ -12,7 +12,6 @@ import {
   Button,
 } from "antd";
 import {
-  FaTruck,
   FaGift,
   FaCheckCircle,
   FaShoppingCart,
@@ -22,7 +21,6 @@ import {
   FaAngleDown,
   FaTimes,
 } from "react-icons/fa";
-import { BsGeoAltFill } from "react-icons/bs";
 import { Search } from "lucide-react";
 import { useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,7 +30,6 @@ import { setUserId } from "../redux/slices/cartslice";
 import productsApi from "../api/productsApi";
 import { UserOutlined } from "@ant-design/icons";
 import loginApi from "../api/login";
-import ENV_VARS from "../../config";
 import clearLocalStorageExceptCarts from "../config/clearLocalStorage";
 
 /**
@@ -61,7 +58,7 @@ interface User {
 export default function Header() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: any) => state.cart.items);
-  const [isUserLoaded, setIsUserLoaded] = useState(false);
+  const [, setIsUserLoaded] = useState(false);
   const cartCount = cartItems.reduce(
     (count: any, item: any) => count + Number(item.quantity),
     0
@@ -86,8 +83,6 @@ export default function Header() {
   const closeSearchMobile = () => setSearchMobileOpen(false);
 
   const showSearchDesktop = () => setSearchDesktopOpen(true);
-  const closeSearchDesktop = () => setSearchDesktopOpen(false);
-
   useEffect(() => {
     const storedHistory = localStorage.getItem("searchHistory");
     console.log("Loaded searchHistory from localStorage on mount:", storedHistory);
@@ -199,7 +194,7 @@ export default function Header() {
       }
     }
 
-    fetch(`${ENV_VARS.VITE_API_URL}/v1/users/${accountID}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/v1/users/${accountID}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import "./home.css";
 
 import productsApi from "../../api/productsApi";
@@ -11,10 +12,6 @@ import SaleProduct from "../../components/saleproduct";
 import HotProduct from "../../components/hotproduct";
 import NewProduct from "../../components/newproduct";
 import CateProduct from "../../components/cateproduct";
-
-/* =========================================================
-   TYPES
-========================================================= */
 
 type ApiProduct = {
   _id?: string;
@@ -305,12 +302,7 @@ function Home() {
   const [cartItems, setCartItems] =
     useState<CartItem[]>([]);
 
-  const [cartCount, setCartCount] =
-    useState(0);
-
-  /* =========================================================
-     SEARCH
-  ========================================================= */
+  const [cartCount, setCartCount] = useState(0);
 
   const [search, setSearch] =
     useState("");
@@ -747,163 +739,19 @@ function Home() {
   const addToCart = (
     product?: Product
   ) => {
-    if (!product) return;
+    setCartCount(
+      (prev) => prev + 1
+    );
 
-    /* Kiểm tra hết hàng */
+    /*
+     * Nếu muốn lưu cart vào localStorage
+     * thì có thể xử lý tại đây.
+     */
 
-    if (product.quantity <= 0) {
-      alert(
-        `Sản phẩm "${product.name}" đã hết hàng!`
-      );
-
-      return;
-    }
-
-    try {
-      const savedCart =
-        localStorage.getItem("cart");
-
-      const currentCart: CartItem[] =
-        savedCart
-          ? JSON.parse(savedCart)
-          : [];
-
-      const existingProduct =
-        currentCart.find(
-          (item) =>
-            item.id === product.id
-        );
-
-      let updatedCart: CartItem[];
-
-      if (existingProduct) {
-        /* Nếu đã có trong giỏ */
-
-        if (
-          existingProduct.quantity >=
-          product.quantity
-        ) {
-          alert(
-            `Sản phẩm "${product.name}" chỉ còn ${product.quantity} sản phẩm!`
-          );
-
-          return;
-        }
-
-        updatedCart =
-          currentCart.map(
-            (item) =>
-              item.id ===
-              product.id
-                ? {
-                    ...item,
-                    quantity:
-                      item.quantity +
-                      1,
-                  }
-                : item
-          );
-      } else {
-        /* Thêm sản phẩm mới */
-
-        updatedCart = [
-          ...currentCart,
-
-          {
-            ...product,
-
-            quantity: 1,
-          },
-        ];
-      }
-
-      /* Lưu localStorage */
-
-      localStorage.setItem(
-        "cart",
-        JSON.stringify(
-          updatedCart
-        )
-      );
-
-      /* Cập nhật state */
-
-      setCartItems(
-        updatedCart
-      );
-
-      const totalQuantity =
-        updatedCart.reduce(
-          (total, item) =>
-            total +
-            Number(
-              item.quantity || 0
-            ),
-          0
-        );
-
-      setCartCount(
-        totalQuantity
-      );
-
-      alert(
-        `Đã thêm "${product.name}" vào giỏ hàng!`
-      );
-    } catch (error) {
-      console.error(
-        "Lỗi thêm vào giỏ hàng:",
-        error
-      );
-    }
-  };
-
-  /* =========================================================
-     BUY NOW
-  ========================================================= */
-
-  const buyNow = (
-    product?: Product
-  ) => {
-    if (!product) return;
-
-    /* Kiểm tra tồn kho */
-
-    if (product.quantity <= 0) {
-      alert(
-        "Sản phẩm đã hết hàng!"
-      );
-
-      return;
-    }
-
-    try {
-      const buyNowItem: CartItem = {
-        ...product,
-
-        quantity: 1,
-      };
-
-      /*
-       * Lưu sản phẩm mua ngay
-       */
-
-      localStorage.setItem(
-        "buyNow",
-        JSON.stringify(
-          buyNowItem
-        )
-      );
-
-      /*
-       * Chuyển sang checkout
-       */
-
-      window.location.href =
-        "/checkout";
-    } catch (error) {
-      console.error(
-        "Lỗi mua ngay:",
-        error
+    if (product) {
+      console.log(
+        "Thêm vào giỏ:",
+        product
       );
     }
   };
@@ -1265,8 +1113,9 @@ function Home() {
             <button
               className="cart-button"
               onClick={() =>
-                (window.location.href =
-                  "/cart")
+                alert(
+                  `Bạn có ${cartCount} sản phẩm trong giỏ`
+                )
               }
             >
               🛒

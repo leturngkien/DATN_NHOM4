@@ -14,7 +14,6 @@ import { addToCart } from "../redux/slices/cartslice";
 import ratingApi from "../api/ratingApi";
 import { number } from "prop-types";
 import paymentApi from "../api/paymentApi";
-import ENV_VARS from "../../config";
 
 interface User {
   _id: string;
@@ -330,8 +329,8 @@ export default function OrderDetail() {
         orderId: id,
         amount: total,
         description: `Thanh toán đơn hàng ${id}`,
-        returnUrl: `${ENV_VARS.VITE_VNPAY_URL}/success`,
-        cancelUrl: `${ENV_VARS.VITE_VNPAY_URL}/cancel`,
+        returnUrl: `${import.meta.env.VITE_VNPAY_URL}/success`,
+        cancelUrl: `${import.meta.env.VITE_VNPAY_URL}/cancel`,
       };
 
       const response = await paymentApi.create(paymentData);
