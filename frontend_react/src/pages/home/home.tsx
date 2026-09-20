@@ -1,17 +1,57 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import "./home.css";
 
 import productsApi from "../../api/productsApi";
 import categoryApi from "../../api/categoryApi";
 import bannerApi from "../../api/bannerApi";
+import loginApi from "../../api/login";
+import clearLocalStorageExceptCarts from "../../config/clearLocalStorage";
+import { setUserId } from "../../redux/slices/cartslice";
 
 import SaleProduct from "../../components/saleproduct";
 import HotProduct from "../../components/hotproduct";
 import NewProduct from "../../components/newproduct";
 import CateProduct from "../../components/cateproduct";
+
+import {
+  PawPrint,
+  Phone,
+  Search,
+  Heart,
+  ShoppingCart,
+  Truck,
+  ShieldCheck,
+  MessageCircle,
+  Undo2,
+  Dog,
+  Cat,
+  Bone,
+  Fish,
+  Bath,
+  Home as HomeIcon,
+  Gift,
+  CheckCircle2,
+  Mail,
+  MapPin,
+  Star,
+  Facebook,
+  Instagram,
+  Youtube,
+  Music2,
+  Loader2,
+  SearchX,
+  Stethoscope,
+  UserRound,
+  ChevronDown,
+  Settings,
+  LogOut,
+} from "lucide-react";
+
+const CATEGORY_ICONS = [Dog, Cat, Fish, Bone, Bath, HomeIcon];
 
 type ApiProduct = {
   _id?: string;
@@ -250,7 +290,17 @@ const mapComponentProduct = (
    HOME COMPONENT
 ========================================================= */
 
+type CurrentUser = {
+  _id?: string;
+  fullname?: string;
+  avatar?: string;
+  role?: string;
+};
+
 function Home() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   /* =========================================================
      STATE
   ========================================================= */
@@ -320,6 +370,84 @@ function Home() {
 
   const [likedProducts, setLikedProducts] =
     useState<Array<string | number>>([]);
+
+  /* =========================================================
+     AUTH / ACCOUNT
+  ========================================================= */
+
+  const [currentUser, setCurrentUser] =
+    useState<CurrentUser | null>(null);
+
+  const [userMenuOpen, setUserMenuOpen] =
+    useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    const accountID = localStorage
+      .getItem("accountID")
+      ?.replace(/^"|"$/g, "");
+
+    if (!token || !accountID) {
+      setCurrentUser(null);
+      return;
+    }
+
+    /* Hiện tạm dữ liệu đã lưu trước, tránh chớp giao diện trong lúc chờ API. */
+    const storedUserData = localStorage.getItem("userData");
+    if (storedUserData) {
+      try {
+        setCurrentUser(JSON.parse(storedUserData));
+      } catch (error) {
+        console.error("Lỗi khi đọc userData:", error);
+      }
+    }
+
+    fetch(
+      `${import.meta.env.VITE_API_URL}/v1/users/${accountID}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(String(response.status));
+        }
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload?.data) {
+          setCurrentUser(payload.data);
+          localStorage.setItem(
+            "userData",
+            JSON.stringify(payload.data)
+          );
+          dispatch(setUserId(accountID));
+        }
+      })
+      .catch((error) => {
+        console.error("Không lấy được thông tin tài khoản:", error);
+        if (String(error.message) === "401") {
+          clearLocalStorageExceptCarts();
+          setCurrentUser(null);
+        }
+      });
+  }, [dispatch]);
+
+  const handleLogout = async () => {
+    try {
+      await loginApi.logout();
+    } catch (error) {
+      console.error("Đăng xuất thất bại:", error);
+    } finally {
+      clearLocalStorageExceptCarts();
+      setCurrentUser(null);
+      setUserMenuOpen(false);
+      dispatch(setUserId(null));
+      navigate("/login");
+    }
+  };
 
   /* =========================================================
      LOAD CART
@@ -842,9 +970,7 @@ function Home() {
               )
             }
           >
-            {isLiked
-              ? "♥"
-              : "♡"}
+            <Heart />
           </button>
 
           <img
@@ -1006,8 +1132,9 @@ function Home() {
       <div className="topbar">
         <div className="container topbar-inner">
           <div>
+            <Phone />
             <span>
-              📞 Hotline:{" "}
+              Hotline:{" "}
             </span>
 
             <strong>
@@ -1042,7 +1169,7 @@ function Home() {
             href="#home"
           >
             <div className="logo-icon">
-              🐾
+              <PawPrint />
             </div>
 
             <div>
@@ -1093,7 +1220,7 @@ function Home() {
                   ?.focus()
               }
             >
-              🔍
+              <Search />
             </button>
 
             <button
@@ -1107,7 +1234,7 @@ function Home() {
                 )
               }
             >
-              ♡
+              <Heart />
             </button>
 
             <button
@@ -1118,19 +1245,85 @@ function Home() {
                 )
               }
             >
-              🛒
+              <ShoppingCart />
 
               <span className="cart-number">
                 {cartCount}
               </span>
             </button>
 
-            <a
-              className="login-button"
-              href="/login"
-            >
-              Đăng nhập
-            </a>
+            {currentUser ? (
+              <div className="user-menu">
+                <button
+                  className="user-menu-trigger"
+                  onClick={() =>
+                    setUserMenuOpen(
+                      (value) => !value
+                    )
+                  }
+                >
+                  {currentUser.avatar ? (
+                    <img
+                      className="user-avatar"
+                      src={currentUser.avatar}
+                      alt={
+                        currentUser.fullname ||
+                        "Tài khoản"
+                      }
+                    />
+                  ) : (
+                    <span className="user-avatar user-avatar-fallback">
+                      <UserRound />
+                    </span>
+                  )}
+
+                  <span className="user-name">
+                    {currentUser.fullname ||
+                      "Tài khoản"}
+                  </span>
+
+                  <ChevronDown />
+                </button>
+
+                {userMenuOpen && (
+                  <>
+                    <button
+                      className="user-menu-backdrop"
+                      onClick={() =>
+                        setUserMenuOpen(false)
+                      }
+                      aria-label="Đóng menu tài khoản"
+                    />
+
+                    <div className="user-menu-dropdown">
+                      {(currentUser.role ===
+                        "admin" ||
+                        currentUser.role ===
+                          "employee") && (
+                        <a href="/admin">
+                          <Settings />
+                          Quản lý website
+                        </a>
+                      )}
+
+                      <button
+                        onClick={handleLogout}
+                      >
+                        <LogOut />
+                        Đăng xuất
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              <a
+                className="login-button"
+                href="/login"
+              >
+                Đăng nhập
+              </a>
+            )}
           </div>
         </div>
       </header>
@@ -1150,7 +1343,7 @@ function Home() {
             <div className="hero-text">
 
               <div className="hero-label">
-                <span>🐾</span>
+                <PawPrint />
                 CHĂM SÓC THÚ CƯNG TẬN TÂM
               </div>
 
@@ -1250,7 +1443,7 @@ function Home() {
               <div className="floating-card floating-card-one">
 
                 <span className="floating-icon">
-                  ❤️
+                  <Heart />
                 </span>
 
                 <div>
@@ -1268,7 +1461,7 @@ function Home() {
               <div className="floating-card floating-card-two">
 
                 <span className="floating-icon">
-                  ⭐
+                  <Star />
                 </span>
 
                 <div>
@@ -1297,7 +1490,7 @@ function Home() {
 
             <div className="service-item">
               <div className="service-icon">
-                🚚
+                <Truck />
               </div>
 
               <div>
@@ -1314,7 +1507,7 @@ function Home() {
 
             <div className="service-item">
               <div className="service-icon">
-                🛡️
+                <ShieldCheck />
               </div>
 
               <div>
@@ -1331,7 +1524,7 @@ function Home() {
 
             <div className="service-item">
               <div className="service-icon">
-                💬
+                <MessageCircle />
               </div>
 
               <div>
@@ -1347,7 +1540,7 @@ function Home() {
 
             <div className="service-item">
               <div className="service-icon">
-                ↩️
+                <Undo2 />
               </div>
 
               <div>
@@ -1413,14 +1606,11 @@ function Home() {
                     category,
                     index
                   ) => {
-                    const icons = [
-                      "🐶",
-                      "🐱",
-                      "🎾",
-                      "🦴",
-                      "🛁",
-                      "🏠",
-                    ];
+                    const CategoryIcon =
+                      CATEGORY_ICONS[
+                        index %
+                          CATEGORY_ICONS.length
+                      ];
 
                     return (
                       <button
@@ -1435,12 +1625,7 @@ function Home() {
                         }
                       >
                         <div className="category-icon">
-                          {
-                            icons[
-                              index %
-                                icons.length
-                            ]
-                          }
+                          <CategoryIcon />
                         </div>
 
                         <strong>
@@ -1494,9 +1679,8 @@ function Home() {
               </div>
 
               <div className="search-box">
-                <span>
-                  🔍
-                </span>
+                <Search />
+
 
                 <input
                   id="product-search"
@@ -1543,7 +1727,7 @@ function Home() {
             {loading ? (
               <div className="empty-products">
                 <div>
-                  ⏳
+                  <Loader2 className="spin-icon" />
                 </div>
 
                 <h3>
@@ -1573,7 +1757,7 @@ function Home() {
                 <div className="empty-products">
 
                   <div>
-                    🔎
+                    <SearchX />
                   </div>
 
                   <h3>
@@ -1661,7 +1845,7 @@ function Home() {
             <div className="promotion-content">
 
               <span className="promotion-label">
-                🎁 ƯU ĐÃI ĐẶC BIỆT
+                <Gift /> ƯU ĐÃI ĐẶC BIỆT
               </span>
 
               <h2>
@@ -1946,7 +2130,7 @@ function Home() {
               <div className="big-service-card">
 
                 <div className="big-service-icon">
-                  🛁
+                  <Bath />
                 </div>
 
                 <h3>
@@ -1968,7 +2152,7 @@ function Home() {
               <div className="big-service-card">
 
                 <div className="big-service-icon">
-                  🏥
+                  <Stethoscope />
                 </div>
 
                 <h3>
@@ -1990,7 +2174,7 @@ function Home() {
               <div className="big-service-card">
 
                 <div className="big-service-icon">
-                  🏠
+                  <HomeIcon />
                 </div>
 
                 <h3>
@@ -2079,7 +2263,7 @@ function Home() {
               <div className="about-list">
 
                 <div>
-                  <span>✓</span>
+                  <span><CheckCircle2 /></span>
 
                   <p>
                     Sản phẩm được chọn
@@ -2088,7 +2272,7 @@ function Home() {
                 </div>
 
                 <div>
-                  <span>✓</span>
+                  <span><CheckCircle2 /></span>
 
                   <p>
                     Đội ngũ am hiểu và
@@ -2097,7 +2281,7 @@ function Home() {
                 </div>
 
                 <div>
-                  <span>✓</span>
+                  <span><CheckCircle2 /></span>
 
                   <p>
                     Luôn đặt sức khỏe
@@ -2260,7 +2444,7 @@ function Home() {
             <div>
 
               <span>
-                💌 NHẬN ƯU ĐÃI
+                <Mail /> NHẬN ƯU ĐÃI
               </span>
 
               <h2>
@@ -2312,7 +2496,7 @@ function Home() {
               href="#home"
             >
               <div className="logo-icon">
-                🐾
+                <PawPrint />
               </div>
 
               <div>
@@ -2338,19 +2522,19 @@ function Home() {
             <div className="socials">
 
               <a href="#facebook">
-                f
+                <Facebook />
               </a>
 
               <a href="#instagram">
-                ◎
+                <Instagram />
               </a>
 
               <a href="#youtube">
-                ▶
+                <Youtube />
               </a>
 
               <a href="#tiktok">
-                ♪
+                <Music2 />
               </a>
 
             </div>
@@ -2409,9 +2593,7 @@ function Home() {
 
             <div className="contact-item">
 
-              <span>
-                📍
-              </span>
+              <MapPin />
 
               <p>
                 123 Nguyễn Văn Linh,
@@ -2422,9 +2604,7 @@ function Home() {
 
             <div className="contact-item">
 
-              <span>
-                ☎
-              </span>
+              <Phone />
 
               <p>
                 1900 6868
@@ -2434,9 +2614,7 @@ function Home() {
 
             <div className="contact-item">
 
-              <span>
-                ✉
-              </span>
+              <Mail />
 
               <p>
                 hello@petcorner.vn

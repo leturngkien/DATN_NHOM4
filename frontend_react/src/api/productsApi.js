@@ -75,7 +75,6 @@ const productsApi = {
       const response = await api.post("/v1/products", data, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       return response.data;
@@ -89,7 +88,6 @@ const productsApi = {
       const response = await api.patch(`/v1/products/${id}`, data, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       return response.data;
@@ -103,11 +101,7 @@ const productsApi = {
       const response = await api.patch(
         `/v1/products/toggle-status/${id}`,
         { status },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
+        {}
       );
       return response.data;
     } catch (error) {
@@ -120,11 +114,7 @@ const productsApi = {
   },
   delete: async (id) => {
     try {
-      const response = await api.delete(`/v1/products/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await api.delete(`/v1/products/${id}`);
       return response.data;
     } catch (error) {
       console.error("Error deleting product:", error.response?.data || error);
