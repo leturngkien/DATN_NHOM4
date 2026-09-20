@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import parse from "html-react-parser";
+import { ArrowLeft } from "lucide-react";
 import { addToCart } from "../../redux/slices/cartslice";
 import productsApi from "../../api/productsApi";
 import Loader from "../../components/loader";
@@ -80,7 +81,7 @@ function ProductDetail() {
       <main className="product-detail-page product-detail-state">
         <h1>{error || "Không tìm thấy sản phẩm."}</h1>
         <Link to="/" className="product-detail-back">
-          Quay lại trang chủ
+          <ArrowLeft size={16} /> Quay lại trang chủ
         </Link>
       </main>
     );
@@ -113,7 +114,7 @@ function ProductDetail() {
     <main className="product-detail-page">
       <div className="product-detail-container">
         <Link to="/" className="product-detail-back">
-          ← Quay lại trang chủ
+          <ArrowLeft size={16} /> Quay lại trang chủ
         </Link>
 
         <section className="product-detail-main">
