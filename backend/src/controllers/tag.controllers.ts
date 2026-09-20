@@ -43,6 +43,7 @@ export const insertTag = async (req: Request, res: Response): Promise<void> => {
         success: false,
         message: 'Please provide an tag name'
       });
+      return;
     }
     const existingNameBrand = await tagModel.findOne({ tag_name });
     if (existingNameBrand) {
@@ -50,6 +51,7 @@ export const insertTag = async (req: Request, res: Response): Promise<void> => {
         success: false,
         message: 'Tag with this name already exists'
       });
+      return;
     }
     const newTag = new tagModel({
       tag_name

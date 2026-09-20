@@ -49,6 +49,7 @@ export const insertCategory = async (req: Request, res: Response): Promise<void>
         success: false,
         message: 'Please provide an name and description product'
       });
+      return;
     }
     const existingNameCategory = await categoryModel.findOne({ name });
     if (existingNameCategory) {
@@ -56,6 +57,7 @@ export const insertCategory = async (req: Request, res: Response): Promise<void>
         success: false,
         message: 'Category with this name already exists'
       });
+      return;
     }
     const newCategory = new categoryModel({
       name,
