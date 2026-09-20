@@ -1,0 +1,95 @@
+/* Hallmark · macrostructure: preserved (redesign scope) · tone: ấm áp & cao cấp (warm & premium)
+ * theme: custom (vibe: "warm pet-corner editorial, terracotta on cream" · paper oklch(97% 0.018 85)
+ * · accent oklch(63% 0.16 40) warm · Fraunces + Plus Jakarta Sans)
+ */
+
+:root {
+  /* ===== Color — paper & surfaces ===== */
+  --color-paper: oklch(97% 0.018 85);
+  --color-paper-alt: oklch(94% 0.024 88);
+  --color-surface: oklch(99% 0.006 85);
+
+  /* ===== Color — ink ===== */
+  --color-ink: oklch(26% 0.03 155);
+  --color-ink-soft: oklch(46% 0.025 145);
+  --color-ink-faint: oklch(64% 0.02 140);
+  --color-white: oklch(100% 0 0);
+
+  /* ===== Color — lines ===== */
+  --color-line: oklch(88% 0.018 85);
+  --color-line-strong: oklch(80% 0.02 85);
+
+  /* ===== Color — brand (deep forest) ===== */
+  --color-brand: oklch(29% 0.045 155);
+  --color-brand-strong: oklch(21% 0.04 155);
+  --color-brand-soft: oklch(93% 0.03 140);
+
+  /* ===== Color — sage (secondary) ===== */
+  --color-sage: oklch(84% 0.06 135);
+  --color-sage-ink: oklch(46% 0.08 140);
+
+  /* ===== Color — accent (terracotta) ===== */
+  --color-accent: oklch(63% 0.16 40);
+  --color-accent-strong: oklch(53% 0.16 35);
+  --color-accent-soft: oklch(94% 0.035 45);
+
+  /* ===== Color — status / rating ===== */
+  --color-gold: oklch(80% 0.14 85);
+  --color-success: oklch(52% 0.13 150);
+  --color-danger: oklch(55% 0.18 25);
+
+  /* ===== Typography ===== */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", Inter, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+
+  --text-display: clamp(2.75rem, 4.2vw, 4.4rem);
+  --text-h1: clamp(2rem, 3vw, 2.75rem);
+  --text-h2: clamp(1.7rem, 2.3vw, 2.2rem);
+  --text-h3: 1.2rem;
+  --text-body: 0.95rem;
+  --text-small: 0.8rem;
+  --text-micro: 0.7rem;
+
+  /* ===== Spacing (4pt scale) ===== */
+  --space-3xs: 4px;
+  --space-2xs: 8px;
+  --space-xs: 12px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  --space-4xl: 128px;
+
+  /* ===== Radius ===== */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 999px;
+
+  /* ===== Shadow ===== */
+  --shadow-xs: 0 1px 2px oklch(26% 0.03 155 / 0.06);
+  --shadow-sm: 0 4px 14px oklch(26% 0.03 155 / 0.08);
+  --shadow-md: 0 16px 40px oklch(26% 0.03 155 / 0.1);
+  --shadow-lg: 0 32px 70px oklch(26% 0.03 155 / 0.16);
+  --shadow-accent: 0 14px 30px oklch(63% 0.16 40 / 0.28);
+
+  /* ===== Motion ===== */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 150ms;
+  --dur-base: 240ms;
+  --dur-slow: 420ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+  }
+}
