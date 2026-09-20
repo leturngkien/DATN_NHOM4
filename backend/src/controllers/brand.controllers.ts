@@ -49,6 +49,7 @@ export const insertBrand = async (req: Request, res: Response): Promise<void> =>
         success: false,
         message: 'Please provide an brand name'
       });
+      return;
     }
     const existingNameBrand = await brandModel.findOne({ brand_name });
     if (existingNameBrand) {
@@ -56,6 +57,7 @@ export const insertBrand = async (req: Request, res: Response): Promise<void> =>
         success: false,
         message: 'Brand with this name already exists'
       });
+      return;
     }
     const newBrand = new brandModel({
       brand_name

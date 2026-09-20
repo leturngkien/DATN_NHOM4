@@ -24,6 +24,7 @@ import deliveryRouter from './routes/delivery.routes.js';
 import revenueRouter from './routes/revenue.routes.js';
 import rateRouter from './routes/rating.routes.js';
 import contactRouter from './routes/contact.routes.js';
+import serviceRouter from './routes/service.routes.js';
 
 dotenv.config(); // Đọc file .env
 
@@ -63,6 +64,7 @@ app.use('/api/v1', deliveryRouter);
 app.use('/api/v1', revenueRouter);
 app.use('/api/v1', rateRouter);
 app.use('/api/v1', contactRouter);
+app.use('/api/v1', serviceRouter);
 
 app.use(errorHandler);
 

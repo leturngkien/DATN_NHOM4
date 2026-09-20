@@ -1169,7 +1169,7 @@ function Home() {
             href="#home"
           >
             <div className="logo-icon">
-              <PawPrint />
+              {/* <PawPrint /> */}
             </div>
 
             <div>

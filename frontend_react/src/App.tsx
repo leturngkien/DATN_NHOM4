@@ -1,5 +1,6 @@
 import {
   createBrowserRouter,
+  Navigate,
   RouterProvider,
 } from "react-router-dom";
 import Home from "./pages/home/home";
@@ -12,6 +13,13 @@ import SuccessPage from "./pages/orders/success";
 import Login from "./pages/auth/login";
 import Signup from "./pages/auth/signup";
 import NotFound from "./pages/404/404";
+import AdminLayout from "./admin/layout/adminLayout";
+import RequireAdmin from "./admin/layout/requireAdmin";
+import AdminProduct from "./admin/product/product";
+import AdminCategory from "./admin/category/category";
+import AdminBrand from "./admin/brand/brand";
+import AdminTag from "./admin/tag/tag";
+import AdminService from "./admin/service/service";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +57,22 @@ const router = createBrowserRouter([
   {
     path: "/orders/success",
     element: <SuccessPage />,
+  },
+  {
+    path: "/admin",
+    element: (
+      <RequireAdmin>
+        <AdminLayout />
+      </RequireAdmin>
+    ),
+    children: [
+      { index: true, element: <Navigate to="/admin/products" replace /> },
+      { path: "products", element: <AdminProduct /> },
+      { path: "categories", element: <AdminCategory /> },
+      { path: "brands", element: <AdminBrand /> },
+      { path: "tags", element: <AdminTag /> },
+      { path: "services", element: <AdminService /> },
+    ],
   },
   {
     path: "*",

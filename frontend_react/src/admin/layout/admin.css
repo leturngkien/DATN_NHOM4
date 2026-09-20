@@ -1,0 +1,162 @@
+@import "../../styles/tokens.css";
+
+.admin-shell {
+  min-height: 100vh;
+  font-family: var(--font-body);
+}
+
+/* ===== Sider ===== */
+
+.admin-sider .admin-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  height: 64px;
+  padding: 0 var(--space-sm);
+  color: var(--color-white);
+  text-decoration: none;
+  border-bottom: 1px solid oklch(100% 0 0 / 0.1);
+}
+
+.admin-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.admin-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.admin-brand-text strong {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.4px;
+}
+
+.admin-brand-text small {
+  color: oklch(100% 0 0 / 0.55);
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  margin-top: 2px;
+}
+
+/* Nút thu gọn mặc định của antd có màu xanh navy, đổi cho khớp sidebar. */
+.admin-shell .ant-layout-sider-trigger {
+  background: oklch(100% 0 0 / 0.08);
+  color: oklch(100% 0 0 / 0.75);
+}
+
+.admin-shell .ant-layout-sider-trigger:hover {
+  background: oklch(100% 0 0 / 0.14);
+  color: var(--color-white);
+}
+
+/* ===== Header ===== */
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: 0 var(--space-md) !important;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.admin-header-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  color: var(--color-ink-soft);
+  font-size: var(--text-small);
+  font-weight: 600;
+}
+
+.admin-header-link:hover {
+  color: var(--color-accent-strong);
+}
+
+.admin-user {
+  display: inline-flex !important;
+  align-items: center;
+  gap: var(--space-2xs);
+  height: 40px;
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+/* ===== Content ===== */
+
+.admin-content {
+  padding: var(--space-md);
+}
+
+.admin-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.admin-page-head h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  color: var(--color-ink);
+}
+
+.admin-page-head p {
+  margin: 4px 0 0;
+  color: var(--color-ink-soft);
+  font-size: var(--text-small);
+}
+
+.admin-card {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-line);
+}
+
+.admin-muted {
+  color: var(--color-ink-faint);
+}
+
+.admin-price {
+  color: var(--color-accent-strong);
+  font-weight: 700;
+}
+
+.admin-thumb-empty {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-sm);
+  background: var(--color-paper-alt);
+  color: var(--color-ink-faint);
+}
+
+@media (max-width: 600px) {
+  .admin-content {
+    padding: var(--space-sm);
+  }
+
+  .admin-page-head h1 {
+    font-size: 21px;
+  }
+}
