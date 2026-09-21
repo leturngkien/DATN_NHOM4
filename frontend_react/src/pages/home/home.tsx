@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./home.css";
 
 import productsApi from "../../api/productsApi";
@@ -10,7 +10,7 @@ import categoryApi from "../../api/categoryApi";
 import bannerApi from "../../api/bannerApi";
 import loginApi from "../../api/login";
 import clearLocalStorageExceptCarts from "../../config/clearLocalStorage";
-import { setUserId } from "../../redux/slices/cartslice";
+import { addToCart as addProductToCart, setUserId } from "../../redux/slices/cartslice";
 
 import SaleProduct from "../../components/saleproduct";
 import HotProduct from "../../components/hotproduct";
@@ -349,10 +349,13 @@ function Home() {
      CART
   ========================================================= */
 
-  const [cartItems, setCartItems] =
-    useState<CartItem[]>([]);
-
-  const [cartCount, setCartCount] = useState(0);
+  const cartItems = useSelector(
+    (state: { cart: { items: CartItem[] } }) => state.cart.items
+  );
+  const cartCount = cartItems.reduce(
+    (total, item) => total + Number(item.quantity || 0),
+    0
+  );
 
   const [search, setSearch] =
     useState("");
@@ -448,43 +451,6 @@ function Home() {
       navigate("/login");
     }
   };
-
-  /* =========================================================
-     LOAD CART
-  ========================================================= */
-
-  useEffect(() => {
-    try {
-      const savedCart =
-        localStorage.getItem("cart");
-
-      if (!savedCart) {
-        return;
-      }
-
-      const cart: CartItem[] =
-        JSON.parse(savedCart);
-
-      setCartItems(cart);
-
-      const totalQuantity =
-        cart.reduce(
-          (total, item) =>
-            total + Number(item.quantity || 0),
-          0
-        );
-
-      setCartCount(totalQuantity);
-    } catch (error) {
-      console.error(
-        "Lỗi lấy giỏ hàng:",
-        error
-      );
-
-      setCartItems([]);
-      setCartCount(0);
-    }
-  }, []);
 
   /* =========================================================
      LOAD DATA
@@ -867,19 +833,18 @@ function Home() {
   const addToCart = (
     product?: Product
   ) => {
-    setCartCount(
-      (prev) => prev + 1
-    );
-
-    /*
-     * Nếu muốn lưu cart vào localStorage
-     * thì có thể xử lý tại đây.
-     */
-
     if (product) {
-      console.log(
-        "Thêm vào giỏ:",
-        product
+      dispatch(
+        addProductToCart({
+          item: {
+            id: String(product.id),
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            stockQuantity: product.quantity,
+          },
+          quantity: 1,
+        })
       );
     }
   };
@@ -1239,11 +1204,8 @@ function Home() {
 
             <button
               className="cart-button"
-              onClick={() =>
-                alert(
-                  `Bạn có ${cartCount} sản phẩm trong giỏ`
-                )
-              }
+              onClick={() => navigate("/cart")}
+              aria-label="Mở giỏ hàng"
             >
               <ShoppingCart />
 
