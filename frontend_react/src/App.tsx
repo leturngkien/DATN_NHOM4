@@ -13,6 +13,8 @@ import SuccessPage from "./pages/orders/success";
 import Login from "./pages/auth/login";
 import Signup from "./pages/auth/signup";
 import NotFound from "./pages/404/404";
+import PostPage from "./pages/post/post";
+import ContactPage from "./pages/contact/contact";
 import AdminLayout from "./admin/layout/adminLayout";
 import RequireAdmin from "./admin/layout/requireAdmin";
 import AdminProduct from "./admin/product/product";
@@ -51,6 +53,14 @@ const router = createBrowserRouter([
   {
     path: "/products",
     element: <Products />,
+  },
+  {
+    path: "/blogs",
+    element: <PostPage />,
+  },
+  {
+    path: "/contact",
+    element: <ContactPage />,
   },
   {
     path: "/detail/:id",

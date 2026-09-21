@@ -8,6 +8,7 @@ import "./home.css";
 import productsApi from "../../api/productsApi";
 import categoryApi from "../../api/categoryApi";
 import bannerApi from "../../api/bannerApi";
+import blogApi from "../../api/blogApi";
 import loginApi from "../../api/login";
 import clearLocalStorageExceptCarts from "../../config/clearLocalStorage";
 import { addToCart as addProductToCart, setUserId } from "../../redux/slices/cartslice";
@@ -149,6 +150,16 @@ type Banner = {
   image_url: string;
 
   link_url?: string;
+};
+
+type BlogItem = {
+  _id: string;
+  title: string;
+  author?: string;
+  content?: string;
+  image_url?: string;
+  createdAt?: string;
+  status?: string;
 };
 
 /* =========================================================
@@ -344,6 +355,9 @@ function Home() {
 
   const [banners, setBanners] =
     useState<Banner[]>([]);
+
+  const [homePosts, setHomePosts] =
+    useState<BlogItem[]>([]);
 
   /* =========================================================
      CART
@@ -630,6 +644,29 @@ function Home() {
           );
 
           setBanners([]);
+        }
+
+        try {
+          const blogResponse =
+            await blogApi.getBlogActive();
+
+          const blogData =
+            blogResponse?.data?.data ||
+            blogResponse?.data?.result ||
+            [];
+
+          setHomePosts(
+            Array.isArray(blogData)
+              ? blogData.slice(0, 3)
+              : []
+          );
+        } catch (error) {
+          console.error(
+            "Không lấy được bài viết trang chủ:",
+            error
+          );
+
+          setHomePosts([]);
         }
       } catch (error) {
         console.error(
@@ -2392,6 +2429,126 @@ function Home() {
 
             </div>
 
+          </div>
+        </section>
+
+        {/* =====================================================
+            BLOG PREVIEW
+        ===================================================== */}
+
+        <section className="section" id="blog">
+          <div className="container">
+            <div className="section-heading">
+              <div>
+                <span className="section-label">BÀI VIẾT</span>
+                <h2>
+                  Tin tức & <span>mẹo chăm sóc</span>
+                </h2>
+              </div>
+
+              <a href="/blogs" className="view-all">
+                Xem tất cả →
+              </a>
+            </div>
+
+            {homePosts.length === 0 ? (
+              <div className="empty-products">
+                <p>Hiện chưa có bài viết mới.</p>
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                  gap: 24,
+                }}
+              >
+                {homePosts.map((post) => {
+                  const excerpt = (post.content || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+
+                  return (
+                    <div
+                      key={post._id}
+                      style={{
+                        background: "#fff",
+                        borderRadius: 18,
+                        overflow: "hidden",
+                        boxShadow: "0 10px 25px rgba(35, 38, 32, 0.08)",
+                        border: "1px solid rgba(35, 38, 32, 0.06)",
+                      }}
+                    >
+                      <div style={{ height: 220, overflow: "hidden" }}>
+                        <img
+                          src={post.image_url || "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=80"}
+                          alt={post.title}
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      </div>
+
+                      <div style={{ padding: 20 }}>
+                        <p style={{ margin: "0 0 10px", color: "#E4572E", fontSize: 12, fontWeight: 700, letterSpacing: 1.2 }}>
+                          {post.author || "Pet Corner"}
+                        </p>
+                        <h3 style={{ margin: "0 0 12px", color: "#232620", fontSize: 22, lineHeight: 1.4 }}>
+                          {post.title}
+                        </h3>
+                        <p style={{ margin: "0 0 16px", color: "#726B5E", lineHeight: 1.7 }}>
+                          {excerpt.slice(0, 120)}{excerpt.length > 120 ? "..." : ""}
+                        </p>
+                        <a href="/blogs" style={{ color: "#E4572E", fontWeight: 700, textDecoration: "none" }}>
+                          Đọc tiếp →
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* =====================================================
+            CONTACT CTA
+        ===================================================== */}
+
+        <section className="section" id="contact-home">
+          <div className="container" style={{ background: "linear-gradient(135deg, #232620 0%, #3b4038 100%)", borderRadius: 24, padding: "32px 28px", color: "#fff" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, alignItems: "center" }}>
+              <div>
+                <span className="section-label" style={{ color: "#f7c58b" }}>LIÊN HỆ</span>
+                <h2 style={{ marginTop: 12, marginBottom: 12, color: "#fff", fontSize: "clamp(2rem, 4vw, 2.8rem)" }}>
+                  Cần tư vấn nhanh?<br />
+                  <span style={{ color: "#f9b35b" }}>Pet Corner luôn sẵn sàng</span>
+                </h2>
+                <p style={{ margin: 0, color: "#d5d2ca", lineHeight: 1.7 }}>
+                  Đội ngũ chuyên gia của chúng tôi sẽ hỗ trợ bạn về sản phẩm, dinh dưỡng và chăm sóc thú cưng tốt nhất.
+                </p>
+              </div>
+
+              <div style={{ display: "grid", gap: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <Phone size={18} color="#F7C58B" />
+                  <span>Hotline: 0853665735</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <Mail size={18} color="#F7C58B" />
+                  <span>Email: petcorner993@gmail.com</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <MapPin size={18} color="#F7C58B" />
+                  <span>116 Nguyễn Văn Thủ, P. Đa Kao, Q. 1, TP.HCM</span>
+                </div>
+
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 6 }}>
+                  <a href="/contact" className="primary-button" style={{ textDecoration: "none" }}>
+                    Gửi tin nhắn
+                  </a>
+                  <a href="tel:0853665735" className="secondary-button" style={{ textDecoration: "none", background: "rgba(255,255,255,0.06)" }}>
+                    Gọi ngay
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
