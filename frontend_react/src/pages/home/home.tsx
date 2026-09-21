@@ -657,7 +657,7 @@ function Home() {
 
           setHomePosts(
             Array.isArray(blogData)
-              ? blogData.slice(0, 3)
+              ? blogData.slice(0, 6)
               : []
           );
         } catch (error) {
@@ -2463,39 +2463,69 @@ function Home() {
                   gap: 24,
                 }}
               >
-                {homePosts.map((post) => {
+                {homePosts.map((post, index) => {
                   const excerpt = (post.content || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+                  const accentColors = ["#E4572E", "#3F6640", "#F5AE16", "#7C8F6A", "#D87D46", "#8F5C42"];
 
                   return (
                     <div
                       key={post._id}
                       style={{
-                        background: "#fff",
-                        borderRadius: 18,
+                        background: "linear-gradient(180deg, #ffffff 0%, #fffaf3 100%)",
+                        borderRadius: 22,
                         overflow: "hidden",
-                        boxShadow: "0 10px 25px rgba(35, 38, 32, 0.08)",
-                        border: "1px solid rgba(35, 38, 32, 0.06)",
+                        boxShadow: "0 16px 32px rgba(35, 38, 32, 0.08)",
+                        border: "1px solid rgba(35, 38, 32, 0.05)",
+                        transition: "transform 0.25s ease, box-shadow 0.25s ease",
+                        transform: "translateY(0)",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(event) => {
+                        const target = event.currentTarget as HTMLDivElement;
+                        target.style.transform = "translateY(-6px)";
+                        target.style.boxShadow = "0 20px 40px rgba(35, 38, 32, 0.12)";
+                      }}
+                      onMouseLeave={(event) => {
+                        const target = event.currentTarget as HTMLDivElement;
+                        target.style.transform = "translateY(0)";
+                        target.style.boxShadow = "0 16px 32px rgba(35, 38, 32, 0.08)";
                       }}
                     >
-                      <div style={{ height: 220, overflow: "hidden" }}>
+                      <div style={{ position: "relative", height: 220, overflow: "hidden" }}>
                         <img
                           src={post.image_url || "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=80"}
                           alt={post.title}
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
+                        <span
+                          style={{
+                            position: "absolute",
+                            top: 14,
+                            left: 14,
+                            background: accentColors[index % accentColors.length],
+                            color: "#fff",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            letterSpacing: 1,
+                            padding: "7px 10px",
+                            borderRadius: 999,
+                          }}
+                        >
+                          {post.author || "Pet Corner"}
+                        </span>
                       </div>
 
-                      <div style={{ padding: 20 }}>
-                        <p style={{ margin: "0 0 10px", color: "#E4572E", fontSize: 12, fontWeight: 700, letterSpacing: 1.2 }}>
-                          {post.author || "Pet Corner"}
+                      <div style={{ padding: 22 }}>
+                        <p style={{ margin: "0 0 10px", color: "#726B5E", fontSize: 12, fontWeight: 700, letterSpacing: 1.3, textTransform: "uppercase" }}>
+                          {new Date(post.createdAt || Date.now()).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })}
                         </p>
-                        <h3 style={{ margin: "0 0 12px", color: "#232620", fontSize: 22, lineHeight: 1.4 }}>
+                        <h3 style={{ margin: "0 0 12px", color: "#232620", fontSize: 22, lineHeight: 1.4, minHeight: 66 }}>
                           {post.title}
                         </h3>
-                        <p style={{ margin: "0 0 16px", color: "#726B5E", lineHeight: 1.7 }}>
-                          {excerpt.slice(0, 120)}{excerpt.length > 120 ? "..." : ""}
+                        <p style={{ margin: "0 0 18px", color: "#726B5E", lineHeight: 1.75, minHeight: 84 }}>
+                          {excerpt.slice(0, 118)}{excerpt.length > 118 ? "..." : ""}
                         </p>
-                        <a href="/blogs" style={{ color: "#E4572E", fontWeight: 700, textDecoration: "none" }}>
+                        <a href="/blogs" style={{ color: accentColors[index % accentColors.length], fontWeight: 700, textDecoration: "none" }}>
                           Đọc tiếp →
                         </a>
                       </div>
@@ -2507,35 +2537,70 @@ function Home() {
           </div>
         </section>
 
-        {/* =====================================================
-            CONTACT CTA
-        ===================================================== */}
-
         <section className="section" id="contact-home">
-          <div className="container" style={{ background: "linear-gradient(135deg, #232620 0%, #3b4038 100%)", borderRadius: 24, padding: "32px 28px", color: "#fff" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, alignItems: "center" }}>
+          <div
+            className="container"
+            style={{
+              background: "linear-gradient(135deg, #232620 0%, #383d35 55%, #4f3e2d 100%)",
+              borderRadius: 28,
+              padding: "34px 28px",
+              color: "#fff",
+              boxShadow: "0 24px 50px rgba(35, 38, 32, 0.18)",
+            }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gap: 24,
+                alignItems: "center",
+              }}
+            >
               <div>
                 <span className="section-label" style={{ color: "#f7c58b" }}>LIÊN HỆ</span>
-                <h2 style={{ marginTop: 12, marginBottom: 12, color: "#fff", fontSize: "clamp(2rem, 4vw, 2.8rem)" }}>
+                <h2
+                  style={{
+                    marginTop: 12,
+                    marginBottom: 12,
+                    color: "#fff",
+                    fontSize: "clamp(2rem, 4vw, 2.8rem)",
+                    lineHeight: 1.2,
+                  }}
+                >
                   Cần tư vấn nhanh?<br />
                   <span style={{ color: "#f9b35b" }}>Pet Corner luôn sẵn sàng</span>
                 </h2>
-                <p style={{ margin: 0, color: "#d5d2ca", lineHeight: 1.7 }}>
+                <p style={{ margin: 0, color: "#d5d2ca", lineHeight: 1.8 }}>
                   Đội ngũ chuyên gia của chúng tôi sẽ hỗ trợ bạn về sản phẩm, dinh dưỡng và chăm sóc thú cưng tốt nhất.
                 </p>
               </div>
 
-              <div style={{ display: "grid", gap: 16 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gap: 16,
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 20,
+                  padding: 22,
+                }}
+              >
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <Phone size={18} color="#F7C58B" />
+                  <div style={{ width: 36, height: 36, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(247,197,139,0.15)" }}>
+                    <Phone size={18} color="#F7C58B" />
+                  </div>
                   <span>Hotline: 0853665735</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <Mail size={18} color="#F7C58B" />
+                  <div style={{ width: 36, height: 36, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(247,197,139,0.15)" }}>
+                    <Mail size={18} color="#F7C58B" />
+                  </div>
                   <span>Email: petcorner993@gmail.com</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <MapPin size={18} color="#F7C58B" />
+                  <div style={{ width: 36, height: 36, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(247,197,139,0.15)" }}>
+                    <MapPin size={18} color="#F7C58B" />
+                  </div>
                   <span>116 Nguyễn Văn Thủ, P. Đa Kao, Q. 1, TP.HCM</span>
                 </div>
 
@@ -2543,7 +2608,7 @@ function Home() {
                   <a href="/contact" className="primary-button" style={{ textDecoration: "none" }}>
                     Gửi tin nhắn
                   </a>
-                  <a href="tel:0853665735" className="secondary-button" style={{ textDecoration: "none", background: "rgba(255,255,255,0.06)" }}>
+                  <a href="tel:0853665735" className="secondary-button" style={{ textDecoration: "none", background: "rgba(255,255,255,0.08)" }}>
                     Gọi ngay
                   </a>
                 </div>
