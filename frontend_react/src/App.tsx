@@ -20,6 +20,7 @@ import AdminCategory from "./admin/category/category";
 import AdminBrand from "./admin/brand/brand";
 import AdminTag from "./admin/tag/tag";
 import AdminService from "./admin/service/service";
+import PageLayout from "./components/layout/PageLayout";
 
 const router = createBrowserRouter([
   {
@@ -35,8 +36,13 @@ const router = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path: "/cart",
-    element: <Cart />,
+    element: <PageLayout />,
+    children: [
+      {
+        path: "/cart",
+        element: <Cart />,
+      },
+    ],
   },
   {
     path: "/payment",

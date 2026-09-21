@@ -1,11 +1,11 @@
-import Header from "../header";
 import { Outlet } from "react-router-dom";
-import Footer from "../footer";
+import Footer from "../footer.tsx";
+import ShopHeader from "./ShopHeader";
 
 function PageLayout() {
   return (
     <>
-      <Header />
+      <ShopHeader />
       <Outlet />
       <Footer />
     </>

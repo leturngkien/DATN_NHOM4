@@ -4,6 +4,7 @@ import App from "./App"; // Import App từ App.js
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import { SearchProvider } from "./components/searchContext";
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 
@@ -14,7 +15,9 @@ if (rootElement) {
     // <StrictMode>
       <Provider store={store}>
         <GoogleOAuthProvider clientId={googleClientId}>
-          <App />
+          <SearchProvider>
+            <App />
+          </SearchProvider>
         </GoogleOAuthProvider>
       </Provider>
     // </StrictMode>

@@ -1,13 +1,17 @@
-<<<<<<< HEAD
 "use client";
-import React, { createContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-const SearchContext = createContext({
+export type SearchContextValue = {
+  keyword: string;
+  setKeyword: (keyword: string) => void;
+};
+
+export const SearchContext = createContext<SearchContextValue>({
     keyword: "",
-    setKeyword: (keyword: string) => {},
+  setKeyword: () => undefined,
 });
 
-const SearchProvider = ({ children }: { children: React.ReactNode }) => {
+export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
     const [keyword, setKeyword] = useState("");
 
     return (
@@ -17,19 +21,4 @@ const SearchProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
-export { SearchContext, SearchProvider };
-=======
-import { createContext, useContext } from "react";
-
-export type SearchContextValue = {
-  keyword: string;
-  setKeyword: (keyword: string) => void;
-};
-
-export const SearchContext = createContext<SearchContextValue>({
-  keyword: "",
-  setKeyword: () => undefined,
-});
-
 export const useSearchContext = () => useContext(SearchContext);
->>>>>>> 0fa71df (cart)

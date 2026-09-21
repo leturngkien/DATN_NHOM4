@@ -1,0 +1,103 @@
+.shop-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fbfaf5;
+  border-bottom: 1px solid #e6e1d5;
+  color: #232620;
+}
+
+.shop-promo {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 20px;
+  background: #e4572e;
+  color: #fff;
+  font-size: 13px;
+}
+
+.shop-promo span {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #232620;
+  font-weight: 800;
+}
+
+.shop-promo-note {
+  margin-left: auto;
+  opacity: .86;
+  font-size: 12px;
+}
+
+.shop-header-main {
+  width: min(1180px, calc(100% - 40px));
+  min-height: 82px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.shop-brand,
+.shop-nav button,
+.shop-actions button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.shop-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.shop-brand-mark {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #0b2118;
+  color: #d6e3a5;
+  font: 700 25px Georgia, serif;
+}
+
+.shop-brand strong,
+.shop-brand small { display: block; }
+.shop-brand strong { font: 700 20px Georgia, serif; letter-spacing: .5px; }
+.shop-brand small { margin-top: 2px; color: #726b5e; font-size: 9px; letter-spacing: 2px; font-weight: 700; }
+
+.shop-nav { display: flex; align-items: center; gap: 22px; margin-left: auto; }
+.shop-nav button { padding: 8px 0; font-size: 14px; font-weight: 600; }
+.shop-nav button:hover { color: #e4572e; }
+
+.shop-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.shop-actions > button { position: relative; display: grid; place-items: center; min-width: 38px; height: 38px; border-radius: 8px; }
+.shop-actions > button:hover { background: #f0eadc; }
+.shop-actions svg { width: 19px; height: 19px; }
+.shop-cart-action b { position: absolute; top: -2px; right: -2px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px; background: #e4572e; color: #fff; font-size: 10px; line-height: 18px; }
+.shop-account { gap: 7px; font-size: 13px; font-weight: 700; }
+.shop-account img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+
+@media (max-width: 900px) {
+  .shop-header-main { width: min(100% - 24px, 680px); gap: 12px; }
+  .shop-nav { display: none; }
+  .shop-actions { margin-left: auto; }
+  .shop-account span { display: none; }
+  .shop-promo-note { display: none; }
+}
+
+@media (max-width: 480px) {
+  .shop-brand strong { font-size: 16px; }
+  .shop-brand small { font-size: 7px; letter-spacing: 1px; }
+  .shop-brand-mark { width: 38px; height: 38px; font-size: 20px; }
+  .shop-header-main { min-height: 68px; }
+  .shop-actions { gap: 2px; }
+}

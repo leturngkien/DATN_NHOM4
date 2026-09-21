@@ -463,7 +463,7 @@ export default function Header() {
           <a href="/">
             <img
               src="/images/logo.jpg"
-              alt="PetHeaven Logo"
+              alt="Pet Corner Logo"
               className="h-[40px] w-auto sm:h-[60px] lg:h-[100px]"
             />
           </a>
