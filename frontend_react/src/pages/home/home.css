@@ -2915,3 +2915,94 @@ img {
     padding-bottom: var(--space-md);
   }
 }
+
+/* =========================================================
+   RESPONSIVE — 390px
+========================================================= */
+
+@media (max-width: 390px) {
+  .pet-page .container {
+    width: calc(100% - 22px);
+  }
+
+  .pet-page .header-inner {
+    gap: var(--space-xs);
+  }
+
+  .pet-page .logo-name {
+    font-size: 16px;
+  }
+
+  .pet-page .logo-icon {
+    width: 37px;
+    height: 37px;
+  }
+
+  .pet-page .icon-button,
+  .pet-page .cart-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .pet-page .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pet-page .product-image {
+    height: 260px;
+  }
+
+  .pet-page .product-info h3 {
+    font-size: 13px;
+  }
+
+  .pet-page .hero h1 {
+    font-size: 2rem;
+  }
+
+  .pet-page .hero-circle,
+  .pet-page .hero-image img {
+    width: 220px;
+    height: 220px;
+  }
+
+  .pet-page .hero-features {
+    gap: var(--space-sm);
+  }
+
+  .pet-page .hero-features strong {
+    font-size: 17px;
+  }
+
+  .pet-page .hero-features span {
+    font-size: 9px;
+  }
+
+  .pet-page .product-actions {
+    gap: var(--space-3xs);
+  }
+
+  .pet-page .buy-now {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .pet-page .api-category-products > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY / REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .pet-page *,
+  .pet-page *::before,
+  .pet-page *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
