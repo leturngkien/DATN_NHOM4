@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import {
   signupController,
-  createAdminController,
   loginController,
   logoutController,
   authCheckController,
@@ -20,7 +19,6 @@ const authRouter = Router();
 // http://localhost:5000/api/v1/auth
 
 authRouter.post('/signup', signupController);
-authRouter.post('/bootstrap-admin', createAdminController);
 authRouter.post('/login', loginController);
 authRouter.post('/logout', logoutController);
 authRouter.get('/authCheck', checkRoleStatus, authCheckController);

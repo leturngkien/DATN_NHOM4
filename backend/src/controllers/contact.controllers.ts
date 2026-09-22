@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import ENV_VARS from '../config/config.js';
+import contactModel from '../models/contact.model.js';
 import sendEmail from '../utils/sendEmail.js';
 
 export const sendContactMessage = async (req: Request, res: Response): Promise<void> => {
@@ -21,22 +22,30 @@ export const sendContactMessage = async (req: Request, res: Response): Promise<v
       return;
     }
 
+    const newContact = await contactModel.create({
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone?.trim() || '',
+      message: message.trim(),
+      status: 'new'
+    });
+
     if (!ENV_VARS.EMAIL_USER || !ENV_VARS.EMAIL_PASS) {
       res.status(500).json({ success: false, message: 'Dịch vụ email chưa được cấu hình' });
       return;
     }
 
     const text = [
-      `Họ tên: ${name.trim()}`,
-      `Email: ${email.trim()}`,
-      `Số điện thoại: ${phone?.trim() || 'Không cung cấp'}`,
+      `Họ tên: ${newContact.name}`,
+      `Email: ${newContact.email}`,
+      `Số điện thoại: ${newContact.phone || 'Không cung cấp'}`,
       '',
-      message.trim()
+      newContact.message
     ].join('\n');
 
-    await sendEmail(ENV_VARS.EMAIL_USER, `Liên hệ mới từ ${name.trim()}`, text, `<pre>${text}</pre>`);
+    await sendEmail(ENV_VARS.EMAIL_USER, `Liên hệ mới từ ${newContact.name}`, text, `<pre>${text}</pre>`);
 
-    res.status(200).json({ success: true, message: 'Gửi liên hệ thành công' });
+    res.status(200).json({ success: true, message: 'Gửi liên hệ thành công', data: newContact });
   } catch (error) {
     console.error('Error sending contact message:', error);
     res.status(500).json({ success: false, message: 'Không thể gửi liên hệ lúc này' });

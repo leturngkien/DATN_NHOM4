@@ -33,21 +33,22 @@ export const getBlogById = async (req: Request, res: Response): Promise<void> =>
 export const getActiveBlogs = async (req: Request, res: Response): Promise<void> => {
   try {
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
+    const requestedLimit = parseInt(req.query.limit as string) || 0;
+    const limit = requestedLimit > 0 ? requestedLimit : 0;
+    const skip = limit > 0 ? (page - 1) * limit : 0;
 
-    const blogs = await blogModel
+    const query = blogModel
       .find({ status: BlogStatus.ACTIVE })
       .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
       .populate('blog_category_id', 'name');
+
+    const blogs = limit > 0 ? await query.skip(skip).limit(limit).exec() : await query.exec();
     const total = await blogModel.countDocuments({ status: BlogStatus.ACTIVE });
 
     res.status(200).json({
       success: true,
       data: blogs,
-      pagination: { total, page, limit, totalPages: Math.ceil(total / limit) }
+      pagination: { total, page, limit: limit || total, totalPages: limit > 0 ? Math.ceil(total / limit) : 1 }
     });
   } catch (error) {
     console.error('Error getActiveBlogs:', error);
@@ -57,7 +58,7 @@ export const getActiveBlogs = async (req: Request, res: Response): Promise<void>
 
 export const createBlog = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, content, author, blog_category_id, status } = req.body;
+    const { title, content, author, blog_category_id, status, image_url: imageUrlFromBody } = req.body;
 
     if (!title || !content || !author) {
       res.status(400).json({ success: false, message: 'Vui lòng cung cấp tiêu đề, tác giả và nội dung bài viết' });
@@ -74,12 +75,14 @@ export const createBlog = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
+    const imageUrl = typeof imageUrlFromBody === 'string' ? imageUrlFromBody.trim() : '';
+
     const newBlog = new blogModel({
       title,
       content,
       author,
       blog_category_id: blog_category_id || undefined,
-      image_url: req.file ? req.file.path : '',
+      image_url: imageUrl || (req.file ? req.file.path : ''),
       status: status || BlogStatus.ACTIVE
     });
 
@@ -106,7 +109,7 @@ export const updateBlog = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    const { title, content, author, blog_category_id, status } = req.body;
+    const { title, content, author, blog_category_id, status, image_url: imageUrlFromBody } = req.body;
 
     if (blog_category_id && !mongoose.isValidObjectId(blog_category_id)) {
       res.status(400).json({ success: false, message: 'Danh mục bài viết không hợp lệ' });
@@ -118,10 +121,13 @@ export const updateBlog = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    // Giữ ảnh cũ nếu không upload ảnh mới
     let image_url = blog.image_url;
+    const urlFromBody = typeof imageUrlFromBody === 'string' ? imageUrlFromBody.trim() : '';
+
     if (req.file) {
-      image_url = req.file.path; // Cập nhật URL mới từ Cloudinary
+      image_url = req.file.path;
+    } else if (urlFromBody) {
+      image_url = urlFromBody;
     }
 
     const updateData: Record<string, unknown> = { image_url };

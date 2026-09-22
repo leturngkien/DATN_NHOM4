@@ -6,7 +6,6 @@ import {
 	Image,
 	Input,
 	Modal,
-	Radio,
 	Select,
 	Space,
 	Table,
@@ -24,6 +23,7 @@ import {
 } from "@ant-design/icons";
 import blogApi from "../../api/blogApi";
 import blogCategoryApi from "../../api/blogCategoryApi";
+import { notifyBlogUpdated } from "../../utils/blogSync";
 
 interface BlogCategory {
 	_id: string;
@@ -44,9 +44,9 @@ interface BlogFormValues {
 	title: string;
 	author: string;
 	content: string;
-	image_url?: string;
 	blog_category_id?: string;
 	status: "active" | "inactive";
+	image_url?: string;
 }
 
 const removeAccents = (value: string) =>
@@ -62,7 +62,7 @@ const Post: React.FC = () => {
 	const [search, setSearch] = useState("");
 	const [status, setStatus] = useState<string>();
 	const [fileList, setFileList] = useState<UploadFile[]>([]);
-	const [imageMode, setImageMode] = useState<"file" | "url">("file");
+	const [imageMode, setImageMode] = useState<"upload" | "url">("upload");
 
 	const loadData = async () => {
 		setLoading(true);
@@ -88,7 +88,7 @@ const Post: React.FC = () => {
 	const openCreateModal = () => {
 		setEditingPost(null);
 		setFileList([]);
-		setImageMode("file");
+		setImageMode("upload");
 		form.resetFields();
 		form.setFieldsValue({ status: "active", image_url: "" });
 		setModalOpen(true);
@@ -97,14 +97,14 @@ const Post: React.FC = () => {
 	const openEditModal = (post: Blog) => {
 		setEditingPost(post);
 		setFileList([]);
-		const hasImageUrl = Boolean(post.image_url && post.image_url.trim());
-		setImageMode(hasImageUrl ? "url" : "file");
+		const currentImageUrl = typeof post.image_url === "string" ? post.image_url : "";
+		setImageMode(currentImageUrl ? "url" : "upload");
 		form.setFieldsValue({
 			title: post.title,
 			author: post.author,
 			content: post.content,
-			image_url: post.image_url || "",
 			status: post.status,
+			image_url: currentImageUrl,
 			blog_category_id:
 				typeof post.blog_category_id === "string"
 					? post.blog_category_id
@@ -116,23 +116,32 @@ const Post: React.FC = () => {
 	const closeModal = () => {
 		setModalOpen(false);
 		setEditingPost(null);
+		setImageMode("upload");
 		form.resetFields();
 		setFileList([]);
-		setImageMode("file");
 	};
 
 	const handleSubmit = async (values: BlogFormValues) => {
 		const data = new FormData();
+		const selectedFile = fileList[0]?.originFileObj;
+		const imageUrlValue = values.image_url?.trim();
+
 		Object.entries(values).forEach(([key, value]) => {
-			if (value && key !== "image_url") data.append(key, value);
+			if (value === undefined || value === null || value === "") return;
+			if (key === "image_url" && imageMode === "upload") return;
+			if (key === "image_url" && imageMode === "url") {
+				if (imageUrlValue) data.append("image_url", imageUrlValue);
+				return;
+			}
+			data.append(key, String(value));
 		});
 
-		if (imageMode === "url") {
-			const imageUrlValue = values.image_url?.trim();
-			if (imageUrlValue) data.append("image_url", imageUrlValue);
-		} else {
-			const selectedFile = fileList[0]?.originFileObj;
-			if (selectedFile) data.append("image_url", selectedFile);
+		if (imageMode === "upload" && selectedFile) {
+			data.append("image_url", selectedFile);
+		}
+
+		if (imageMode === "url" && imageUrlValue) {
+			data.append("image_url", imageUrlValue);
 		}
 
 		try {
@@ -143,6 +152,7 @@ const Post: React.FC = () => {
 				await blogApi.create(data);
 				message.success("Tạo bài viết thành công");
 			}
+			notifyBlogUpdated();
 			closeModal();
 			await loadData();
 		} catch (error) {
@@ -152,13 +162,24 @@ const Post: React.FC = () => {
 	};
 
 	const toggleStatus = async (post: Blog) => {
+		const nextStatus = post.status === "active" ? "inactive" : "active";
+		const previousStatus = post.status;
+
+		setPosts((currentPosts) =>
+			currentPosts.map((item) => (item._id === post._id ? { ...item, status: nextStatus } : item))
+		);
+
 		try {
-			const nextStatus = post.status === "active" ? "inactive" : "active";
 			await blogApi.toggleStatus(post._id, nextStatus);
+			notifyBlogUpdated();
 			message.success(nextStatus === "active" ? "Đã hiện bài viết" : "Đã ẩn bài viết");
-			await loadData();
 		} catch (error) {
 			console.error("Không thể cập nhật trạng thái:", error);
+			setPosts((currentPosts) =>
+				currentPosts.map((item) =>
+					item._id === post._id ? { ...item, status: previousStatus } : item
+				)
+			);
 			message.error("Không thể cập nhật trạng thái bài viết");
 		}
 	};
@@ -173,6 +194,7 @@ const Post: React.FC = () => {
 			onOk: async () => {
 				try {
 					await blogApi.delete(post._id);
+					notifyBlogUpdated();
 					message.success("Đã xoá bài viết");
 					await loadData();
 				} catch (error) {
@@ -188,17 +210,8 @@ const Post: React.FC = () => {
 		maxCount: 1,
 		fileList,
 		beforeUpload: () => false,
-		onChange: ({ fileList: nextFileList }) => {
-			setFileList(nextFileList);
-			if (nextFileList.length > 0) {
-				setImageMode("file");
-				form.setFieldValue("image_url", "");
-			}
-		},
-		onRemove: () => {
-			setFileList([]);
-			form.setFieldValue("image_url", "");
-		},
+		onChange: ({ fileList: nextFileList }) => setFileList(nextFileList),
+		onRemove: () => setFileList([]),
 	};
 
 	const filteredPosts = posts.filter((post) => {
@@ -247,112 +260,131 @@ const Post: React.FC = () => {
 			width: 190,
 			render: (_value: unknown, post: Blog) => (
 				<Space>
-					<Button aria-label="Sửa bài viết" icon={<EditOutlined />} onClick={() => openEditModal(post)} />
-					<Button onClick={() => void toggleStatus(post)}>
+					<Button type="button" aria-label="Sửa bài viết" icon={<EditOutlined />} onClick={() => openEditModal(post)} />
+					<Button type="button" onClick={() => void toggleStatus(post)}>
 						{post.status === "active" ? "Ẩn" : "Hiện"}
 					</Button>
-					<Button danger aria-label="Xoá bài viết" icon={<DeleteOutlined />} onClick={() => deletePost(post)} />
+					<Button type="button" danger aria-label="Xoá bài viết" icon={<DeleteOutlined />} onClick={() => deletePost(post)} />
 				</Space>
 			),
 		},
 	];
 
 	return (
-		<Card
-			title="Quản lý bài viết"
-			bordered={false}
-			extra={<Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>Thêm bài viết</Button>}
-		>
-			<Space wrap style={{ marginBottom: 16 }}>
-				<Input
-					allowClear
-					prefix={<SearchOutlined />}
-					placeholder="Tìm theo tiêu đề"
-					value={search}
-					onChange={(event) => setSearch(event.target.value)}
-					style={{ width: 260 }}
-				/>
-				<Select
-					allowClear
-					placeholder="Lọc trạng thái"
-					value={status}
-					onChange={setStatus}
-					options={[{ value: "active", label: "Hiển thị" }, { value: "inactive", label: "Đã ẩn" }]}
-					style={{ width: 160 }}
-				/>
-			</Space>
-			<Table rowKey="_id" columns={columns} dataSource={filteredPosts} loading={loading} scroll={{ x: 900 }} />
-
-			<Modal
-				title={editingPost ? "Sửa bài viết" : "Thêm bài viết"}
-				open={modalOpen}
-				onCancel={closeModal}
-				onOk={() => form.submit()}
-				okText="Lưu"
-				cancelText="Huỷ"
-				destroyOnClose
+		<div style={{ padding: 8 }}>
+			<Card
+				title={
+					<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", gap: 16 }}>
+						<div>
+							<div style={{ color: "#E4572E", fontWeight: 800, letterSpacing: 2, fontSize: 11, marginBottom: 6 }}>
+								PET CORNER
+							</div>
+							<div style={{ fontSize: 28, fontWeight: 800, color: "#232620" }}>Quản lý bài viết</div>
+						</div>
+					</div>
+				}
+				bordered={false}
+				style={{
+					borderRadius: 24,
+					background: "linear-gradient(180deg, #fffdfb 0%, #fff7f1 100%)",
+					boxShadow: "0 18px 40px rgba(35,38,32,0.08)",
+					border: "1px solid rgba(35,38,32,0.06)",
+				}}
+				extra={<Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal} style={{ height: 42, borderRadius: 12, fontWeight: 700 }}>Thêm bài viết</Button>}
 			>
-				<Form form={form} layout="vertical" onFinish={handleSubmit} initialValues={{ status: "active" }}>
-					<Form.Item name="title" label="Tiêu đề" rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}>
-						<Input maxLength={200} showCount />
-					</Form.Item>
-					<Form.Item name="author" label="Tác giả" rules={[{ required: true, message: "Vui lòng nhập tác giả" }]}>
-						<Input maxLength={100} />
-					</Form.Item>
-					<Form.Item name="blog_category_id" label="Danh mục">
-						<Select allowClear placeholder="Chọn danh mục" options={categories.map((category) => ({ value: category._id, label: category.name }))} />
-					</Form.Item>
-					<Form.Item name="content" label="Nội dung" rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}>
-						<Input.TextArea rows={8} />
-					</Form.Item>
-					<Form.Item name="status" label="Trạng thái">
-						<Select options={[{ value: "active", label: "Hiển thị" }, { value: "inactive", label: "Đã ẩn" }]} />
-					</Form.Item>
+				<Space wrap style={{ marginBottom: 18, background: "rgba(255,255,255,0.7)", borderRadius: 16, padding: 10, border: "1px solid rgba(35,38,32,0.05)" }}>
+					<Input
+						allowClear
+						prefix={<SearchOutlined />}
+						placeholder="Tìm theo tiêu đề"
+						value={search}
+						onChange={(event) => setSearch(event.target.value)}
+						style={{ width: 290, height: 42, borderRadius: 12 }}
+					/>
+					<Select
+						allowClear
+						placeholder="Lọc trạng thái"
+						value={status}
+						onChange={setStatus}
+						options={[{ value: "active", label: "Hiển thị" }, { value: "inactive", label: "Đã ẩn" }]}
+						style={{ width: 180, height: 42, borderRadius: 12 }}
+					/>
+				</Space>
+				<Table
+					rowKey="_id"
+					columns={columns}
+					dataSource={filteredPosts}
+					loading={loading}
+					scroll={{ x: 900 }}
+					style={{ borderRadius: 18 }}
+					pagination={{ pageSize: 8, showSizeChanger: false }}
+				/>
 
-					<Form.Item label="Ảnh đại diện">
-						<Radio.Group
-							value={imageMode}
-							onChange={(event) => {
-								const nextMode = event.target.value as "file" | "url";
-								setImageMode(nextMode);
-								if (nextMode === "file") {
-									setFileList([]);
-									form.setFieldValue("image_url", "");
-								} else {
-									setFileList([]);
-								}
-							}}
-						>
-							<Radio value="file">Chọn từ máy tính</Radio>
-							<Radio value="url">Dán URL từ trang web</Radio>
-						</Radio.Group>
-					</Form.Item>
-
-					{imageMode === "file" ? (
-						<Form.Item label="File ảnh">
-							<Upload {...uploadProps} listType="picture">
-								<Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-							</Upload>
+				<Modal
+					title={editingPost ? "Sửa bài viết" : "Thêm bài viết"}
+					open={modalOpen}
+					onCancel={closeModal}
+					onOk={() => form.submit()}
+					okText="Lưu"
+					cancelText="Huỷ"
+					destroyOnClose
+					width={760}
+				>
+					<Form form={form} layout="vertical" onFinish={handleSubmit} initialValues={{ status: "active", image_url: "" }}>
+						<Form.Item name="title" label="Tiêu đề" rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}>
+							<Input maxLength={200} showCount style={{ borderRadius: 12 }} />
 						</Form.Item>
-					) : (
-						<>
-							<Form.Item name="image_url" label="URL ảnh">
-								<Input placeholder="https://example.com/image.jpg" allowClear />
+						<Form.Item name="author" label="Tác giả" rules={[{ required: true, message: "Vui lòng nhập tác giả" }]}>
+							<Input maxLength={100} style={{ borderRadius: 12 }} />
+						</Form.Item>
+						<Form.Item name="blog_category_id" label="Danh mục">
+							<Select allowClear placeholder="Chọn danh mục" options={categories.map((category) => ({ value: category._id, label: category.name }))} style={{ borderRadius: 12 }} />
+						</Form.Item>
+						<Form.Item name="content" label="Nội dung" rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}>
+							<Input.TextArea rows={8} style={{ borderRadius: 12 }} />
+						</Form.Item>
+						<Form.Item name="status" label="Trạng thái">
+							<Select options={[{ value: "active", label: "Hiển thị" }, { value: "inactive", label: "Đã ẩn" }]} style={{ borderRadius: 12 }} />
+						</Form.Item>
+						<Form.Item label="Chọn hình ảnh">
+							<Select
+								value={imageMode}
+								onChange={(value) => {
+									setImageMode(value);
+									setFileList([]);
+									if (value === "upload") form.setFieldValue("image_url", "");
+								}}
+								options={[
+									{ value: "upload", label: "Tải lên từ máy tính" },
+									{ value: "url", label: "Dán URL từ website" },
+								]}
+								style={{ width: "100%", borderRadius: 12 }}
+							/>
+						</Form.Item>
+						{imageMode === "upload" ? (
+							<Form.Item label="Ảnh đại diện">
+								<Upload {...uploadProps} listType="picture-card">
+									<Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+								</Upload>
 							</Form.Item>
-							{form.getFieldValue("image_url") ? (
-								<div style={{ marginTop: 8 }}>
-									<Image
-										src={form.getFieldValue("image_url")}
-										alt="preview"
-										style={{ maxWidth: 220, maxHeight: 160, objectFit: "cover" }}
-									/>
-								</div>
-							) : null}
-						</>
-					)}
-				</Form>
-			</Modal>
-		</Card>
+						) : (
+							<Form.Item name="image_url" label="URL hình ảnh" rules={[{ type: "url", message: "URL hình ảnh không hợp lệ" }]}>
+								<Input placeholder="https://example.com/image.jpg" style={{ borderRadius: 12 }} />
+							</Form.Item>
+						)}
+						{(imageMode === "url" && form.getFieldValue("image_url")) || (imageMode === "upload" && fileList[0]?.url) ? (
+							<div style={{ marginBottom: 16 }}>
+								<Image
+									src={imageMode === "url" ? form.getFieldValue("image_url") : fileList[0]?.url || fileList[0]?.thumbUrl}
+									alt="Preview"
+									style={{ maxHeight: 180, objectFit: "cover", borderRadius: 12 }}
+								/>
+							</div>
+						) : null}
+					</Form>
+				</Modal>
+			</Card>
+		</div>
 	);
 };
 

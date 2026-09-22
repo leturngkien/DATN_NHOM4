@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { listenToBlogUpdates } from "../../utils/blogSync";
 import "./home.css";
 
 import productsApi from "../../api/productsApi";
@@ -657,7 +658,7 @@ function Home() {
 
           setHomePosts(
             Array.isArray(blogData)
-              ? blogData.slice(0, 6)
+              ? blogData
               : []
           );
         } catch (error) {
@@ -695,6 +696,12 @@ function Home() {
     };
 
     fetchData();
+
+    const unsubscribe = listenToBlogUpdates(() => {
+      void fetchData();
+    });
+
+    return unsubscribe;
   }, []);
 
   /* =========================================================
@@ -2440,15 +2447,11 @@ function Home() {
           <div className="container">
             <div className="section-heading">
               <div>
-                <span className="section-label">BÀI VIẾT</span>
+                <span className="section-label">TIN TỨC</span>
                 <h2>
-                  Tin tức & <span>mẹo chăm sóc</span>
+                  Tin tức &amp; mẹo chăm sóc
                 </h2>
               </div>
-
-              <a href="/blogs" className="view-all">
-                Xem tất cả →
-              </a>
             </div>
 
             {homePosts.length === 0 ? (
@@ -2491,44 +2494,46 @@ function Home() {
                         target.style.boxShadow = "0 16px 32px rgba(35, 38, 32, 0.08)";
                       }}
                     >
-                      <div style={{ position: "relative", height: 220, overflow: "hidden" }}>
-                        <img
-                          src={post.image_url || "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=80"}
-                          alt={post.title}
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
-                        <span
-                          style={{
-                            position: "absolute",
-                            top: 14,
-                            left: 14,
-                            background: accentColors[index % accentColors.length],
-                            color: "#fff",
-                            fontSize: 11,
-                            fontWeight: 700,
-                            letterSpacing: 1,
-                            padding: "7px 10px",
-                            borderRadius: 999,
-                          }}
-                        >
-                          {post.author || "Pet Corner"}
-                        </span>
-                      </div>
+                      <a href={`/blogs/${post._id}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+                        <div style={{ position: "relative", height: 220, overflow: "hidden" }}>
+                          <img
+                            src={post.image_url || "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=80"}
+                            alt={post.title}
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          />
+                          <span
+                            style={{
+                              position: "absolute",
+                              top: 14,
+                              left: 14,
+                              background: accentColors[index % accentColors.length],
+                              color: "#fff",
+                              fontSize: 11,
+                              fontWeight: 700,
+                              letterSpacing: 1,
+                              padding: "7px 10px",
+                              borderRadius: 999,
+                            }}
+                          >
+                            {post.author || "Pet Corner"}
+                          </span>
+                        </div>
 
-                      <div style={{ padding: 22 }}>
-                        <p style={{ margin: "0 0 10px", color: "#726B5E", fontSize: 12, fontWeight: 700, letterSpacing: 1.3, textTransform: "uppercase" }}>
-                          {new Date(post.createdAt || Date.now()).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })}
-                        </p>
-                        <h3 style={{ margin: "0 0 12px", color: "#232620", fontSize: 22, lineHeight: 1.4, minHeight: 66 }}>
-                          {post.title}
-                        </h3>
-                        <p style={{ margin: "0 0 18px", color: "#726B5E", lineHeight: 1.75, minHeight: 84 }}>
-                          {excerpt.slice(0, 118)}{excerpt.length > 118 ? "..." : ""}
-                        </p>
-                        <a href="/blogs" style={{ color: accentColors[index % accentColors.length], fontWeight: 700, textDecoration: "none" }}>
-                          Đọc tiếp →
-                        </a>
-                      </div>
+                        <div style={{ padding: 22 }}>
+                          <p style={{ margin: "0 0 10px", color: "#726B5E", fontSize: 12, fontWeight: 700, letterSpacing: 1.3, textTransform: "uppercase" }}>
+                            {new Date(post.createdAt || Date.now()).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                          </p>
+                          <h3 style={{ margin: "0 0 12px", color: "#232620", fontSize: 22, lineHeight: 1.4, minHeight: 66 }}>
+                            {post.title}
+                          </h3>
+                          <p style={{ margin: "0 0 18px", color: "#726B5E", lineHeight: 1.75, minHeight: 84 }}>
+                            {excerpt.slice(0, 118)}{excerpt.length > 118 ? "..." : ""}
+                          </p>
+                          <span style={{ color: accentColors[index % accentColors.length], fontWeight: 700, textDecoration: "none" }}>
+                            Đọc tiếp →
+                          </span>
+                        </div>
+                      </a>
                     </div>
                   );
                 })}
