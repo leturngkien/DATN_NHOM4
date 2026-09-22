@@ -7,6 +7,7 @@ import {
   ShopOutlined,
   TagOutlined,
   ScissorOutlined,
+  FileTextOutlined,
   LogoutOutlined,
   ShoppingOutlined,
   UserOutlined,
@@ -23,6 +24,7 @@ const MENU_ITEMS = [
   { key: "/admin/brands", icon: <ShopOutlined />, label: "Thương hiệu" },
   { key: "/admin/tags", icon: <TagOutlined />, label: "Tag" },
   { key: "/admin/services", icon: <ScissorOutlined />, label: "Dịch vụ" },
+  { key: "/admin/blogs", icon: <FileTextOutlined />, label: "Bài viết" },
 ];
 
 const THEME = {

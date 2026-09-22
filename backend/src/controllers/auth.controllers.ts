@@ -160,6 +160,89 @@ export const verifyOTPController = async (req: Request, res: Response): Promise<
 };
 
 // Login
+export const createAdminController = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password, fullname, secret } = req.body;
+
+    if (!email || !password || !fullname) {
+      res.status(400).json({
+        success: false,
+        message: 'Vui lòng nhập email, mật khẩu và họ tên'
+      });
+      return;
+    }
+
+    const configuredSecret = process.env.ADMIN_BOOTSTRAP_SECRET;
+    if (process.env.NODE_ENV === 'production') {
+      if (!configuredSecret || secret !== configuredSecret) {
+        res.status(403).json({
+          success: false,
+          message: 'Endpoint này chỉ hỗ trợ trong môi trường phát triển/local.'
+        });
+        return;
+      }
+    }
+
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regexEmail.test(email)) {
+      res.status(400).json({ success: false, message: 'Email không hợp lệ' });
+      return;
+    }
+
+    if (password.length < 6) {
+      res.status(400).json({ success: false, message: 'Mật khẩu phải có ít nhất 6 ký tự' });
+      return;
+    }
+
+    let user = await userModel.findOne({ email });
+
+    if (!user) {
+      const salt = await bcryptjs.genSalt(10);
+      const hashedPassword = await bcryptjs.hash(password, salt);
+
+      user = new userModel({
+        email,
+        password: hashedPassword,
+        fullname,
+        status: UserStatus.ACTIVE,
+        role: UserRoles.ADMIN,
+        isVerified: true,
+        otp: null,
+        otpExpiry: null
+      });
+    } else {
+      user.fullname = fullname || user.fullname;
+      user.role = UserRoles.ADMIN;
+      user.status = UserStatus.ACTIVE;
+      user.isVerified = true;
+      user.otp = null;
+      user.otpExpiry = null;
+
+      if (password) {
+        const salt = await bcryptjs.genSalt(10);
+        user.password = await bcryptjs.hash(password, salt);
+      }
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Tài khoản admin đã được tạo/cập nhật thành công',
+      user: {
+        _id: user._id,
+        email: user.email,
+        fullname: user.fullname,
+        role: user.role,
+        status: user.status
+      }
+    });
+  } catch (error) {
+    console.error('Error creating admin:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 export const loginController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;

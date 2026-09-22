@@ -6,6 +6,7 @@ import {
 	Image,
 	Input,
 	Modal,
+	Radio,
 	Select,
 	Space,
 	Table,
@@ -43,6 +44,7 @@ interface BlogFormValues {
 	title: string;
 	author: string;
 	content: string;
+	image_url?: string;
 	blog_category_id?: string;
 	status: "active" | "inactive";
 }
@@ -60,6 +62,7 @@ const Post: React.FC = () => {
 	const [search, setSearch] = useState("");
 	const [status, setStatus] = useState<string>();
 	const [fileList, setFileList] = useState<UploadFile[]>([]);
+	const [imageMode, setImageMode] = useState<"file" | "url">("file");
 
 	const loadData = async () => {
 		setLoading(true);
@@ -85,18 +88,22 @@ const Post: React.FC = () => {
 	const openCreateModal = () => {
 		setEditingPost(null);
 		setFileList([]);
+		setImageMode("file");
 		form.resetFields();
-		form.setFieldsValue({ status: "active" });
+		form.setFieldsValue({ status: "active", image_url: "" });
 		setModalOpen(true);
 	};
 
 	const openEditModal = (post: Blog) => {
 		setEditingPost(post);
 		setFileList([]);
+		const hasImageUrl = Boolean(post.image_url && post.image_url.trim());
+		setImageMode(hasImageUrl ? "url" : "file");
 		form.setFieldsValue({
 			title: post.title,
 			author: post.author,
 			content: post.content,
+			image_url: post.image_url || "",
 			status: post.status,
 			blog_category_id:
 				typeof post.blog_category_id === "string"
@@ -111,15 +118,22 @@ const Post: React.FC = () => {
 		setEditingPost(null);
 		form.resetFields();
 		setFileList([]);
+		setImageMode("file");
 	};
 
 	const handleSubmit = async (values: BlogFormValues) => {
 		const data = new FormData();
 		Object.entries(values).forEach(([key, value]) => {
-			if (value) data.append(key, value);
+			if (value && key !== "image_url") data.append(key, value);
 		});
-		const selectedFile = fileList[0]?.originFileObj;
-		if (selectedFile) data.append("image_url", selectedFile);
+
+		if (imageMode === "url") {
+			const imageUrlValue = values.image_url?.trim();
+			if (imageUrlValue) data.append("image_url", imageUrlValue);
+		} else {
+			const selectedFile = fileList[0]?.originFileObj;
+			if (selectedFile) data.append("image_url", selectedFile);
+		}
 
 		try {
 			if (editingPost) {
@@ -174,8 +188,17 @@ const Post: React.FC = () => {
 		maxCount: 1,
 		fileList,
 		beforeUpload: () => false,
-		onChange: ({ fileList: nextFileList }) => setFileList(nextFileList),
-		onRemove: () => setFileList([]),
+		onChange: ({ fileList: nextFileList }) => {
+			setFileList(nextFileList);
+			if (nextFileList.length > 0) {
+				setImageMode("file");
+				form.setFieldValue("image_url", "");
+			}
+		},
+		onRemove: () => {
+			setFileList([]);
+			form.setFieldValue("image_url", "");
+		},
 	};
 
 	const filteredPosts = posts.filter((post) => {
@@ -285,11 +308,48 @@ const Post: React.FC = () => {
 					<Form.Item name="status" label="Trạng thái">
 						<Select options={[{ value: "active", label: "Hiển thị" }, { value: "inactive", label: "Đã ẩn" }]} />
 					</Form.Item>
+
 					<Form.Item label="Ảnh đại diện">
-						<Upload {...uploadProps} listType="picture">
-							<Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-						</Upload>
+						<Radio.Group
+							value={imageMode}
+							onChange={(event) => {
+								const nextMode = event.target.value as "file" | "url";
+								setImageMode(nextMode);
+								if (nextMode === "file") {
+									setFileList([]);
+									form.setFieldValue("image_url", "");
+								} else {
+									setFileList([]);
+								}
+							}}
+						>
+							<Radio value="file">Chọn từ máy tính</Radio>
+							<Radio value="url">Dán URL từ trang web</Radio>
+						</Radio.Group>
 					</Form.Item>
+
+					{imageMode === "file" ? (
+						<Form.Item label="File ảnh">
+							<Upload {...uploadProps} listType="picture">
+								<Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+							</Upload>
+						</Form.Item>
+					) : (
+						<>
+							<Form.Item name="image_url" label="URL ảnh">
+								<Input placeholder="https://example.com/image.jpg" allowClear />
+							</Form.Item>
+							{form.getFieldValue("image_url") ? (
+								<div style={{ marginTop: 8 }}>
+									<Image
+										src={form.getFieldValue("image_url")}
+										alt="preview"
+										style={{ maxWidth: 220, maxHeight: 160, objectFit: "cover" }}
+									/>
+								</div>
+							) : null}
+						</>
+					)}
 				</Form>
 			</Modal>
 		</Card>
