@@ -1,5 +1,14 @@
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 */
+/* =========================================================
+   PET CORNER — PROFESSIONAL HOME PAGE
+   Giữ nguyên hệ thống class hiện tại
+   Không cần thay đổi home.tsx
+========================================================= */
+
 @import "../../styles/tokens.css";
+
+/* =========================================================
+   RESET / BASE
+========================================================= */
 
 * {
   box-sizing: border-box;
@@ -7,13 +16,41 @@
 
 html {
   overflow-x: clip;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
 }
 
 .pet-page {
+  min-height: 100vh;
   overflow-x: clip;
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-body);
+  line-height: 1.5;
 }
 
 .pet-page h1,
@@ -24,14 +61,18 @@ html {
   font-style: normal;
 }
 
+.pet-page a {
+  text-decoration: none;
+}
+
 .pet-page .container {
   width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
 }
 
-/* =========================
+/* =========================================================
    TOPBAR
-========================= */
+========================================================= */
 
 .pet-page .topbar {
   background: var(--color-brand);
@@ -61,31 +102,38 @@ html {
 
 .pet-page .topbar strong {
   color: var(--color-sage);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .pet-page .topbar-right {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
-/* =========================
+.pet-page .topbar-right span {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* =========================================================
    HEADER
-========================= */
+========================================================= */
 
 .pet-page .header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: oklch(97% 0.018 85 / 0.92);
-  backdrop-filter: blur(14px);
+  background: oklch(97% 0.018 85 / 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--color-line);
+  box-shadow: 0 1px 0 oklch(0% 0 0 / 0.02);
 }
 
 .pet-page .header-inner {
-  min-height: 84px;
+  min-height: 82px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -108,6 +156,7 @@ html {
   border-radius: var(--radius-md);
   background: var(--color-brand);
   color: var(--color-sage);
+  box-shadow: var(--shadow-sm);
 }
 
 .pet-page .logo-icon svg {
@@ -118,31 +167,40 @@ html {
 .pet-page .logo-name {
   color: var(--color-ink);
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 21px;
   letter-spacing: 0.2px;
+  line-height: 1;
 }
 
 .pet-page .logo-sub {
   color: var(--color-ink-faint);
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 2px;
-  margin-top: 2px;
+  margin-top: 4px;
+  line-height: 1;
 }
+
+/* Navigation */
 
 .pet-page .navigation {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-lg);
+  flex: 1;
 }
 
 .pet-page .navigation a {
+  position: relative;
   color: var(--color-ink-soft);
   font-size: var(--text-small);
-  font-weight: 600;
-  transition: color var(--dur-base) var(--ease-out);
-  position: relative;
+  font-weight: 700;
+  padding: 8px 2px;
+  transition:
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
 }
 
 .pet-page .navigation a:hover,
@@ -150,22 +208,29 @@ html {
   color: var(--color-brand);
 }
 
+.pet-page .navigation a:hover {
+  transform: translateY(-1px);
+}
+
 .pet-page .navigation a.active::after {
   content: "";
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 22px;
+  height: 3px;
   background: var(--color-accent);
-  border-radius: 50%;
-  bottom: -13px;
+  border-radius: var(--radius-full);
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
 }
+
+/* Header actions */
 
 .pet-page .header-actions {
   display: flex;
   align-items: center;
   gap: var(--space-3xs);
+  flex-shrink: 0;
 }
 
 .pet-page .icon-button,
@@ -179,7 +244,10 @@ html {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--dur-base) var(--ease-out);
+  transition:
+    background var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
   position: relative;
 }
 
@@ -192,6 +260,8 @@ html {
 .pet-page .icon-button:hover,
 .pet-page .cart-button:hover {
   background: var(--color-brand-soft);
+  color: var(--color-brand);
+  transform: translateY(-1px);
 }
 
 .pet-page .icon-button:focus-visible,
@@ -201,12 +271,15 @@ html {
   outline-offset: 2px;
 }
 
+/* Cart badge */
+
 .pet-page .cart-number {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  min-width: 17px;
-  height: 17px;
+  top: -3px;
+  right: -3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -214,8 +287,11 @@ html {
   background: var(--color-accent);
   color: var(--color-white);
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 900;
+  border: 2px solid var(--color-paper);
 }
+
+/* Login */
 
 .pet-page .login-button {
   border: 1px solid var(--color-line-strong);
@@ -224,10 +300,25 @@ html {
   padding: 10px 18px;
   border-radius: var(--radius-sm);
   font-size: var(--text-small);
-  font-weight: 700;
+  font-weight: 800;
   margin-left: var(--space-2xs);
-  transition: all var(--dur-base) var(--ease-out);
+  transition:
+    background var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
+
+.pet-page .login-button:hover {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+  color: var(--color-white);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   USER MENU
+========================================================= */
 
 .pet-page .user-menu {
   position: relative;
@@ -244,11 +335,15 @@ html {
   border-radius: var(--radius-full);
   background: var(--color-white);
   color: var(--color-ink);
-  transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
 }
 
 .pet-page .user-menu-trigger:hover {
   border-color: var(--color-brand);
+  box-shadow: var(--shadow-sm);
 }
 
 .pet-page .user-menu-trigger:focus-visible {
@@ -283,7 +378,7 @@ html {
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: var(--text-small);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .pet-page .user-menu-trigger > svg {
@@ -307,15 +402,16 @@ html {
   top: calc(100% + 10px);
   right: 0;
   z-index: 200;
-  min-width: 200px;
-  padding: var(--space-2xs);
+  min-width: 215px;
+  padding: 7px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
+  animation: pet-dropdown 160ms ease-out;
 }
 
 .pet-page .user-menu-dropdown a,
@@ -324,15 +420,17 @@ html {
   align-items: center;
   gap: var(--space-xs);
   width: 100%;
-  padding: var(--space-xs) var(--space-sm);
+  padding: 10px 12px;
   border: 0;
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--color-ink);
   font-size: var(--text-small);
-  font-weight: 600;
+  font-weight: 700;
   text-align: left;
-  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+  transition:
+    background var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out);
 }
 
 .pet-page .user-menu-dropdown a svg,
@@ -354,26 +452,54 @@ html {
   color: var(--color-brand);
 }
 
-.pet-page .login-button:hover {
-  background: var(--color-brand);
-  border-color: var(--color-brand);
-  color: var(--color-white);
+@keyframes pet-dropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* =========================
+/* =========================================================
    HERO
-========================= */
+========================================================= */
 
 .pet-page .hero {
+  position: relative;
   overflow: hidden;
-  background: radial-gradient(circle at 74% 32%, var(--color-brand-soft) 0%, transparent 42%),
-    var(--color-paper-alt);
+  background:
+    radial-gradient(
+      circle at 76% 30%,
+      var(--color-brand-soft) 0%,
+      transparent 40%
+    ),
+    linear-gradient(
+      135deg,
+      var(--color-paper-alt) 0%,
+      var(--color-paper) 100%
+    );
+}
+
+.pet-page .hero::before {
+  content: "";
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: oklch(100% 0 0 / 0.28);
+  top: -160px;
+  left: -140px;
+  pointer-events: none;
 }
 
 .pet-page .hero-content {
   min-height: 600px;
   display: grid;
-  grid-template-columns: 1fr minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: var(--space-lg);
 }
@@ -388,12 +514,12 @@ html {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2xs);
-  padding: var(--space-2xs) var(--space-sm);
+  padding: 8px 13px;
   background: var(--color-brand-soft);
   color: var(--color-sage-ink);
   border-radius: var(--radius-full);
   font-size: var(--text-micro);
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 1.4px;
   text-transform: uppercase;
   margin-bottom: var(--space-md);
@@ -406,25 +532,25 @@ html {
 
 .pet-page .hero h1 {
   margin: 0;
+  max-width: 650px;
   font-size: var(--text-display);
-  line-height: 1.04;
-  letter-spacing: -1.5px;
+  line-height: 1.03;
+  letter-spacing: -1.7px;
   color: var(--color-ink);
   overflow-wrap: anywhere;
-  min-width: 0;
 }
 
 .pet-page .hero h1 span {
   color: var(--color-accent);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .pet-page .hero-text > p {
   color: var(--color-ink-soft);
-  line-height: 1.7;
+  line-height: 1.75;
   font-size: 17px;
   margin: var(--space-md) 0 var(--space-lg);
-  max-width: 42ch;
+  max-width: 48ch;
 }
 
 .pet-page .hero-buttons {
@@ -437,20 +563,25 @@ html {
 .pet-page .secondary-button,
 .pet-page .white-button,
 .pet-page .outline-button {
-  border: 0;
-  padding: 15px 22px;
+  min-height: 48px;
   border-radius: var(--radius-sm);
+  padding: 13px 21px;
   font-size: var(--text-small);
-  font-weight: 700;
+  font-weight: 800;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2xs);
-  transition: transform var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out),
-    box-shadow var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
 }
 
 .pet-page .primary-button {
+  border: 1px solid var(--color-brand);
   background: var(--color-brand);
   color: var(--color-white);
   box-shadow: var(--shadow-md);
@@ -458,15 +589,9 @@ html {
 
 .pet-page .primary-button:hover {
   background: var(--color-brand-strong);
+  border-color: var(--color-brand-strong);
   transform: translateY(-2px);
-}
-
-.pet-page .primary-button:focus-visible,
-.pet-page .secondary-button:focus-visible,
-.pet-page .white-button:focus-visible,
-.pet-page .outline-button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+  box-shadow: var(--shadow-lg);
 }
 
 .pet-page .secondary-button {
@@ -478,6 +603,15 @@ html {
 .pet-page .secondary-button:hover {
   border-color: var(--color-accent);
   color: var(--color-accent-strong);
+  transform: translateY(-2px);
+}
+
+.pet-page .primary-button:focus-visible,
+.pet-page .secondary-button:focus-visible,
+.pet-page .white-button:focus-visible,
+.pet-page .outline-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .pet-page .hero-features {
@@ -496,12 +630,15 @@ html {
   font-family: var(--font-display);
   font-size: 23px;
   color: var(--color-brand);
+  line-height: 1;
 }
 
 .pet-page .hero-features span {
   color: var(--color-ink-faint);
   font-size: var(--text-micro);
 }
+
+/* Hero image */
 
 .pet-page .hero-image {
   position: relative;
@@ -515,24 +652,28 @@ html {
 
 .pet-page .hero-circle {
   position: absolute;
-  width: 440px;
-  height: 440px;
+  width: 450px;
+  height: 450px;
   background: var(--color-sage);
-  opacity: 0.55;
+  opacity: 0.48;
   border-radius: 50%;
   right: 10px;
+  box-shadow: inset 0 0 0 18px oklch(100% 0 0 / 0.08);
 }
 
 .pet-page .hero-image img {
   width: 440px;
   height: 440px;
-  max-width: 100%;
+  max-width: 88%;
   object-fit: cover;
   border-radius: 48% 52% 46% 54% / 54% 46% 54% 46%;
   position: relative;
   z-index: 1;
   box-shadow: var(--shadow-lg);
+  border: 8px solid oklch(100% 0 0 / 0.35);
 }
+
+/* Floating cards */
 
 .pet-page .floating-card {
   position: absolute;
@@ -541,24 +682,27 @@ html {
   align-items: center;
   gap: var(--space-2xs);
   background: var(--color-surface);
-  padding: var(--space-xs) var(--space-sm);
+  padding: 9px 12px;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-line);
+  animation: pet-float 4s ease-in-out infinite;
 }
 
 .pet-page .floating-card-one {
-  left: 10px;
-  top: 160px;
+  left: 0;
+  top: 155px;
 }
 
 .pet-page .floating-card-two {
   right: 0;
-  bottom: 120px;
+  bottom: 105px;
+  animation-delay: -2s;
 }
 
 .pet-page .floating-icon {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   background: var(--color-accent-soft);
   color: var(--color-accent-strong);
@@ -580,6 +724,7 @@ html {
 
 .pet-page .floating-card strong {
   font-size: 12px;
+  font-weight: 800;
 }
 
 .pet-page .floating-card small {
@@ -588,9 +733,20 @@ html {
   margin-top: 2px;
 }
 
-/* =========================
+@keyframes pet-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* =========================================================
    SERVICE STRIP
-========================= */
+========================================================= */
 
 .pet-page .service-strip {
   background: var(--color-surface);
@@ -637,6 +793,7 @@ html {
 .pet-page .service-item strong {
   font-size: 13px;
   margin-bottom: 3px;
+  font-weight: 800;
 }
 
 .pet-page .service-item span {
@@ -644,9 +801,9 @@ html {
   color: var(--color-ink-faint);
 }
 
-/* =========================
-   SECTION
-========================= */
+/* =========================================================
+   COMMON SECTION
+========================================================= */
 
 .pet-page .section {
   padding: var(--space-3xl) 0;
@@ -663,7 +820,7 @@ html {
 .pet-page .section-label {
   color: var(--color-accent-strong);
   font-size: var(--text-micro);
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
@@ -673,22 +830,23 @@ html {
   margin: 8px 0 0;
   color: var(--color-ink);
   font-size: var(--text-h2);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.6px;
+  line-height: 1.15;
   overflow-wrap: anywhere;
-  min-width: 0;
 }
 
 .pet-page .section-heading h2 span,
 .pet-page .center-heading h2 span {
   color: var(--color-accent);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .pet-page .view-all {
   color: var(--color-brand);
   font-size: var(--text-small);
-  font-weight: 700;
+  font-weight: 800;
   flex-shrink: 0;
+  padding-bottom: 4px;
   transition: color var(--dur-base) var(--ease-out);
 }
 
@@ -696,38 +854,41 @@ html {
   color: var(--color-accent-strong);
 }
 
-/* =========================
+/* =========================================================
    CATEGORY
-========================= */
+========================================================= */
 
 .pet-page .categories-section {
   background: var(--color-paper);
 }
 
 .pet-page .category-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--space-sm);
 }
 
 .pet-page .category-card {
-  flex: 1 1 148px;
-  max-width: 190px;
+  width: 100%;
+  min-height: 175px;
   border: 1px solid var(--color-line);
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-lg) var(--space-xs);
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
-  transition: transform var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out),
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
     box-shadow var(--dur-base) var(--ease-out);
 }
 
 .pet-page .category-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   border-color: var(--color-sage);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .pet-page .category-card:focus-visible {
@@ -736,8 +897,8 @@ html {
 }
 
 .pet-page .category-icon {
-  width: 60px;
-  height: 60px;
+  width: 62px;
+  height: 62px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -745,6 +906,14 @@ html {
   color: var(--color-brand);
   border-radius: 50%;
   margin-bottom: var(--space-sm);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out);
+}
+
+.pet-page .category-card:hover .category-icon {
+  transform: scale(1.05);
+  background: var(--color-sage);
 }
 
 .pet-page .category-icon svg {
@@ -756,6 +925,7 @@ html {
   color: var(--color-ink);
   font-size: 12px;
   text-align: center;
+  font-weight: 800;
 }
 
 .pet-page .category-card span {
@@ -764,16 +934,16 @@ html {
   margin-top: 4px;
 }
 
-/* =========================
+/* =========================================================
    PRODUCTS
-========================= */
+========================================================= */
 
 .pet-page .products-section {
   background: var(--color-paper-alt);
 }
 
 .pet-page .search-box {
-  width: 270px;
+  width: 290px;
   height: 44px;
   display: flex;
   align-items: center;
@@ -782,11 +952,14 @@ html {
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-sm);
-  transition: border-color var(--dur-base) var(--ease-out);
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
 }
 
 .pet-page .search-box:focus-within {
   border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-soft);
 }
 
 .pet-page .search-box svg {
@@ -806,11 +979,27 @@ html {
   color: var(--color-ink);
 }
 
+.pet-page .search-box input::placeholder {
+  color: var(--color-ink-faint);
+}
+
+/* Filters */
+
 .pet-page .filter-list {
   display: flex;
   gap: var(--space-2xs);
   overflow-x: auto;
   padding-bottom: var(--space-lg);
+  scrollbar-width: thin;
+}
+
+.pet-page .filter-list::-webkit-scrollbar {
+  height: 4px;
+}
+
+.pet-page .filter-list::-webkit-scrollbar-thumb {
+  background: var(--color-line-strong);
+  border-radius: var(--radius-full);
 }
 
 .pet-page .filter {
@@ -821,19 +1010,28 @@ html {
   border-radius: var(--radius-full);
   white-space: nowrap;
   font-size: var(--text-small);
-  font-weight: 700;
-  transition: all var(--dur-base) var(--ease-out);
+  font-weight: 800;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .pet-page .filter:hover {
   border-color: var(--color-brand);
+  color: var(--color-brand);
+  transform: translateY(-1px);
 }
 
 .pet-page .filter.active {
   background: var(--color-brand);
   border-color: var(--color-brand);
   color: var(--color-white);
+  box-shadow: var(--shadow-sm);
 }
+
+/* Product grid */
 
 .pet-page .products-grid {
   display: grid;
@@ -842,17 +1040,22 @@ html {
 }
 
 .pet-page .product-card {
+  min-width: 0;
   background: var(--color-surface);
   border-radius: var(--radius-md);
   overflow: hidden;
   border: 1px solid var(--color-line);
-  transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
   display: flex;
   flex-direction: column;
 }
 
 .pet-page .product-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-5px);
+  border-color: var(--color-line-strong);
   box-shadow: var(--shadow-md);
 }
 
@@ -884,7 +1087,8 @@ html {
   background: var(--color-accent);
   color: var(--color-white);
   font-size: var(--text-micro);
-  font-weight: 800;
+  font-weight: 900;
+  box-shadow: var(--shadow-sm);
 }
 
 .pet-page .favorite {
@@ -892,8 +1096,8 @@ html {
   top: var(--space-2xs);
   right: var(--space-2xs);
   z-index: 3;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border: 0;
   border-radius: 50%;
   background: var(--color-surface);
@@ -902,7 +1106,10 @@ html {
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-sm);
-  transition: color var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  transition:
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out),
+    background var(--dur-base) var(--ease-out);
 }
 
 .pet-page .favorite svg {
@@ -912,6 +1119,7 @@ html {
 
 .pet-page .favorite:hover {
   transform: scale(1.08);
+  background: var(--color-white);
 }
 
 .pet-page .favorite.active {
@@ -921,6 +1129,8 @@ html {
 .pet-page .favorite.active svg {
   fill: currentColor;
 }
+
+/* Quick view */
 
 .pet-page .quick-view {
   position: absolute;
@@ -933,10 +1143,12 @@ html {
   background: var(--color-brand);
   color: var(--color-white);
   font-size: var(--text-small);
-  font-weight: 700;
+  font-weight: 800;
   transform: translateY(60px);
   opacity: 0;
-  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    opacity var(--dur-base) var(--ease-out);
 }
 
 .pet-page .product-card:hover .quick-view {
@@ -949,17 +1161,20 @@ html {
   cursor: not-allowed;
 }
 
+/* Product information */
+
 .pet-page .product-info {
   padding: var(--space-sm);
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
 }
 
 .pet-page .product-category {
   font-size: var(--text-micro);
   color: var(--color-sage-ink);
-  font-weight: 800;
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -968,10 +1183,14 @@ html {
   margin: 7px 0;
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 13px;
-  min-height: 34px;
-  line-height: 1.4;
+  min-height: 38px;
+  line-height: 1.45;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .pet-page .rating {
@@ -999,27 +1218,34 @@ html {
 
 .pet-page .product-stock span {
   color: var(--color-success);
+  font-weight: 700;
 }
 
 .pet-page .product-stock .out-of-stock {
   color: var(--color-danger);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .pet-page .product-bottom {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  gap: var(--space-2xs);
   margin-top: auto;
   padding-top: var(--space-2xs);
+}
+
+.pet-page .price {
+  min-width: 0;
 }
 
 .pet-page .price strong {
   display: block;
   color: var(--color-accent-strong);
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 17px;
+  line-height: 1.2;
 }
 
 .pet-page .price del {
@@ -1031,28 +1257,34 @@ html {
   display: flex;
   align-items: center;
   gap: var(--space-2xs);
+  flex-shrink: 0;
 }
 
 .pet-page .add-cart {
-  width: 36px;
-  height: 36px;
-  border: 0;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--color-brand-soft);
   background: var(--color-brand-soft);
   color: var(--color-brand);
   border-radius: var(--radius-sm);
   font-size: 20px;
   line-height: 1;
-  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+  transition:
+    background var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .pet-page .add-cart:hover {
   background: var(--color-brand);
   color: var(--color-white);
+  transform: translateY(-1px);
 }
 
 .pet-page .add-cart:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 .pet-page .buy-now {
@@ -1060,11 +1292,14 @@ html {
   background: var(--color-accent);
   color: var(--color-white);
   padding: 9px 14px;
+  min-height: 38px;
   border-radius: var(--radius-sm);
   font-size: var(--text-small);
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
-  transition: background var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  transition:
+    background var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .pet-page .buy-now:hover {
@@ -1078,6 +1313,8 @@ html {
   cursor: not-allowed;
   transform: none;
 }
+
+/* Center button */
 
 .pet-page .center-button {
   display: flex;
@@ -1095,7 +1332,10 @@ html {
   background: var(--color-brand);
   border-color: var(--color-brand);
   color: var(--color-white);
+  transform: translateY(-2px);
 }
+
+/* Empty */
 
 .pet-page .empty-products {
   text-align: center;
@@ -1113,6 +1353,15 @@ html {
   height: 40px;
 }
 
+.pet-page .empty-products h3 {
+  margin: var(--space-2xs) 0 4px;
+}
+
+.pet-page .empty-products p {
+  color: var(--color-ink-faint);
+  font-size: var(--text-small);
+}
+
 .pet-page .spin-icon {
   animation: pet-spin 900ms linear infinite;
 }
@@ -1123,28 +1372,25 @@ html {
   }
 }
 
-.pet-page .empty-products h3 {
-  margin: var(--space-2xs) 0 4px;
-}
-
-.pet-page .empty-products p {
-  color: var(--color-ink-faint);
-  font-size: var(--text-small);
-}
-
-/* =========================
+/* =========================================================
    PROMOTION
-========================= */
+========================================================= */
 
 .pet-page .promotion {
-  background: var(--color-brand);
+  background:
+    radial-gradient(
+      circle at 80% 20%,
+      oklch(100% 0 0 / 0.07),
+      transparent 32%
+    ),
+    var(--color-brand);
   overflow: hidden;
 }
 
 .pet-page .promotion-inner {
   min-height: 400px;
   display: grid;
-  grid-template-columns: 1fr minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: var(--space-lg);
 }
@@ -1180,13 +1426,14 @@ html {
 
 .pet-page .promotion h2 span {
   color: var(--color-sage);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .pet-page .promotion p {
   color: oklch(90% 0.02 140);
   line-height: 1.7;
   font-size: var(--text-small);
+  max-width: 52ch;
 }
 
 .pet-page .white-button {
@@ -1199,6 +1446,8 @@ html {
   background: var(--color-sage);
   transform: translateY(-2px);
 }
+
+/* Promotion image */
 
 .pet-page .promotion-image {
   height: 400px;
@@ -1215,6 +1464,7 @@ html {
   max-width: 100%;
   object-fit: cover;
   border-radius: 45% 45% 0 0;
+  box-shadow: var(--shadow-lg);
 }
 
 .pet-page .discount-circle {
@@ -1232,6 +1482,7 @@ html {
   justify-content: center;
   transform: rotate(8deg);
   box-shadow: var(--shadow-accent);
+  border: 4px solid oklch(100% 0 0 / 0.15);
 }
 
 .pet-page .discount-circle strong {
@@ -1245,9 +1496,9 @@ html {
   letter-spacing: 1px;
 }
 
-/* =========================
+/* =========================================================
    SERVICES
-========================= */
+========================================================= */
 
 .pet-page .services-section {
   background: var(--color-paper);
@@ -1273,15 +1524,20 @@ html {
 }
 
 .pet-page .big-service-card {
+  min-height: 235px;
   padding: var(--space-lg);
   border: 1px solid var(--color-line);
   background: var(--color-surface);
   border-radius: var(--radius-lg);
-  transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
 }
 
 .pet-page .big-service-card:hover {
   transform: translateY(-5px);
+  border-color: var(--color-line-strong);
   box-shadow: var(--shadow-md);
 }
 
@@ -1319,12 +1575,16 @@ html {
   margin-top: var(--space-xs);
   color: var(--color-brand);
   font-size: var(--text-small);
-  font-weight: 700;
+  font-weight: 800;
 }
 
-/* =========================
+.pet-page .big-service-card a:hover {
+  color: var(--color-accent-strong);
+}
+
+/* =========================================================
    ABOUT
-========================= */
+========================================================= */
 
 .pet-page .about-section {
   padding: var(--space-3xl) 0;
@@ -1333,7 +1593,7 @@ html {
 
 .pet-page .about-grid {
   display: grid;
-  grid-template-columns: 1fr minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-2xl);
   align-items: center;
 }
@@ -1390,7 +1650,7 @@ html {
 
 .pet-page .about-content h2 span {
   color: var(--color-accent);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .pet-page .about-content > p {
@@ -1430,13 +1690,14 @@ html {
 }
 
 .pet-page .about-list p {
+  margin: 0;
   font-size: var(--text-small);
   color: var(--color-ink-soft);
 }
 
-/* =========================
+/* =========================================================
    REVIEWS
-========================= */
+========================================================= */
 
 .pet-page .reviews-section {
   background: var(--color-paper);
@@ -1453,6 +1714,14 @@ html {
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+
+.pet-page .review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
 
 .pet-page .review-stars {
@@ -1499,6 +1768,7 @@ html {
 
 .pet-page .review-user strong {
   font-size: 12px;
+  font-weight: 800;
 }
 
 .pet-page .review-user span {
@@ -1507,12 +1777,18 @@ html {
   margin-top: 3px;
 }
 
-/* =========================
+/* =========================================================
    NEWSLETTER
-========================= */
+========================================================= */
 
 .pet-page .newsletter {
-  background: var(--color-brand-soft);
+  background:
+    radial-gradient(
+      circle at 10% 50%,
+      oklch(100% 0 0 / 0.2),
+      transparent 30%
+    ),
+    var(--color-brand-soft);
 }
 
 .pet-page .newsletter-inner {
@@ -1560,6 +1836,12 @@ html {
   padding: 5px;
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-line);
+}
+
+.pet-page .newsletter-form:focus-within {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-soft);
 }
 
 .pet-page .newsletter-form input {
@@ -1574,23 +1856,27 @@ html {
 }
 
 .pet-page .newsletter-form button {
+  min-height: 40px;
   border: 0;
   border-radius: 8px;
   background: var(--color-brand);
   color: var(--color-white);
   padding: 0 var(--space-md);
   font-size: var(--text-small);
-  font-weight: 700;
-  transition: background var(--dur-base) var(--ease-out);
+  font-weight: 800;
+  transition:
+    background var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .pet-page .newsletter-form button:hover {
   background: var(--color-brand-strong);
+  transform: translateY(-1px);
 }
 
-/* =========================
+/* =========================================================
    FOOTER
-========================= */
+========================================================= */
 
 .pet-page .footer {
   background: var(--color-brand-strong);
@@ -1632,15 +1918,18 @@ html {
 }
 
 .pet-page .socials a {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   background: oklch(100% 0 0 / 0.1);
   color: oklch(100% 0 0 / 0.85);
-  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+  transition:
+    background var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .pet-page .socials a svg {
@@ -1651,6 +1940,7 @@ html {
 .pet-page .socials a:hover {
   background: var(--color-accent);
   color: var(--color-white);
+  transform: translateY(-2px);
 }
 
 .pet-page .footer-column {
@@ -1663,7 +1953,7 @@ html {
 .pet-page .footer-column h3 {
   font-family: var(--font-body);
   font-size: var(--text-small);
-  font-weight: 700;
+  font-weight: 800;
   margin: 0 0 var(--space-2xs);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1673,11 +1963,14 @@ html {
 .pet-page .footer-column > a {
   color: oklch(100% 0 0 / 0.75);
   font-size: var(--text-small);
-  transition: color var(--dur-base) var(--ease-out);
+  transition:
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .pet-page .footer-column > a:hover {
   color: var(--color-sage);
+  transform: translateX(3px);
 }
 
 .pet-page .contact-item {
@@ -1716,10 +2009,9 @@ html {
   flex-wrap: wrap;
 }
 
-/* =========================
-   ANT DESIGN CAROUSEL OVERRIDES
-   (SaleProduct / HotProduct / NewProduct)
-========================= */
+/* =========================================================
+   API PRODUCT CAROUSEL
+========================================================= */
 
 .pet-page .api-product-section {
   margin-top: var(--space-md);
@@ -1748,7 +2040,7 @@ html {
   color: var(--color-ink);
   font-family: var(--font-display);
   font-size: 19px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0;
   text-align: left;
 }
@@ -1770,12 +2062,15 @@ html {
   color: var(--color-ink-soft) !important;
   background: var(--color-surface) !important;
   box-shadow: none;
+  border-radius: var(--radius-sm);
 }
 
 .pet-page .api-product-section > div:first-child .ant-btn:hover {
   border-color: var(--color-brand) !important;
   color: var(--color-brand) !important;
 }
+
+/* Carousel wrapper */
 
 .pet-page .api-product-section > div:nth-child(2) {
   padding: var(--space-sm) var(--space-2xs) var(--space-lg);
@@ -1803,6 +2098,16 @@ html {
   border: 1px solid var(--color-line);
   border-radius: var(--radius-sm);
   box-shadow: none;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.pet-page .api-product-section .ant-card:hover {
+  border-color: var(--color-line-strong);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
 }
 
 .pet-page .api-product-section .ant-card-body {
@@ -1827,6 +2132,15 @@ html {
   height: 100%;
   min-height: 166px;
   object-fit: contain;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.pet-page .api-product-section .ant-card:hover
+  .ant-card-body
+  > div
+  > div:first-child
+  img {
+  transform: scale(1.04);
 }
 
 .pet-page .api-product-section .ant-card-body > div > div:last-child {
@@ -1844,58 +2158,109 @@ html {
   margin: 0;
 }
 
-.pet-page .api-product-section .ant-card-body > div > div:last-child > p:first-child,
-.pet-page .api-product-section .ant-card-body > div > div:last-child > a:first-child {
+.pet-page
+  .api-product-section
+  .ant-card-body
+  > div
+  > div:last-child
+  > p:first-child,
+.pet-page
+  .api-product-section
+  .ant-card-body
+  > div
+  > div:last-child
+  > a:first-child {
   display: -webkit-box;
   overflow: hidden;
   color: var(--color-ink);
   font-size: 13px;
   line-height: 1.4;
+  font-weight: 700;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
-/* Price / action rows inside the slide — restore the dead flex + gap classes. */
-.pet-page .api-product-section .ant-card-body > div > div:last-child > div {
+/* Price / action */
+
+.pet-page
+  .api-product-section
+  .ant-card-body
+  > div
+  > div:last-child
+  > div {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-2xs);
 }
 
-.pet-page .api-product-section .ant-card-body > div > div:last-child > div > p:first-child {
+.pet-page
+  .api-product-section
+  .ant-card-body
+  > div
+  > div:last-child
+  > div
+  > p:first-child {
   color: var(--color-accent-strong);
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 15px;
 }
 
-.pet-page .api-product-section .ant-card-body > div > div:last-child > div > p + p {
+.pet-page
+  .api-product-section
+  .ant-card-body
+  > div
+  > div:last-child
+  > div
+  > p
+  + p {
   color: var(--color-ink-faint);
   font-size: var(--text-micro);
   text-decoration: line-through;
 }
 
-.pet-page .api-product-section .ant-card-body > div > div:last-child > div > div {
+.pet-page
+  .api-product-section
+  .ant-card-body
+  > div
+  > div:last-child
+  > div
+  > div {
   padding: 3px 7px;
   border: 1px solid var(--color-accent);
   border-radius: var(--radius-sm);
   color: var(--color-accent-strong);
+  background: var(--color-accent-soft);
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
-.pet-page .api-product-section .ant-card-body > div > div:last-child > div > a {
+.pet-page
+  .api-product-section
+  .ant-card-body
+  > div
+  > div:last-child
+  > div
+  > a {
   padding: 7px 12px;
   border: 1px solid var(--color-line-strong);
   border-radius: var(--radius-sm);
   color: var(--color-ink-soft);
   font-size: 11px;
-  font-weight: 700;
-  transition: border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+  font-weight: 800;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out);
 }
 
-.pet-page .api-product-section .ant-card-body > div > div:last-child > div > a:hover {
+.pet-page
+  .api-product-section
+  .ant-card-body
+  > div
+  > div:last-child
+  > div
+  > a:hover {
   border-color: var(--color-brand);
   color: var(--color-brand);
 }
@@ -1909,6 +2274,7 @@ html {
   color: var(--color-accent-strong) !important;
   background: var(--color-surface) !important;
   font-size: 11px;
+  font-weight: 800;
 }
 
 .pet-page .api-product-section .ant-card-body .ant-btn:hover {
@@ -1924,6 +2290,10 @@ html {
   color: var(--color-brand);
   font-size: 7px;
 }
+
+/* =========================================================
+   API CATEGORY PRODUCTS
+========================================================= */
 
 .pet-page .api-category-products {
   width: 100%;
@@ -1943,6 +2313,17 @@ html {
   border: 1px solid var(--color-line) !important;
   border-radius: var(--radius-md) !important;
   box-shadow: none !important;
+  overflow: hidden;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
+.pet-page .api-category-products .ant-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-line-strong) !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
 .pet-page .api-category-products .ant-card-body {
@@ -1952,9 +2333,13 @@ html {
   padding: var(--space-xs) !important;
 }
 
-/* Square, clipped image well. The component's Tailwind positioning classes never
-   compile (no tailwind config), so every layer is pinned explicitly here. */
-.pet-page .api-category-products .ant-card-body > a:first-child > div {
+/* Product image */
+
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > a:first-child
+  > div {
   position: relative;
   height: auto;
   aspect-ratio: 1 / 1;
@@ -1965,38 +2350,88 @@ html {
   background: var(--color-paper-alt);
 }
 
-.pet-page .api-category-products .ant-card-body > a:first-child > div > div {
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > a:first-child
+  > div
+  > div {
   position: absolute;
   inset: 0;
 }
 
-.pet-page .api-category-products .ant-card-body > a:first-child img {
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > a:first-child
+  img {
   position: absolute;
   inset: 0;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: opacity var(--dur-base) var(--ease-out);
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
 }
 
-/* Second image is the hover state, not a second row. */
-.pet-page .api-category-products .ant-card-body > a:first-child img + img {
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > a:first-child
+  img:first-child {
+  transform: scale(1);
+}
+
+.pet-page
+  .api-category-products
+  .ant-card:hover
+  .ant-card-body
+  > a:first-child
+  img:first-child {
+  transform: scale(1.04);
+}
+
+/* Hover image */
+
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > a:first-child
+  img
+  + img {
   opacity: 0;
 }
 
-.pet-page .api-category-products .ant-card:hover .ant-card-body > a:first-child img + img {
+.pet-page
+  .api-category-products
+  .ant-card:hover
+  .ant-card-body
+  > a:first-child
+  img
+  + img {
   opacity: 1;
 }
 
-.pet-page .api-category-products .ant-card-body > div:not(:last-child) {
+/* Badge */
+
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > div:not(:last-child) {
   position: absolute;
   top: var(--space-sm);
   left: var(--space-sm);
   z-index: 2;
 }
 
-.pet-page .api-category-products .ant-card-body > div:last-child {
+/* Product information */
+
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > div:last-child {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -2005,7 +2440,11 @@ html {
   padding: 0;
 }
 
-.pet-page .api-category-products .ant-card-body > div:last-child > div:last-child {
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > div:last-child
+  > div:last-child {
   margin-top: auto;
 }
 
@@ -2014,44 +2453,67 @@ html {
   margin: 0;
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 13px;
   line-height: 1.45;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .pet-page .api-category-products .ant-card-body p {
   margin: 0;
 }
 
-/* Price row: the component's flex/gap/line-through classes are dead, restore them. */
-.pet-page .api-category-products .ant-card-body > div:last-child > div:first-of-type {
+/* Price */
+
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > div:last-child
+  > div:first-of-type {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-2xs);
 }
 
-.pet-page .api-category-products .ant-card-body > div:last-child > div:first-of-type p:first-child {
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > div:last-child
+  > div:first-of-type
+  p:first-child {
   color: var(--color-accent-strong);
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 16px;
 }
 
-.pet-page .api-category-products .ant-card-body > div:last-child > div:first-of-type p + p {
+.pet-page
+  .api-category-products
+  .ant-card-body
+  > div:last-child
+  > div:first-of-type
+  p
+  + p {
   color: var(--color-ink-faint);
   font-size: var(--text-micro);
   text-decoration: line-through;
 }
 
+/* Button */
+
 .pet-page .api-category-products .ant-card-body .ant-btn {
   width: 100%;
-  min-height: 34px;
+  min-height: 36px;
   border: 1px solid var(--color-accent) !important;
   border-radius: var(--radius-sm) !important;
   color: var(--color-accent-strong) !important;
   background: var(--color-surface) !important;
   font-size: 11px;
+  font-weight: 800;
 }
 
 .pet-page .api-category-products .ant-card-body .ant-btn > div {
@@ -2071,9 +2533,9 @@ html {
   background: var(--color-accent) !important;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* =========================================================
+   RESPONSIVE — 1050px
+========================================================= */
 
 @media (max-width: 1050px) {
   .pet-page .navigation {
@@ -2084,8 +2546,8 @@ html {
     font-size: 12px;
   }
 
-  .pet-page .category-card {
-    flex-basis: 130px;
+  .pet-page .category-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .pet-page .products-grid {
@@ -2101,7 +2563,15 @@ html {
     width: 380px;
     height: 380px;
   }
+
+  .pet-page .hero-image {
+    min-height: 500px;
+  }
 }
+
+/* =========================================================
+   RESPONSIVE — 850px
+========================================================= */
 
 @media (max-width: 850px) {
   .pet-page .topbar-right {
@@ -2179,6 +2649,11 @@ html {
     text-align: center;
   }
 
+  .pet-page .promotion-content p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .pet-page .promotion-label {
     justify-content: center;
   }
@@ -2224,6 +2699,10 @@ html {
   }
 }
 
+/* =========================================================
+   RESPONSIVE — 600px
+========================================================= */
+
 @media (max-width: 600px) {
   .pet-page .container {
     width: min(calc(100% - 28px), 1180px);
@@ -2258,13 +2737,25 @@ html {
     min-height: auto;
   }
 
+  .pet-page .hero-text {
+    padding-top: var(--space-2xl);
+  }
+
   .pet-page .hero h1 {
     font-size: 2.3rem;
     letter-spacing: -1px;
   }
 
+  .pet-page .hero-text > p {
+    font-size: 15px;
+  }
+
   .pet-page .hero-features {
     gap: var(--space-md);
+  }
+
+  .pet-page .hero-features strong {
+    font-size: 19px;
   }
 
   .pet-page .hero-image {
@@ -2275,6 +2766,10 @@ html {
   .pet-page .hero-image img {
     width: 260px;
     height: 260px;
+  }
+
+  .pet-page .hero-image img {
+    border-width: 5px;
   }
 
   .pet-page .floating-card {
@@ -2298,9 +2793,18 @@ html {
     flex-direction: column;
   }
 
+  .pet-page .section-heading h2,
+  .pet-page .center-heading h2 {
+    font-size: 25px;
+  }
+
+  .pet-page .category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2xs);
+  }
+
   .pet-page .category-card {
-    flex-basis: calc(50% - var(--space-2xs));
-    max-width: none;
+    min-height: 155px;
   }
 
   .pet-page .products-grid {
@@ -2320,8 +2824,31 @@ html {
     font-size: 11px;
   }
 
+  .pet-page .product-category {
+    font-size: 9px;
+  }
+
   .pet-page .price strong {
     font-size: 13px;
+  }
+
+  .pet-page .product-bottom {
+    align-items: flex-end;
+  }
+
+  .pet-page .product-actions {
+    gap: 3px;
+  }
+
+  .pet-page .add-cart {
+    width: 34px;
+    height: 34px;
+  }
+
+  .pet-page .buy-now {
+    padding: 8px 9px;
+    min-height: 34px;
+    font-size: 11px;
   }
 
   .pet-page .search-box {
@@ -2330,6 +2857,7 @@ html {
 
   .pet-page .filter-list {
     margin-right: -14px;
+    padding-right: 14px;
   }
 
   .pet-page .promotion h2 {
@@ -2342,6 +2870,15 @@ html {
 
   .pet-page .about-content h2 {
     font-size: 26px;
+  }
+
+  .pet-page .about-small-card {
+    width: 112px;
+    height: 96px;
+  }
+
+  .pet-page .about-small-card strong {
+    font-size: 27px;
   }
 
   .pet-page .footer-grid {
@@ -2373,15 +2910,50 @@ html {
   .pet-page .api-product-section > div:first-child h2 {
     font-size: 16px;
   }
+
+  .pet-page .api-product-section > div:nth-child(2) {
+    padding-bottom: var(--space-md);
+  }
 }
 
+/* =========================================================
+   RESPONSIVE — 390px
+========================================================= */
+
 @media (max-width: 390px) {
+  .pet-page .container {
+    width: calc(100% - 22px);
+  }
+
+  .pet-page .header-inner {
+    gap: var(--space-xs);
+  }
+
+  .pet-page .logo-name {
+    font-size: 16px;
+  }
+
+  .pet-page .logo-icon {
+    width: 37px;
+    height: 37px;
+  }
+
+  .pet-page .icon-button,
+  .pet-page .cart-button {
+    width: 36px;
+    height: 36px;
+  }
+
   .pet-page .products-grid {
     grid-template-columns: 1fr;
   }
 
   .pet-page .product-image {
     height: 260px;
+  }
+
+  .pet-page .product-info h3 {
+    font-size: 13px;
   }
 
   .pet-page .hero h1 {
@@ -2398,6 +2970,14 @@ html {
     gap: var(--space-sm);
   }
 
+  .pet-page .hero-features strong {
+    font-size: 17px;
+  }
+
+  .pet-page .hero-features span {
+    font-size: 9px;
+  }
+
   .pet-page .product-actions {
     gap: var(--space-3xs);
   }
@@ -2405,5 +2985,24 @@ html {
   .pet-page .buy-now {
     padding: 8px 10px;
     font-size: 12px;
+  }
+
+  .pet-page .api-category-products > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY / REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .pet-page *,
+  .pet-page *::before,
+  .pet-page *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
