@@ -1,6 +1,5 @@
 import {
   createBrowserRouter,
-  Navigate,
   RouterProvider,
 } from "react-router-dom";
 import Home from "./pages/home/home";
@@ -19,6 +18,7 @@ import ContactPage from "./pages/contact/contact";
 import AdminLayout from "./admin/layout/adminLayout";
 import RequireAdmin from "./admin/layout/requireAdmin";
 import AdminDashboard from "./admin/dashboard/dashboard";
+import AdminUser from "./admin/user/user";
 import AdminProduct from "./admin/product/product";
 import AdminCategory from "./admin/category/category";
 import AdminBrand from "./admin/brand/brand";
@@ -91,6 +91,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <AdminDashboard /> },
       { path: "dashboard", element: <AdminDashboard /> },
+      { path: "users", element: <AdminUser /> },
       { path: "products", element: <AdminProduct /> },
       { path: "categories", element: <AdminCategory /> },
       { path: "brands", element: <AdminBrand /> },
