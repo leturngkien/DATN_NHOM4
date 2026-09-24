@@ -1201,7 +1201,7 @@ function Home() {
               Dịch vụ
             </a>
 
-            <a href="#about">
+            <a href="/about-us">
               Về chúng tôi
             </a>
           </nav>
@@ -2280,105 +2280,109 @@ function Home() {
         </section>
 
         {/* =====================================================
-            BLOG PREVIEW
+            ABOUT US
         ===================================================== */}
 
-        <section className="section" id="blog">
+        <section className="section" id="about-home">
           <div className="container">
-            <div className="section-heading">
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1.1fr 0.9fr",
+                gap: 28,
+                alignItems: "center",
+                background: "linear-gradient(135deg, #fff9f4 0%, #f7f2eb 100%)",
+                borderRadius: 30,
+                border: "1px solid rgba(35, 38, 32, 0.06)",
+                boxShadow: "0 20px 50px rgba(35, 38, 32, 0.06)",
+                padding: "32px 28px",
+              }}
+            >
               <div>
-                <span className="section-label">TIN TỨC</span>
-                <h2>
-                  Tin tức &amp; mẹo chăm sóc
+                <span className="section-label" style={{ color: "#E4572E" }}>VỀ PET CORNER</span>
+                <h2 style={{ marginTop: 12, marginBottom: 14, fontSize: "clamp(2rem, 4vw, 3rem)", lineHeight: 1.2, color: "#232620" }}>
+                  Mỗi thú cưng đều xứng đáng được yêu thương và chăm sóc đúng cách.
                 </h2>
-              </div>
-            </div>
+                <p style={{ margin: 0, color: "#726B5E", lineHeight: 1.8, fontSize: 17, maxWidth: 640 }}>
+                  Pet Corner mang đến những sản phẩm tiện ích, dinh dưỡng và giải pháp chăm sóc thú cưng đáng tin cậy cho gia đình bạn.
+                  Chúng tôi tin rằng một môi trường sống khỏe mạnh, an toàn và đầy yêu thương sẽ mang lại niềm vui cả cho chủ nuôi lẫn bạn cún, mèo yêu.
+                </p>
 
-            {homePosts.length === 0 ? (
-              <div className="empty-products">
-                <p>Hiện chưa có bài viết mới.</p>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 22 }}>
+                  <a href="/products" className="primary-button" style={{ textDecoration: "none" }}>
+                    Khám phá sản phẩm
+                  </a>
+                  <a href="/contact" className="secondary-button" style={{ textDecoration: "none" }}>
+                    Liên hệ
+                  </a>
+                </div>
               </div>
-            ) : (
+
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-                  gap: 24,
+                  gridTemplateColumns: "repeat(2, minmax(150px, 1fr))",
+                  gap: 18,
                 }}
               >
-                {homePosts.map((post, index) => {
-                  const excerpt = (post.content || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
-                  const accentColors = ["#E4572E", "#3F6640", "#F5AE16", "#7C8F6A", "#D87D46", "#8F5C42"];
-
-                  return (
-                    <div
-                      key={post._id}
-                      style={{
-                        background: "linear-gradient(180deg, #ffffff 0%, #fffaf3 100%)",
-                        borderRadius: 22,
-                        overflow: "hidden",
-                        boxShadow: "0 16px 32px rgba(35, 38, 32, 0.08)",
-                        border: "1px solid rgba(35, 38, 32, 0.05)",
-                        transition: "transform 0.25s ease, box-shadow 0.25s ease",
-                        transform: "translateY(0)",
-                        cursor: "pointer",
-                      }}
-                      onMouseEnter={(event) => {
-                        const target = event.currentTarget as HTMLDivElement;
-                        target.style.transform = "translateY(-6px)";
-                        target.style.boxShadow = "0 20px 40px rgba(35, 38, 32, 0.12)";
-                      }}
-                      onMouseLeave={(event) => {
-                        const target = event.currentTarget as HTMLDivElement;
-                        target.style.transform = "translateY(0)";
-                        target.style.boxShadow = "0 16px 32px rgba(35, 38, 32, 0.08)";
-                      }}
-                    >
-                      <a href={`/blogs/${post._id}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-                        <div style={{ position: "relative", height: 220, overflow: "hidden" }}>
-                          <img
-                            src={post.image_url || "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=80"}
-                            alt={post.title}
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                          />
-                          <span
-                            style={{
-                              position: "absolute",
-                              top: 14,
-                              left: 14,
-                              background: accentColors[index % accentColors.length],
-                              color: "#fff",
-                              fontSize: 11,
-                              fontWeight: 700,
-                              letterSpacing: 1,
-                              padding: "7px 10px",
-                              borderRadius: 999,
-                            }}
-                          >
-                            {post.author || "Pet Corner"}
-                          </span>
-                        </div>
-
-                        <div style={{ padding: 22 }}>
-                          <p style={{ margin: "0 0 10px", color: "#726B5E", fontSize: 12, fontWeight: 700, letterSpacing: 1.3, textTransform: "uppercase" }}>
-                            {new Date(post.createdAt || Date.now()).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })}
-                          </p>
-                          <h3 style={{ margin: "0 0 12px", color: "#232620", fontSize: 22, lineHeight: 1.4, minHeight: 66 }}>
-                            {post.title}
-                          </h3>
-                          <p style={{ margin: "0 0 18px", color: "#726B5E", lineHeight: 1.75, minHeight: 84 }}>
-                            {excerpt.slice(0, 118)}{excerpt.length > 118 ? "..." : ""}
-                          </p>
-                          <span style={{ color: accentColors[index % accentColors.length], fontWeight: 700, textDecoration: "none" }}>
-                            Đọc tiếp →
-                          </span>
-                        </div>
-                      </a>
-                    </div>
-                  );
-                })}
+                {[
+                  { label: "Sản phẩm uy tín", value: "100%" },
+                  { label: "Khách hàng hài lòng", value: "4.9/5" },
+                  { label: "Hỗ trợ tận tâm", value: "24/7" },
+                  { label: "Phụ kiện & thức ăn", value: "500+" },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    style={{
+                      background: "#fff",
+                      border: "1px solid rgba(35, 38, 32, 0.05)",
+                      borderRadius: 22,
+                      padding: "20px 18px",
+                      boxShadow: "0 12px 26px rgba(35, 38, 32, 0.04)",
+                    }}
+                  >
+                    <div style={{ fontSize: 28, fontWeight: 800, color: "#E4572E", marginBottom: 8 }}>{item.value}</div>
+                    <div style={{ color: "#726B5E", fontWeight: 600, lineHeight: 1.5 }}>{item.label}</div>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================
+            BLOG CTA
+        ===================================================== */}
+
+        <section className="section" id="blog-cta">
+          <div className="container">
+            <div
+              style={{
+                background: "linear-gradient(135deg, #fff7f0 0%, #f4efe9 100%)",
+                border: "1px solid rgba(35, 38, 32, 0.05)",
+                borderRadius: 28,
+                padding: "30px 24px",
+                boxShadow: "0 16px 35px rgba(35, 38, 32, 0.05)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 18,
+                flexWrap: "wrap",
+              }}
+            >
+              <div>
+                <span className="section-label" style={{ color: "#E4572E" }}>TIN TỨC</span>
+                <h2 style={{ marginTop: 10, marginBottom: 0, color: "#232620", fontSize: "clamp(1.8rem, 3vw, 2.4rem)" }}>
+                  Khám phá mẹo nuôi thú cưng và những chia sẻ hữu ích
+                </h2>
+              </div>
+
+              {homePosts.length > 0 && (
+                <a href="/blogs" className="primary-button" style={{ textDecoration: "none" }}>
+                  Xem tất cả bài viết
+                </a>
+              )}
+            </div>
           </div>
         </section>
 
@@ -2600,15 +2604,15 @@ function Home() {
               Hỗ trợ
             </h3>
 
-            <a href="#contact">
+            <a href="/contact">
               Liên hệ
             </a>
 
-            <a href="#return">
+            <a href="/contact">
               Đổi trả & hoàn tiền
             </a>
 
-            <a href="#privacy">
+            <a href="/contact">
               Chính sách bảo mật
             </a>
 

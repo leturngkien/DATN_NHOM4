@@ -62,176 +62,97 @@ function PostPage() {
   }, []);
 
   return (
-    <main style={{ background: "linear-gradient(180deg, #f8f6f2 0%, #f2efe9 100%)", minHeight: "100vh", padding: "42px 20px 90px" }}>
-      <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-        <div
+    <main style={{ background: "linear-gradient(180deg, #f7f4f0 0%, #f3efe9 100%)", minHeight: "100vh", padding: "40px 20px 90px" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <header
           style={{
             marginBottom: 28,
-            textAlign: "center",
-            background: "rgba(255,255,255,0.7)",
-            border: "1px solid rgba(35,38,32,0.06)",
-            borderRadius: 28,
-            boxShadow: "0 12px 35px rgba(35,38,32,0.06)",
-            padding: "28px 20px 18px",
+            background: "linear-gradient(135deg, #232620 0%, #3a3d35 55%, #654936 100%)",
+            borderRadius: 30,
+            padding: "32px 28px",
+            boxShadow: "0 18px 45px rgba(35,38,32,0.12)",
+            color: "#fff",
           }}
         >
-          <p
-            style={{
-              color: "#E4572E",
-              fontWeight: 800,
-              letterSpacing: 3,
-              fontSize: 12,
-              margin: "0 0 10px",
-            }}
-          >
-            PET CORNER
-          </p>
-          <h1 style={{ margin: 0, color: "#232620", fontSize: "clamp(2rem, 5vw, 3.4rem)", lineHeight: 1.1 }}>
-            Bài viết mới nhất
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 999, padding: "8px 14px", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>
+            Pet Corner Journal
+          </div>
+          <h1 style={{ margin: "18px 0 10px", fontSize: "clamp(2.2rem, 5vw, 3.8rem)", lineHeight: 1.1, color: "#fff" }}>
+            Khám phá những bài viết hữu ích
           </h1>
-          <p style={{ margin: "14px auto 0", color: "#726B5E", fontSize: 17, maxWidth: 740 }}>
-            Khám phá mẹo nuôi thú cưng, tin tức và kinh nghiệm chăm sóc hàng ngày.
+          <p style={{ margin: 0, maxWidth: 760, color: "rgba(255,255,255,0.8)", lineHeight: 1.8, fontSize: 17 }}>
+            Mẹo chăm sóc thú cưng, tin tức mới nhất và những chia sẻ thiết thực để bạn nuôi thú cưng tốt hơn mỗi ngày.
           </p>
-        </div>
+        </header>
 
         {loading && (
-          <div style={{ textAlign: "center", color: "#726B5E", padding: "40px 0" }}>
+          <div style={{ textAlign: "center", color: "#726B5E", padding: "52px 0", fontSize: 16, fontWeight: 600 }}>
             Đang tải bài viết...
           </div>
         )}
 
         {!loading && error && (
-          <div style={{ textAlign: "center", color: "#b42318", padding: "40px 0" }}>{error}</div>
+          <div style={{ textAlign: "center", color: "#b42318", padding: "52px 0", fontSize: 16, fontWeight: 600 }}>{error}</div>
         )}
 
         {!loading && !error && posts.length === 0 && (
-          <div style={{ textAlign: "center", color: "#726B5E", padding: "40px 0" }}>
+          <div style={{ textAlign: "center", color: "#726B5E", padding: "52px 0", fontSize: 16, fontWeight: 600 }}>
             Hiện chưa có bài viết nào.
           </div>
         )}
 
         {!loading && !error && posts.length > 0 && (
           <>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1.3fr 0.7fr",
-                gap: 30,
-                marginBottom: 30,
-              }}
-            >
-              {posts.slice(0, 1).map((post) => {
-                const excerpt = stripHtml(post.content).slice(0, 180);
+            {posts.slice(0, 1).map((post) => {
+              const excerpt = stripHtml(post.content).slice(0, 200);
 
-                return (
-                  <Link
-                    key={post._id}
-                    to={`/blogs/${post._id}`}
-                    style={{ textDecoration: "none", color: "inherit", display: "block" }}
+              return (
+                <Link
+                  key={post._id}
+                  to={`/blogs/${post._id}`}
+                  style={{ textDecoration: "none", color: "inherit", display: "block", marginBottom: 30 }}
+                >
+                  <article
+                    style={{
+                      background: "#fff",
+                      borderRadius: 30,
+                      overflow: "hidden",
+                      boxShadow: "0 18px 40px rgba(35,38,32,0.08)",
+                      border: "1px solid rgba(35,38,32,0.06)",
+                      display: "grid",
+                      gridTemplateColumns: "1.2fr 0.8fr",
+                    }}
                   >
-                    <article
-                      style={{
-                        background: "#fff",
-                        borderRadius: 30,
-                        overflow: "hidden",
-                        boxShadow: "0 20px 45px rgba(35,38,32,0.12)",
-                        border: "1px solid rgba(35,38,32,0.07)",
-                        display: "grid",
-                        gridTemplateColumns: "1.2fr 0.8fr",
-                        minHeight: 300,
-                      }}
-                    >
-                      <div style={{ minHeight: 300, background: "#efeae3", overflow: "hidden" }}>
-                        <img
-                          src={post.image_url || "/images/logo.jpg"}
-                          alt={post.title}
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
+                    <div style={{ minHeight: 340, background: "#efeae3", overflow: "hidden" }}>
+                      <img
+                        src={post.image_url || "/images/logo.jpg"}
+                        alt={post.title}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    </div>
+
+                    <div style={{ padding: 30, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                      <div style={{ display: "inline-flex", alignSelf: "flex-start", background: "#E4572E", color: "#fff", borderRadius: 999, fontSize: 11, fontWeight: 700, letterSpacing: 1.2, padding: "8px 12px", marginBottom: 14 }}>
+                        {post.author || "Pet Corner"}
                       </div>
-
-                      <div style={{ padding: 28, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignSelf: "flex-start",
-                            background: "#E4572E",
-                            color: "#fff",
-                            borderRadius: 999,
-                            fontSize: 11,
-                            fontWeight: 700,
-                            letterSpacing: 1.1,
-                            padding: "8px 12px",
-                            marginBottom: 14,
-                          }}
-                        >
-                          {post.author || "Pet Corner"}
-                        </span>
-                        <p style={{ margin: 0, color: "#726B5E", fontSize: 12, fontWeight: 700, letterSpacing: 1.3, textTransform: "uppercase" }}>
-                          {formatDate(post.createdAt)}
-                        </p>
-                        <h2 style={{ margin: "12px 0 14px", color: "#232620", fontSize: "clamp(1.8rem, 3vw, 2.5rem)", lineHeight: 1.2 }}>
-                          {post.title}
-                        </h2>
-                        <p style={{ margin: 0, color: "#726B5E", lineHeight: 1.8, fontSize: 16 }}>
-                          {excerpt}
-                          {stripHtml(post.content).length > 180 ? "..." : ""}
-                        </p>
-                        <div style={{ marginTop: 18, color: "#E4572E", fontWeight: 800, fontSize: 16 }}>
-                          Đọc tiếp →
-                        </div>
+                      <p style={{ margin: 0, color: "#726B5E", fontSize: 12, fontWeight: 700, letterSpacing: 1.3, textTransform: "uppercase" }}>
+                        {formatDate(post.createdAt)}
+                      </p>
+                      <h2 style={{ margin: "12px 0 14px", color: "#232620", fontSize: "clamp(1.9rem, 3vw, 2.8rem)", lineHeight: 1.2 }}>
+                        {post.title}
+                      </h2>
+                      <p style={{ margin: 0, color: "#726B5E", lineHeight: 1.8, fontSize: 16 }}>
+                        {excerpt}
+                        {stripHtml(post.content).length > 200 ? "..." : ""}
+                      </p>
+                      <div style={{ marginTop: 22, color: "#E4572E", fontWeight: 800, fontSize: 16 }}>
+                        Đọc tiếp →
                       </div>
-                    </article>
-                  </Link>
-                );
-              })}
-
-              <div style={{ display: "grid", gap: 20 }}>
-                {posts.slice(1, 3).map((post) => {
-                  const excerpt = stripHtml(post.content).slice(0, 110);
-
-                  return (
-                    <Link
-                      key={post._id}
-                      to={`/blogs/${post._id}`}
-                      style={{ textDecoration: "none", color: "inherit", display: "block" }}
-                    >
-                      <article
-                        style={{
-                          background: "#fff",
-                          borderRadius: 24,
-                          overflow: "hidden",
-                          boxShadow: "0 12px 28px rgba(35,38,32,0.08)",
-                          border: "1px solid rgba(35,38,32,0.05)",
-                          display: "grid",
-                          gridTemplateColumns: "140px 1fr",
-                          minHeight: 138,
-                        }}
-                      >
-                        <div style={{ background: "#efeae3", overflow: "hidden" }}>
-                          <img
-                            src={post.image_url || "/images/logo.jpg"}
-                            alt={post.title}
-                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                          />
-                        </div>
-                        <div style={{ padding: 18 }}>
-                          <p style={{ margin: 0, color: "#726B5E", fontSize: 11, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase" }}>
-                            {formatDate(post.createdAt)}
-                          </p>
-                          <h3 style={{ margin: "10px 0 8px", color: "#232620", fontSize: 20, lineHeight: 1.35 }}>
-                            {post.title}
-                          </h3>
-                          <p style={{ margin: 0, color: "#726B5E", lineHeight: 1.7 }}>
-                            {excerpt}
-                            {stripHtml(post.content).length > 110 ? "..." : ""}
-                          </p>
-                        </div>
-                      </article>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
+                    </div>
+                  </article>
+                </Link>
+              );
+            })}
 
             <div
               style={{
@@ -240,31 +161,30 @@ function PostPage() {
                 gap: 24,
               }}
             >
-              {posts.slice(3).map((post) => {
+              {posts.slice(1).map((post) => {
                 const excerpt = stripHtml(post.content).slice(0, 120);
 
                 return (
                   <Link
                     key={post._id}
                     to={`/blogs/${post._id}`}
-                    style={{
-                      textDecoration: "none",
-                      color: "inherit",
-                      display: "block",
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                    }}
+                    style={{ textDecoration: "none", color: "inherit", display: "flex", height: "100%" }}
                   >
                     <article
                       style={{
                         background: "#fff",
                         borderRadius: 24,
                         overflow: "hidden",
-                        boxShadow: "0 12px 30px rgba(35,38,32,0.08)",
+                        boxShadow: "0 14px 30px rgba(35,38,32,0.06)",
                         border: "1px solid rgba(35,38,32,0.05)",
                         height: "100%",
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
                       }}
                     >
-                      <div style={{ height: 220, background: "#f0efe9", overflow: "hidden" }}>
+                      <div style={{ height: 220, overflow: "hidden", background: "#f0efe9" }}>
                         <img
                           src={post.image_url || "/images/logo.jpg"}
                           alt={post.title}
@@ -272,31 +192,18 @@ function PostPage() {
                         />
                       </div>
 
-                      <div style={{ padding: 20 }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: 10,
-                            marginBottom: 12,
-                            color: "#726B5E",
-                            fontSize: 12,
-                          }}
-                        >
+                      <div style={{ padding: 20, display: "flex", flexDirection: "column", flex: 1 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 12, color: "#726B5E", fontSize: 12 }}>
                           <span>{post.author || "Pet Corner"}</span>
                           <span>{formatDate(post.createdAt)}</span>
                         </div>
-
                         <h3 style={{ margin: "0 0 10px", color: "#232620", fontSize: 22, lineHeight: 1.4, minHeight: 64 }}>
                           {post.title}
                         </h3>
-
-                        <p style={{ color: "#726B5E", lineHeight: 1.7, margin: 0 }}>
+                        <p style={{ color: "#726B5E", lineHeight: 1.7, margin: 0, flex: 1 }}>
                           {excerpt}
                           {stripHtml(post.content).length > 120 ? "..." : ""}
                         </p>
-
                         <div style={{ marginTop: 18, color: "#E4572E", fontWeight: 700 }}>
                           Đọc tiếp →
                         </div>

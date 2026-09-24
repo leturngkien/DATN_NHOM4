@@ -33,7 +33,7 @@ export default function ShopHeader() {
           <button onClick={() => navigate("/products")}>Sản phẩm</button>
           <button onClick={() => navigate("/#categories")}>Danh mục</button>
           <button onClick={() => navigate("/#services")}>Dịch vụ</button>
-          <button onClick={() => navigate("/#about")}>Về chúng tôi</button>
+          <button onClick={() => navigate("/about-us")}>Về chúng tôi</button>
         </nav>
 
         <div className="shop-actions">

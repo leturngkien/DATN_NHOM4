@@ -15,6 +15,7 @@ import NotFound from "./pages/404/404";
 import PostPage from "./pages/post/post";
 import PostDetailPage from "./pages/post/post-detail";
 import ContactPage from "./pages/contact/contact";
+import AboutUsPage from "./pages/about/about-us";
 import AdminLayout from "./admin/layout/adminLayout";
 import RequireAdmin from "./admin/layout/requireAdmin";
 import AdminDashboard from "./admin/dashboard/dashboard";
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
   {
     path: "/blogs/:id",
     element: <PostDetailPage />,
+  },
+  {
+    path: "/about-us",
+    element: <AboutUsPage />,
   },
   {
     path: "/contact",

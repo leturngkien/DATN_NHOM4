@@ -29,7 +29,7 @@ export default function Footer() {
 
         <section className="footer-column">
           <h3>Hỗ trợ</h3>
-          {supportLinks.map((link) => <a href="#" key={link}>{link}</a>)}
+          {supportLinks.map((link) => <a href="/contact" key={link}>{link}</a>)}
         </section>
 
         <section className="footer-column footer-contact">
