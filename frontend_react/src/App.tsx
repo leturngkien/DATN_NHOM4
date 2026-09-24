@@ -23,7 +23,6 @@ import AdminProduct from "./admin/product/product";
 import AdminCategory from "./admin/category/category";
 import AdminBrand from "./admin/brand/brand";
 import AdminTag from "./admin/tag/tag";
-import AdminService from "./admin/service/service";
 import AdminPost from "./admin/post/post";
 import PageLayout from "./components/layout/PageLayout";
 
@@ -96,7 +95,6 @@ const router = createBrowserRouter([
       { path: "categories", element: <AdminCategory /> },
       { path: "brands", element: <AdminBrand /> },
       { path: "tags", element: <AdminTag /> },
-      { path: "services", element: <AdminService /> },
       { path: "blogs", element: <AdminPost /> },
     ],
   },

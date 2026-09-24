@@ -31,6 +31,7 @@ import productsApi from "../api/productsApi";
 import { UserOutlined } from "@ant-design/icons";
 import loginApi from "../api/login";
 import clearLocalStorageExceptCarts from "../config/clearLocalStorage";
+import logoImage from "../pages/img/logo.jpg";
 
 /**
  * Bảng màu dùng chung với trang chủ:
@@ -462,9 +463,9 @@ export default function Header() {
         <div className="flex items-center justify-between px-4 py-3 sm:px-[40px] sm:py-4 lg:px-[154px]">
           <a href="/">
             <img
-              src="/images/logo.jpg"
+              src={logoImage}
               alt="Pet Corner Logo"
-              className="h-[40px] w-auto sm:h-[60px] lg:h-[100px]"
+              className="h-[32px] w-auto sm:h-[46px] lg:h-[70px]"
             />
           </a>
 

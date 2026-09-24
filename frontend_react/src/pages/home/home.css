@@ -147,6 +147,13 @@ img {
   flex-shrink: 0;
 }
 
+.pet-page .logo-image {
+  width: 80px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
 .pet-page .logo-icon {
   width: 46px;
   height: 46px;

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { listenToBlogUpdates } from "../../utils/blogSync";
+import logoImage from "../img/logo.jpg";
 import "./home.css";
 
 import productsApi from "../../api/productsApi";
@@ -1177,19 +1178,11 @@ function Home() {
             className="logo"
             href="#home"
           >
-            <div className="logo-icon">
-              {/* <PawPrint /> */}
-            </div>
-
-            <div>
-              <div className="logo-name">
-                PET CORNER
-              </div>
-
-              <div className="logo-sub">
-                YOUR PET'S HAPPY PLACE
-              </div>
-            </div>
+            <img
+              src={logoImage}
+              alt="Pet Corner Logo"
+              className="logo-image"
+            />
           </a>
 
           <nav className="navigation">
