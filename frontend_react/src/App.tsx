@@ -18,6 +18,7 @@ import PostDetailPage from "./pages/post/post-detail";
 import ContactPage from "./pages/contact/contact";
 import AdminLayout from "./admin/layout/adminLayout";
 import RequireAdmin from "./admin/layout/requireAdmin";
+import AdminDashboard from "./admin/dashboard/dashboard";
 import AdminProduct from "./admin/product/product";
 import AdminCategory from "./admin/category/category";
 import AdminBrand from "./admin/brand/brand";
@@ -88,7 +89,8 @@ const router = createBrowserRouter([
       </RequireAdmin>
     ),
     children: [
-      { index: true, element: <Navigate to="/admin/products" replace /> },
+      { index: true, element: <AdminDashboard /> },
+      { path: "dashboard", element: <AdminDashboard /> },
       { path: "products", element: <AdminProduct /> },
       { path: "categories", element: <AdminCategory /> },
       { path: "brands", element: <AdminBrand /> },

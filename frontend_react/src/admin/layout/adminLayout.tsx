@@ -11,6 +11,7 @@ import {
   LogoutOutlined,
   ShoppingOutlined,
   UserOutlined,
+  DashboardOutlined,
 } from "@ant-design/icons";
 import clearLocalStorageExceptCarts from "../../config/clearLocalStorage";
 import { readStoredUser } from "./requireAdmin";
@@ -19,6 +20,7 @@ import "./admin.css";
 const { Sider, Header, Content } = Layout;
 
 const MENU_ITEMS = [
+  { key: "/admin", icon: <DashboardOutlined />, label: "Dashboard" },
   { key: "/admin/products", icon: <AppstoreOutlined />, label: "Sản phẩm" },
   { key: "/admin/categories", icon: <TagsOutlined />, label: "Danh mục" },
   { key: "/admin/brands", icon: <ShopOutlined />, label: "Thương hiệu" },
@@ -57,8 +59,8 @@ function AdminLayout() {
   const user = readStoredUser();
 
   const selectedKey =
-    MENU_ITEMS.find((item) => location.pathname.startsWith(item.key))?.key ||
-    "/admin/products";
+    MENU_ITEMS.find((item) => location.pathname === item.key || location.pathname.startsWith(`${item.key}/`))?.key ||
+    "/admin";
 
   const handleLogout = () => {
     clearLocalStorageExceptCarts();

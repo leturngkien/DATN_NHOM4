@@ -1204,10 +1204,6 @@ function Home() {
               Sản phẩm
             </a>
 
-            <a href="#categories">
-              Danh mục
-            </a>
-
             <a href="#services">
               Dịch vụ
             </a>
@@ -1564,102 +1560,6 @@ function Home() {
         </section>
 
         {/* =====================================================
-            CATEGORIES
-        ===================================================== */}
-
-        <section
-          className="section categories-section"
-          id="categories"
-        >
-          <div className="container">
-
-            <div className="section-heading">
-              <div>
-                <span className="section-label">
-                  DANH MỤC
-                </span>
-
-                <h2>
-                  Mua sắm theo{" "}
-                  <span>
-                    nhu cầu
-                  </span>
-                </h2>
-              </div>
-
-              <a
-                href="/products"
-                className="view-all"
-              >
-                Xem tất cả →
-              </a>
-            </div>
-
-            <div className="category-grid">
-
-              {loading ? (
-                <div className="empty-products">
-                  Đang tải danh mục...
-                </div>
-              ) : categories.length ===
-                0 ? (
-                <div className="empty-products">
-                  Chưa có danh mục
-                </div>
-              ) : (
-                categories.map(
-                  (
-                    category,
-                    index
-                  ) => {
-                    const CategoryIcon =
-                      CATEGORY_ICONS[
-                        index %
-                          CATEGORY_ICONS.length
-                      ];
-
-                    return (
-                      <button
-                        className="category-card"
-                        key={
-                          category._id
-                        }
-                        onClick={() =>
-                          scrollToCategory(
-                            category.name
-                          )
-                        }
-                      >
-                        <div className="category-icon">
-                          <CategoryIcon />
-                        </div>
-
-                        <strong>
-                          {
-                            category.name
-                          }
-                        </strong>
-
-                        <span>
-                          {
-                            productsByCategory[
-                              category.name
-                            ]?.length ||
-                            0
-                          }{" "}
-                          sản phẩm
-                        </span>
-                      </button>
-                    );
-                  }
-                )
-              )}
-
-            </div>
-          </div>
-        </section>
-
-        {/* =====================================================
             PRODUCTS
         ===================================================== */}
 
@@ -1679,14 +1579,13 @@ function Home() {
                 <h2>
                   Sản phẩm{" "}
                   <span>
-                    nổi bật
+                    bán chạy
                   </span>
                 </h2>
               </div>
 
               <div className="search-box">
                 <Search />
-
 
                 <input
                   id="product-search"
@@ -1702,8 +1601,6 @@ function Home() {
               </div>
 
             </div>
-
-            {/* FILTER */}
 
             <div className="filter-list">
               {categoriesFilter.map(
@@ -1728,8 +1625,6 @@ function Home() {
               )}
             </div>
 
-            {/* PRODUCTS */}
-
             {loading ? (
               <div className="empty-products">
                 <div>
@@ -1746,14 +1641,12 @@ function Home() {
               </div>
             ) : (
               <div className="products-grid">
-
                 {filteredProducts.map(
                   (product) =>
                     renderProductCard(
                       product
                     )
                 )}
-
               </div>
             )}
 
@@ -1944,52 +1837,6 @@ function Home() {
                     renderProductCard(
                       product,
                       `sale-${product.id}`
-                    )
-                )}
-              </div>
-            )}
-
-          </div>
-        </section>
-
-        {/* =====================================================
-            HOT PRODUCTS
-        ===================================================== */}
-
-        <section className="section">
-          <div className="container">
-
-            <div className="section-heading">
-              <div>
-
-                <span className="section-label">
-                  BÁN CHẠY
-                </span>
-
-                <h2>
-                  Sản phẩm{" "}
-                  <span>
-                    bán chạy
-                  </span>
-                </h2>
-
-              </div>
-            </div>
-
-            <HotProduct
-              data={
-                hotProductItems
-              }
-            />
-
-            {hotProductItems.length ===
-              0 && (
-              <div className="products-grid">
-                {hotProducts.map(
-                  (product) =>
-                    renderProductCard(
-                      product,
-                      `hot-${product.id}`
                     )
                 )}
               </div>

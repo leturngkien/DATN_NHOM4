@@ -146,26 +146,32 @@ export default function HotProduct({ data }: { data: Product[] }) {
           {data.map((product: Product, index: number) => (
             <Card
               key={`${product._id}-${index}`}
-              className={`min-w-0 flex-1 transform border-none shadow-none transition-all duration-1000 ease-in-out`}
+              className={`min-w-0 flex-1 cursor-pointer transform border-none shadow-none transition-all duration-1000 ease-in-out`}
               styles={{ body: { padding: 0 } }}
+              onClick={() => openProductDetail(product._id)}
             >
               <div className="flex">
                 <div className="w-1/4">
-                  <Link to={`/detail/${product._id}`}>
-                    <img
-                      src={`${product.image_url[0]}`}
-                      alt={product.name}
-                      className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
-                    />
-                  </Link>
+                  <img
+                    src={`${product.image_url[0]}`}
+                    alt={product.name}
+                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      openProductDetail(product._id);
+                    }}
+                  />
                 </div>
                 <div className="flex w-3/4 flex-col justify-between p-2">
-                  <Link
-                    to={`/detail/${String(product._id)}`}
+                  <div
                     className="text-xs font-bold text-gray-800 transition-colors hover:text-[#FFA500] sm:text-sm"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      openProductDetail(product._id);
+                    }}
                   >
                     {product.name}
-                  </Link>
+                  </div>
                   <div className="mt-2 flex items-center gap-2">
                     <p className="text-sm font-bold text-[#FFA500] transition-colors duration-300 sm:text-base">
                       {new Intl.NumberFormat("vi-VN", {
@@ -190,19 +196,22 @@ export default function HotProduct({ data }: { data: Product[] }) {
                     )}
                   </div>
                   <div className="mt-2 flex items-center gap-2">
-                    <Link
-                      to={`/detail/${String(product._id)}`}
+                    <button
+                      type="button"
                       className="rounded-lg border border-[#FFA500] px-2 py-1 text-center text-xs text-[#D88400] transition-colors hover:bg-[#FFA500] hover:text-white sm:px-3 sm:text-sm"
                       onClick={(event) => {
-                        event.preventDefault();
+                        event.stopPropagation();
                         openProductDetail(product._id);
                       }}
                     >
                       Xem chi tiết
-                    </Link>
+                    </button>
                     <Button
                       className="w-[82px] rounded-lg bg-[#FFA500] text-xs text-white hover:border-[#FFA500] hover:bg-[#1890ff] sm:w-[100px] sm:text-sm"
-                      onClick={() => handleBuyNow(product)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleBuyNow(product);
+                      }}
                     >
                       Mua ngay
                     </Button>
