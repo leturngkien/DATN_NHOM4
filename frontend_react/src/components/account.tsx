@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Avatar,
     Button,
@@ -10,9 +10,9 @@ import {
 } from "antd";
 import { DatePicker } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import userApi from "../api/userApi";
+import "./account.css";
 
 const { Item } = Form;
 
@@ -34,8 +34,6 @@ interface User {
 }
 
 export default function Account() {
-    const params = useParams();
-    const type = params["*"] || "account";
     const [form] = Form.useForm();
     const [user, setUser] = useState<User | null>(null);
     const [fileList, setFileList] = useState<any[]>([]);
@@ -146,7 +144,7 @@ export default function Account() {
             setFileList([]);
             window.location.reload();
         } catch (error) {
-            message.error(`Cập nhật thất bại: ${error.message}`);
+            message.error(`Cập nhật thất bại: ${error instanceof Error ? error.message : "Lỗi không xác định"}`);
         }
     };
 
@@ -175,11 +173,27 @@ export default function Account() {
     };
 
     return (
-        <>
-            <h3 className="mb-4 text-lg font-bold text-gray-800">Hồ sơ của tôi</h3>
-            <hr className="mt-2 border-gray-300" />
-            <div className="flex m-4 flex-col gap-6 md:flex-row md:gap-8">
-                <div className="w-full md:w-1/2">
+        <main className="account-page">
+            <div className="account-shell">
+                <header className="account-heading">
+                    <div>
+                        <span>THÔNG TIN TÀI KHOẢN</span>
+                        <h1>Hồ sơ của tôi</h1>
+                        <p>Cập nhật thông tin để Pet Corner phục vụ bạn tốt hơn.</p>
+                    </div>
+                    <div className="account-heading-badge">Tài khoản</div>
+                </header>
+
+                <section className="account-card">
+                    <div className="account-card-title">
+                        <div>
+                            <h2>Thông tin cá nhân</h2>
+                            <p>Thông tin này được sử dụng cho đơn hàng và liên hệ.</p>
+                        </div>
+                    </div>
+
+                    <div className="account-form-layout">
+                        <div className="account-form-column">
                     <Form form={form} layout="vertical" className="space-y-4" onFinish={onFinish}>
                         <Item 
                             name="fullname" 
@@ -214,20 +228,25 @@ export default function Account() {
                                 <Button className="w-1/4 bg-gray-300 hover:bg-gray-400 rounded text-gray-700" onClick={handleCancel} disabled={uploading}>Hủy</Button>
                             </Item>
                     </Form>
-                </div>
-                <div className="w-full md:w-1/2 flex flex-col justify-center items-center">
-                    <Avatar size={120} src={user?.avatar || "/images/avatar/avatar1.png"} />
+                        </div>
+                        <div className="account-avatar-column">
+                    <div className="account-avatar-ring">
+                        <Avatar size={120} src={user?.avatar || "/images/avatar/avatar1.png"} />
+                    </div>
+                    <h3>Ảnh đại diện</h3>
                     <Upload {...uploadProps}>
                         <Button
                             icon={<UploadOutlined />}
-                            className="bg-[#22A6DF] text-white hover:bg-[#1890ff] rounded my-3"
+                            className="account-upload-button"
                         >
-                            Chọn
+                            Chọn ảnh
                         </Button>
                     </Upload>
-                    <p className="text-xs text-gray-500 text-center">Dung lượng file tối đa: 1MB <br /> Định dạng: JPG, PNG</p>
+                    <p>Dung lượng tối đa 1MB<br />JPG hoặc PNG</p>
+                        </div>
+                    </div>
+                </section>
                 </div>
-            </div>
-        </>
+        </main>
     )
 }
