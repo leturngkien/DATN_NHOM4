@@ -593,7 +593,6 @@ const OrderList: React.FC = () => {
                           <Option value="PENDING">Chờ xử lý</Option>
                           <Option value="PROCESSING">Đang xử lý</Option>
                           <Option value="SHIPPING">Đang vận chuyển</Option>
-                          <Option value="SHIPPED">Đã giao hàng</Option>
                           <Option value="DELIVERED">Đã giao</Option>
                           <Option value="CANCELLED">Đã hủy</Option>
                         </Select>

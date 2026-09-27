@@ -196,16 +196,15 @@ export default function HotProduct({ data }: { data: Product[] }) {
                     )}
                   </div>
                   <div className="mt-2 flex items-center gap-2">
-                    <button
-                      type="button"
+                    <Link
+                      to={`/detail/${product._id}`}
                       className="rounded-lg border border-[#FFA500] px-2 py-1 text-center text-xs text-[#D88400] transition-colors hover:bg-[#FFA500] hover:text-white sm:px-3 sm:text-sm"
                       onClick={(event) => {
                         event.stopPropagation();
-                        openProductDetail(product._id);
                       }}
                     >
                       Xem chi tiết
-                    </button>
+                    </Link>
                     <Button
                       className="w-[82px] rounded-lg bg-[#FFA500] text-xs text-white hover:border-[#FFA500] hover:bg-[#1890ff] sm:w-[100px] sm:text-sm"
                       onClick={(event) => {

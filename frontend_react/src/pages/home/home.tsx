@@ -30,10 +30,6 @@ import {
   ShieldCheck,
   MessageCircle,
   Undo2,
-  Dog,
-  Cat,
-  Bone,
-  Fish,
   Bath,
   Home as HomeIcon,
   Gift,
@@ -53,8 +49,6 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-
-const CATEGORY_ICONS = [Dog, Cat, Fish, Bone, Bath, HomeIcon];
 
 type ApiProduct = {
   _id?: string;
@@ -330,9 +324,6 @@ function Home() {
   const [saleProducts, setSaleProducts] =
     useState<Product[]>([]);
 
-  const [hotProducts, setHotProducts] =
-    useState<Product[]>([]);
-
   const [newProductItems, setNewProductItems] =
     useState<ComponentProduct[]>([]);
 
@@ -572,10 +563,6 @@ function Home() {
               mapProduct(item)
           );
 
-        setHotProducts(
-          mappedHotProducts
-        );
-
         /* =====================================================
            ALL PRODUCTS
         ===================================================== */
@@ -681,8 +668,6 @@ function Home() {
         setNewProducts([]);
 
         setSaleProducts([]);
-
-        setHotProducts([]);
 
         setNewProductItems([]);
 
@@ -892,6 +877,11 @@ function Home() {
         })
       );
     }
+  };
+
+  const buyNow = (product: Product) => {
+    addToCart(product);
+    navigate("/checkout");
   };
 
   /* =========================================================
@@ -1726,6 +1716,14 @@ function Home() {
 
           </div>
         </section>
+
+        {hotProductItems.length > 0 && (
+          <section className="section">
+            <div className="container">
+              <HotProduct data={hotProductItems} />
+            </div>
+          </section>
+        )}
 
         {/* =====================================================
             PROMOTION
