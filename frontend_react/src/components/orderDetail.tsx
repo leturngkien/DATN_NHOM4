@@ -329,8 +329,8 @@ export default function OrderDetail() {
         orderId: id,
         amount: total,
         description: `Thanh toán đơn hàng ${id}`,
-        returnUrl: `${import.meta.env.VITE_VNPAY_URL}/success`,
-        cancelUrl: `${import.meta.env.VITE_VNPAY_URL}/cancel`,
+        returnUrl: `${import.meta.env.VITE_VNPAY_URL}/orders/success`,
+        cancelUrl: `${import.meta.env.VITE_VNPAY_URL}/orders/cancel`,
       };
 
       const response = await paymentApi.create(paymentData);

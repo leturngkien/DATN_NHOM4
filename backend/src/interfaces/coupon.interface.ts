@@ -5,6 +5,7 @@ export interface ICoupon {
   _id: ObjectId;
   coupon_code: string;
   discount_value: number;
+  max_discount?: number;
   min_order_value: number;
   start_date: Date;
   end_date: Date;

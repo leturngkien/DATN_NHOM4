@@ -12,6 +12,7 @@ import {
   UserOutlined,
   DashboardOutlined,
   TeamOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import clearLocalStorageExceptCarts from "../../config/clearLocalStorage";
 import { readStoredUser } from "./requireAdmin";
@@ -21,6 +22,7 @@ const { Sider, Header, Content } = Layout;
 
 const MENU_ITEMS = [
   { key: "/admin", icon: <DashboardOutlined />, label: "Dashboard" },
+  { key: "/admin/orders", icon: <ShoppingCartOutlined />, label: "Đơn hàng" },
   { key: "/admin/users", icon: <TeamOutlined />, label: "Người dùng" },
   { key: "/admin/products", icon: <AppstoreOutlined />, label: "Sản phẩm" },
   { key: "/admin/categories", icon: <TagsOutlined />, label: "Danh mục" },

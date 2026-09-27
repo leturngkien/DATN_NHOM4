@@ -38,7 +38,7 @@ const SuccessPage = () => {
             "Thanh toán thành công! Đơn hàng của bạn đã được xác nhận."
           );
           dispatch(clearProduct());
-          setTimeout(() => navigate("/userprofile/orders"), 3000);
+          setTimeout(() => navigate("/"), 3000);
         } else if (res.verified) {
           message.error("Thanh toán thất bại");
           setTimeout(() => navigate("/orders/cancel"), 1000);

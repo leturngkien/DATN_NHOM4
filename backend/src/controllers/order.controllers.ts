@@ -149,7 +149,10 @@ export const createOrderAfterPayment = async (req: Request, res: Response): Prom
         throw new Error('Mã giảm giá không hợp lệ hoặc đã hết hạn');
       }
       const discountPercentage = coupon.discount_value;
-      discount = (subtotal * discountPercentage) / 100;
+      const percentageDiscount = (subtotal * discountPercentage) / 100;
+      discount = coupon.max_discount && coupon.max_discount > 0
+        ? Math.min(percentageDiscount, coupon.max_discount)
+        : percentageDiscount;
       await couponModel.findByIdAndUpdate(couponID, { $inc: { used_count: 1 } }, { session });
     }
 

@@ -16,6 +16,11 @@ const couponSchema: Schema<ICoupon> = new Schema<ICoupon>({
     required: [true, 'Giá trị giảm giá là bắt buộc'],
     min: [0, 'Giá trị giảm giá không được âm']
   },
+  max_discount: {
+    type: Number,
+    default: 0,
+    min: [0, 'Mức giảm tối đa không được âm']
+  },
   min_order_value: {
     type: Number,
     required: [true, 'Giá trị đơn hàng tối thiểu là bắt buộc'],

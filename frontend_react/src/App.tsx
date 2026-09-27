@@ -21,6 +21,7 @@ import RequireAdmin from "./admin/layout/requireAdmin";
 import AdminDashboard from "./admin/dashboard/dashboard";
 import AdminUser from "./admin/user/user";
 import AdminProduct from "./admin/product/product";
+import AdminOrder from "./admin/order/order";
 import AdminCategory from "./admin/category/category";
 import AdminBrand from "./admin/brand/brand";
 import AdminTag from "./admin/tag/tag";
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/payment",
+    element: <Payment />,
+  },
+  {
+    path: "/checkout",
     element: <Payment />,
   },
   {
@@ -95,6 +100,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <AdminDashboard /> },
       { path: "dashboard", element: <AdminDashboard /> },
+      { path: "orders", element: <AdminOrder /> },
       { path: "users", element: <AdminUser /> },
       { path: "products", element: <AdminProduct /> },
       { path: "categories", element: <AdminCategory /> },

@@ -3,31 +3,44 @@ import {
   Card,
   Button,
   Table,
-  Checkbox,
   Modal,
   Input,
   Select,
   Tag,
   Form,
   message,
-  Space,
   DatePicker,
 } from 'antd';
 import {
-  DeleteOutlined,
   EyeOutlined,
   SearchOutlined,
   ReloadOutlined,
   DownloadOutlined,
+  ShoppingOutlined,
+  ClockCircleOutlined,
+  CarOutlined,
+  CheckCircleOutlined,
 } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import orderApi from '../../api/orderApi';
 import moment from 'moment';
-import 'moment/locale/vi';
-import { CSVLink } from 'react-csv';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+
+const getErrorInfo = (error: unknown) => {
+  const value = error as {
+    message?: string;
+    response?: { status?: number; data?: { message?: string } };
+  };
+  return {
+    message: value?.response?.data?.message || value?.message || 'Có lỗi xảy ra',
+    status: value?.response?.status,
+  };
+};
+
+const formatVnd = (value?: string | number) =>
+  `${Number(value || 0).toLocaleString('vi-VN')}₫`;
 
 interface Product {
   orderDetailId: string;
@@ -57,13 +70,12 @@ interface FilterParams {
   status?: string;
   paymentStatus?: string;
   dateRange?: [moment.Moment, moment.Moment] | null;
-  search?:	stats
+  search?: string;
 }
 
 const OrderList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<FilterParams>({});
@@ -99,8 +111,8 @@ const OrderList: React.FC = () => {
             orderDate: detail.orderId.order_date,
             status: detail.orderId.status,
             paymentStatus: detail.orderId.payment_status || 'UNPAID',
-            fullname: detail.orderId.userID?.fullname || 'Không xác định',
-            phone: detail.orderId.userID?.phone || 'Chưa nhập số điện thoại',
+            fullname: detail.orderId.userID?.fullname || detail.orderId.fullname || 'Khách lẻ',
+            phone: detail.orderId.userID?.phone || detail.orderId.phone || detail.orderId.inforUserGuest?.phone || 'Chưa nhập số điện thoại',
             total_price: detail.orderId.total_price,
             products: [],
           };
@@ -141,11 +153,12 @@ const OrderList: React.FC = () => {
       const filteredOrders = applyFilters(formattedOrders);
       setOrders(filteredOrders);
     } catch (error) {
-      console.error('Error fetching orders:', error.response?.data || error.message);
+      const errorInfo = getErrorInfo(error);
+      console.error('Error fetching orders:', errorInfo);
       message.error(
-        error.response?.status === 404
+        errorInfo.status === 404
           ? 'Không tìm thấy API đơn hàng'
-          : 'Tải danh sách đơn hàng thất bại'
+        : errorInfo.message || 'Tải danh sách đơn hàng thất bại'
       );
       setOrders([]);
     } finally {
@@ -171,10 +184,10 @@ const OrderList: React.FC = () => {
       }
 
       if (filters.search) {
-        const searchRegex = new RegExp(filters.search, 'i');
+        const searchTerm = filters.search.toLocaleLowerCase();
         matches = matches && (
-          searchRegex.test(order.orderId) ||
-          searchRegex.test(order.fullname)
+          order.orderId.toLocaleLowerCase().includes(searchTerm) ||
+          order.fullname.toLocaleLowerCase().includes(searchTerm)
         );
       }
 
@@ -186,6 +199,29 @@ const OrderList: React.FC = () => {
     setFilters((prev) => ({ ...prev, search: value }));
   };
 
+  const handleExport = () => {
+    const headers = ['Mã đơn', 'Khách hàng', 'Điện thoại', 'Ngày đặt', 'Trạng thái', 'Thanh toán', 'Số lượng', 'Tổng tiền'];
+    const rows = orders.map((order) => [
+      order.orderId,
+      order.fullname,
+      order.phone || '',
+      order.orderDate || '',
+      order.status,
+      order.paymentStatus,
+      order.quantity || 0,
+      order.price || '0',
+    ]);
+    const escapeCsv = (value: string | number) => `"${String(value).replace(/"/g, '""')}"`;
+    const csv = [headers, ...rows].map((row) => row.map(escapeCsv).join(',')).join('\r\n');
+    const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'orders.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleStatusFilter = (status: string) => {
     setFilters((prev) => ({ ...prev, status: status || undefined }));
   };
@@ -195,38 +231,16 @@ const OrderList: React.FC = () => {
   };
 
   const handleDateRangeFilter = (dates: any) => {
-    setFilters((prev) => ({ ...prev, dateRange: dates }));
+    const dateRange = dates
+      ? [moment(dates[0].valueOf()), moment(dates[1].valueOf())] as [moment.Moment, moment.Moment]
+      : null;
+    setFilters((prev) => ({ ...prev, dateRange }));
   };
 
   const handleView = (record: Order) => {
     setSelectedOrder(record);
     form.setFieldsValue({ status: record.status });
     setIsModalVisible(true);
-  };
-
-  const handleDeleteAll = () => {
-    if (selectedRows.length === 0) {
-      message.warning('Vui lòng chọn ít nhất một đơn hàng để xóa!');
-      return;
-    }
-    Modal.confirm({
-      title: 'Xác nhận xóa',
-      content: `Bạn có chắc chắn muốn xóa ${selectedRows.length} đơn hàng đã chọn?`,
-      okText: 'Xóa',
-      okType: 'danger',
-      cancelText: 'Hủy',
-      onOk: async () => {
-        try {
-          await Promise.all(selectedRows.map((id) => orderApi.delete(id)));
-          message.success('Xóa đơn hàng thành công');
-          await fetchOrders();
-          setSelectedRows([]);
-        } catch (error) {
-          console.error('Error deleting orders:', error.response?.data || error.message);
-          message.error('Xóa đơn hàng thất bại');
-        }
-      },
-    });
   };
 
   const handleModalOk = async () => {
@@ -239,44 +253,20 @@ const OrderList: React.FC = () => {
         setIsModalVisible(false);
       }
     } catch (error) {
-      console.error('Error updating order status:', error.response?.data || error.message);
-      message.error('Cập nhật trạng thái đơn hàng thất bại');
+      const errorInfo = getErrorInfo(error);
+      console.error('Error updating order status:', errorInfo);
+      message.error(`Cập nhật trạng thái đơn hàng thất bại: ${errorInfo.message}`);
     }
   };
 
   const columns = [
     {
-      title: (
-        <Checkbox
-          onChange={(e) => {
-            const keys = e.target.checked ? orders.map((o) => o.key) : [];
-            setSelectedRows(keys);
-          }}
-          checked={selectedRows.length === orders.length && orders.length > 0}
-          indeterminate={selectedRows.length > 0 && selectedRows.length < orders.length}
-        />
-      ),
-      dataIndex: 'checkbox',
-      width: 50,
-      render: (_: any, record: Order) => (
-        <Checkbox
-          checked={selectedRows.includes(record.key)}
-          onChange={(e) => {
-            const keys = e.target.checked
-              ? [...selectedRows, record.key]
-              : selectedRows.filter((k) => k !== record.key);
-            setSelectedRows(keys);
-          }}
-        />
-      ),
-    },
-    {
       title: 'Mã đơn hàng',
       dataIndex: 'orderId',
       key: 'orderId',
       render: (text: string) => (
-        <span className="text-[14px] font-normal text-gray-700">
-          {text ? text.substring(0, 8) : 'N/A'}...
+        <span className="font-mono text-xs font-semibold text-[#596a60]">
+          #{text ? text.substring(0, 8).toUpperCase() : 'N/A'}
         </span>
       ),
     },
@@ -284,12 +274,15 @@ const OrderList: React.FC = () => {
       title: 'Khách hàng',
       dataIndex: 'fullname',
       key: 'fullname',
-      render: (text: string) => (
+      render: (text: string, record: Order) => (
         <div className="flex items-center">
-          <div className="h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center">
-            <span className="text-sm text-blue-500">{text ? text.charAt(0).toUpperCase() : '?'}</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f2e8d8]">
+            <span className="text-xs font-bold text-[#9a6038]">{text ? text.charAt(0).toUpperCase() : '?'}</span>
           </div>
-          <span className="ml-3 text-[14px] font-normal text-gray-700">{text || 'Không xác định'}</span>
+          <div className="ml-3 min-w-0">
+            <span className="block truncate text-sm font-semibold text-[#34443a]">{text || 'Không xác định'}</span>
+            <span className="text-xs text-[#81877f]">{record.phone || 'Chưa có số điện thoại'}</span>
+          </div>
         </div>
       ),
     },
@@ -298,26 +291,44 @@ const OrderList: React.FC = () => {
       dataIndex: 'product',
       key: 'product',
       render: (text: string) => (
-        <span className="text-[14px] font-normal text-gray-700">{text}</span>
+        <span className="line-clamp-2 text-sm leading-5 text-[#596a60]">{text}</span>
       ),
+    },
+    {
+      title: 'Ngày đặt',
+      dataIndex: 'orderDate',
+      key: 'orderDate',
+      render: (text: string) => <span className="whitespace-nowrap text-xs text-[#6f7a72]">{text || '—'}</span>,
+    },
+    {
+      title: 'SL',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      width: 60,
+      render: (quantity: number) => <span className="font-semibold text-[#47564c]">{quantity || 0}</span>,
+    },
+    {
+      title: 'Tổng tiền',
+      dataIndex: 'price',
+      key: 'price',
+      render: (price: string) => <span className="whitespace-nowrap font-bold text-[#9c5639]">{formatVnd(price)}</span>,
     },
     {
       title: 'Tình trạng',
       dataIndex: 'status',
       key: 'status',
       render: (status: string) => {
-        const statusConfig = {
+        const statusConfig: Record<string, { color: string; text: string }> = {
           PENDING: { color: 'warning', text: 'Chờ xử lý' },
           PROCESSING: { color: 'processing', text: 'Đang xử lý' },
           SHIPPING: { color: 'blue', text: 'Đang vận chuyển' },
-          SHIPPED: { color: 'cyan', text: 'Đã giao hàng' },
           DELIVERED: { color: 'success', text: 'Đã giao' },
           CANCELLED: { color: 'error', text: 'Đã hủy' },
         };
         return (
           <Tag
             color={statusConfig[status]?.color}
-            className="px-3 py-0.5 text-[13px] font-normal rounded-full"
+            className="rounded-full px-2.5 py-0.5 text-xs font-semibold"
           >
             {statusConfig[status]?.text || status}
           </Tag>
@@ -329,7 +340,7 @@ const OrderList: React.FC = () => {
       dataIndex: 'paymentStatus',
       key: 'paymentStatus',
       render: (paymentStatus: string) => {
-        const paymentStatusConfig = {
+        const paymentStatusConfig: Record<string, { color: string; text: string }> = {
           UNPAID: { color: 'error', text: 'Chưa thanh toán' },
           PAID: { color: 'success', text: 'Đã thanh toán' },
           FAILED: { color: 'warning', text: 'Thanh toán thất bại' },
@@ -338,7 +349,7 @@ const OrderList: React.FC = () => {
         return (
           <Tag
             color={paymentStatusConfig[paymentStatus]?.color}
-            className="px-3 py-0.5 text-[13px] font-normal rounded-full"
+            className="rounded-full px-2.5 py-0.5 text-xs font-semibold"
           >
             {paymentStatusConfig[paymentStatus]?.text || paymentStatus}
           </Tag>
@@ -354,7 +365,8 @@ const OrderList: React.FC = () => {
           icon={<EyeOutlined />}
           onClick={() => handleView(record)}
           size="small"
-          className="bg-blue-400 hover:bg-blue-500 rounded-md"
+          aria-label={`Xem đơn hàng ${record.orderId}`}
+          className="rounded-md bg-[#b6512f] hover:bg-[#994326]"
         />
       ),
     },
@@ -365,80 +377,101 @@ const OrderList: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="p-6 bg-gray-50 min-h-screen"
+      className="min-h-full"
     >
       <div className="max-w-7xl mx-auto">
+        <div className="admin-page-head">
+          <div>
+            <h1>Đơn hàng</h1>
+            <p>Theo dõi, lọc và cập nhật trạng thái đơn hàng.</p>
+          </div>
+          <span className="rounded-full border border-[#e3d5c8] bg-white px-3 py-1.5 text-xs font-semibold text-[#6a756c]">
+            {orders.length} đơn đang hiển thị
+          </span>
+        </div>
+
+        <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            { label: 'Tổng đơn hàng', value: orders.length, icon: <ShoppingOutlined />, tone: 'bg-[#f2e8d8] text-[#9a6038]' },
+            { label: 'Chờ xử lý', value: orders.filter((order) => order.status === 'PENDING').length, icon: <ClockCircleOutlined />, tone: 'bg-[#f8efdc] text-[#a7782f]' },
+            { label: 'Đang giao', value: orders.filter((order) => ['PROCESSING', 'SHIPPING'].includes(order.status)).length, icon: <CarOutlined />, tone: 'bg-[#e5eff0] text-[#46787b]' },
+            { label: 'Đã thanh toán', value: orders.filter((order) => order.paymentStatus === 'PAID').length, icon: <CheckCircleOutlined />, tone: 'bg-[#e6efe5] text-[#4c7553]' },
+          ].map((stat) => (
+            <Card key={stat.label} bordered={false} className="admin-card shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold text-[#7a8179]">{stat.label}</p>
+                  <p className="mt-2 text-2xl font-bold leading-none text-[#25362b]">{stat.value}</p>
+                </div>
+                <span className={`flex h-10 w-10 items-center justify-center rounded-md text-lg ${stat.tone}`}>
+                  {stat.icon}
+                </span>
+              </div>
+            </Card>
+          ))}
+        </div>
+
         <Card
           bordered={false}
-          className="shadow-sm bg-white rounded-lg"
+          className="admin-card mb-4 shadow-sm"
           title={
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div className="flex-1 max-w-md">
-                <Input.Search
-                  placeholder="Tìm kiếm đơn hàng..."
-                  allowClear
-                  enterButton
-                  onSearch={handleSearch}
-                  className="rounded-lg"
-                />
+            <div className="space-y-3 py-1">
+              <div className="flex items-center gap-2 text-sm font-bold text-[#34443a]">
+                <SearchOutlined className="text-[#b6512f]" />
+                Bộ lọc đơn hàng
               </div>
-              <Space wrap>
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-[minmax(220px,1fr)_170px_190px_250px_auto_auto]">
+                <Input.Search
+                  placeholder="Mã đơn hoặc tên khách hàng"
+                  allowClear
+                  enterButton={<SearchOutlined />}
+                  onSearch={handleSearch}
+                  className="w-full"
+                />
                 <Select
                   placeholder="Lọc trạng thái"
                   allowClear
-                  style={{ width: 150 }}
+                  style={{ width: '100%' }}
                   onChange={handleStatusFilter}
-                  className="text-[14px]"
+                  className="text-sm"
                 >
                   <Option value="PENDING">Chờ xử lý</Option>
                   <Option value="PROCESSING">Đang xử lý</Option>
                   <Option value="SHIPPING">Đang vận chuyển</Option>
-                  <Option value="SHIPPED">Đã giao hàng</Option>
                   <Option value="DELIVERED">Đã giao</Option>
                   <Option value="CANCELLED">Đã hủy</Option>
                 </Select>
                 <Select
                   placeholder="Lọc trạng thái thanh toán"
                   allowClear
-                  style={{ width: 180 }}
+                  style={{ width: '100%' }}
                   onChange={handlePaymentStatusFilter}
-                  className="text-[14px]"
+                  className="text-sm"
                 >
                   <Option value="UNPAID">Chưa thanh toán</Option>
                   <Option value="PAID">Đã thanh toán</Option>
-                  <Option value="FAILED">Thanh toán thất bại</Option>
                   <Option value="CASH_ON_DELIVERY">Thanh toán khi nhận hàng</Option>
                 </Select>
                 <RangePicker
                   onChange={handleDateRangeFilter}
                   format="DD/MM/YYYY"
-                  className="text-[14px]"
+                  className="w-full text-sm"
                 />
                 <Button
                   icon={<ReloadOutlined />}
                   onClick={() => fetchOrders()}
-                  className="border border-gray-100 hover:border-gray-200 rounded-md text-[14px]"
+                  className="rounded-md border-[#d9dfd9] text-sm"
                 >
                   Làm mới
                 </Button>
                 <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={handleDeleteAll}
-                  disabled={selectedRows.length === 0}
-                  className="bg-red-50 hover:bg-red-100 border border-gray-100 rounded-md text-[14px]"
+                  icon={<DownloadOutlined />}
+                  onClick={handleExport}
+                  className="rounded-md border-[#d9dfd9] text-sm"
                 >
-                  Xóa ({selectedRows.length})
-                </Button>
-                <CSVLink
-                  data={orders}
-                  filename="orders.csv"
-                  className="flex items-center text-[14px] text-gray-700 hover:text-gray-900"
-                >
-                  <DownloadOutlined className="mr-2" />
                   Xuất CSV
-                </CSVLink>
-              </Space>
+                </Button>
+              </div>
             </div>
           }
         >
@@ -453,16 +486,16 @@ const OrderList: React.FC = () => {
               showQuickJumper: true,
               showTotal: (total) => `Tổng ${total} đơn hàng`,
             }}
-            className="overflow-hidden rounded-lg"
-            rowClassName="hover:bg-gray-50"
-            scroll={{ x: true }}
+              className="overflow-hidden rounded-lg"
+              rowClassName="hover:bg-[#faf7f1]"
+              scroll={{ x: 1080 }}
           />
         </Card>
 
         <Modal
           title={
             <div className="flex items-center gap-3">
-              <EyeOutlined className="text-blue-400" />
+              <EyeOutlined className="text-[#b6512f]" />
               <span className="text-[16px] font-medium text-gray-800">Chi tiết đơn hàng</span>
             </div>
           }
