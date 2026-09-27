@@ -1,40 +1,62 @@
-import CrudResource, { type CrudField } from "../components/crudResource";
+import CrudResource, {
+  type CrudField,
+} from "../components/crudResource";
 import categoryApi from "../../api/categoryApi";
 
+/**
+ * =========================================================
+ * CẤU HÌNH CÁC FIELD CỦA DANH MỤC
+ * =========================================================
+ */
 const fields: CrudField[] = [
   {
     name: "name",
     label: "Tên danh mục",
     required: true,
-    width: 220,
-    placeholder: "Ví dụ: Chó, Mèo, Phụ kiện...",
+    width: 240,
+    placeholder: "Ví dụ: Thức ăn cho chó",
   },
+
   {
     name: "description",
-    label: "Mô tả",
+    label: "Mô tả danh mục",
     type: "textarea",
     required: true,
+    width: 360,
     ellipsis: true,
-    placeholder: "Mô tả ngắn về danh mục",
+    placeholder:
+      "Nhập mô tả ngắn gọn cho danh mục, ví dụ: Thức ăn dành cho chó...",
   },
+
   {
     name: "status",
     label: "Trạng thái",
     type: "status",
-    width: 130,
-    // API tạo danh mục không nhận status, mặc định là "active".
+    width: 140,
+
+    // Backend khi tạo danh mục mặc định status = active
+    // nên không cho nhập khi tạo mới.
     hideInCreate: true,
   },
 ];
 
+/**
+ * =========================================================
+ * ADMIN CATEGORY
+ * =========================================================
+ */
 function AdminCategory() {
   return (
     <CrudResource
-      title="Danh mục"
-      description="Nhóm sản phẩm hiển thị ngoài trang chủ và trang sản phẩm."
+      title="Quản lý danh mục"
+      description="Quản lý các nhóm sản phẩm được hiển thị trên trang chủ và trang sản phẩm."
+
       fields={fields}
+
       api={categoryApi}
-      searchPlaceholder="Tìm theo tên hoặc mô tả..."
+
+      searchPlaceholder="Tìm kiếm theo tên hoặc mô tả..."
+
       emptyText="Chưa có danh mục nào"
     />
   );
