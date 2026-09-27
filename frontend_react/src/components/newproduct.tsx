@@ -43,6 +43,24 @@ export default function NewProduct({ data }: { data: Product[] }) {
     navigate("/checkout");
   };
 
+  const handleAddToCart = (product: Product) => {
+    if (product.quantity <= 0) {
+      message.error(`Sản phẩm ${product.name} đã hết hàng!`);
+      return;
+    }
+
+    const item = {
+      id: product._id,
+      name: product.name,
+      price: Number(product.price * (1 - product.discount / 100)),
+      image: product.image_url[0] || "/placeholder-image.jpg",
+      stockQuantity: product.quantity,
+    };
+
+    dispatch(addToCart({ item, quantity: 1 }));
+    message.success(`Đã thêm ${product.name} vào giỏ hàng`);
+  };
+
   // Hàm điều hướng
   const handlePrevSlide = () => {
     if (sliderRef.current) {
@@ -181,12 +199,23 @@ export default function NewProduct({ data }: { data: Product[] }) {
                       </div>
                     )}
                   </div>
-                  <Button
-                    className="mt-2 w-[90px] bg-[#FFA500] hover:bg-[#1890ff] hover:border-[#FFA500] rounded-lg text-white text-xs sm:w-[120px] sm:text-sm"
-                    onClick={() => handleBuyNow(product)}
-                  >
-                    Mua ngay
-                  </Button>
+                  <div className="mt-2 flex gap-1">
+                    <Button
+                      size="small"
+                      className="min-w-0 flex-1 rounded-lg border-[#FFA500] px-1 text-xs text-[#D88400] hover:bg-[#FFA500] hover:text-white sm:text-sm"
+                      disabled={product.quantity <= 0}
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      Thêm giỏ
+                    </Button>
+                    <Button
+                      size="small"
+                      className="min-w-0 flex-1 rounded-lg bg-[#FFA500] px-1 text-xs text-white hover:border-[#FFA500] hover:bg-[#1890ff] sm:text-sm"
+                      onClick={() => handleBuyNow(product)}
+                    >
+                      Mua ngay
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Card>

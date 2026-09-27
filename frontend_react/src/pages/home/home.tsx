@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { listenToBlogUpdates } from "../../utils/blogSync";
 import logoImage from "../img/logo.jpg";
@@ -16,7 +16,6 @@ import clearLocalStorageExceptCarts from "../../config/clearLocalStorage";
 import { addToCart as addProductToCart, setUserId } from "../../redux/slices/cartslice";
 
 import SaleProduct from "../../components/saleproduct";
-import HotProduct from "../../components/hotproduct";
 import NewProduct from "../../components/newproduct";
 import CateProduct from "../../components/cateproduct";
 
@@ -318,6 +317,9 @@ function Home() {
   const [products, setProducts] =
     useState<Product[]>([]);
 
+  const [hotProducts, setHotProducts] =
+    useState<Product[]>([]);
+
   const [newProducts, setNewProducts] =
     useState<Product[]>([]);
 
@@ -328,9 +330,6 @@ function Home() {
     useState<ComponentProduct[]>([]);
 
   const [saleProductItems, setSaleProductItems] =
-    useState<ComponentProduct[]>([]);
-
-  const [hotProductItems, setHotProductItems] =
     useState<ComponentProduct[]>([]);
 
   const [categories, setCategories] =
@@ -550,18 +549,15 @@ function Home() {
           hotProductResponse?.data?.result ||
           [];
 
-        setHotProductItems(
-          hotProductData.map(
-            (item: ApiProduct) =>
-              mapComponentProduct(item)
-          )
-        );
-
         const mappedHotProducts =
           hotProductData.map(
             (item: ApiProduct) =>
               mapProduct(item)
           );
+
+        setHotProducts(
+          mappedHotProducts
+        );
 
         /* =====================================================
            ALL PRODUCTS
@@ -673,7 +669,7 @@ function Home() {
 
         setSaleProductItems([]);
 
-        setHotProductItems([]);
+        setHotProducts([]);
 
         setProducts([]);
       } finally {
@@ -834,7 +830,7 @@ function Home() {
   ========================================================= */
 
   const filteredProducts =
-    products.filter(
+    hotProducts.filter(
       (product) => {
         const matchSearch =
           product.name
@@ -973,14 +969,20 @@ function Home() {
             <Heart />
           </button>
 
-          <img
-            src={
-              product.image
-            }
-            alt={
-              product.name
-            }
-          />
+          <Link
+            className="product-image-link"
+            to={`/detail/${encodeURIComponent(String(product.id))}`}
+            aria-label={`Xem chi tiết ${product.name}`}
+          >
+            <img
+              src={
+                product.image
+              }
+              alt={
+                product.name
+              }
+            />
+          </Link>
 
           <button
             className="quick-view"
@@ -1007,7 +1009,9 @@ function Home() {
           </span>
 
           <h3>
-            {product.name}
+            <Link to={`/detail/${encodeURIComponent(String(product.id))}`}>
+              {product.name}
+            </Link>
           </h3>
 
           <div className="rating">
@@ -1684,14 +1688,6 @@ function Home() {
 
           </div>
         </section>
-
-        {hotProductItems.length > 0 && (
-          <section className="section">
-            <div className="container">
-              <HotProduct data={hotProductItems} />
-            </div>
-          </section>
-        )}
 
         {/* =====================================================
             PROMOTION

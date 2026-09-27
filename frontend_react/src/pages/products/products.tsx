@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import productsApi from "../../api/productsApi";
 import categoryApi from "../../api/categoryApi";
 import ShopHeader from "../../components/layout/ShopHeader";
@@ -27,6 +27,7 @@ const getCategoryId = (category: Product["category_id"]) =>
   typeof category === "string" ? category : category?._id || "";
 
 function Products() {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
@@ -34,12 +35,22 @@ function Products() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const openProductDetail = (productId?: string) => {
+    const normalizedId = String(productId || "").trim();
+
+    if (!normalizedId || normalizedId === "undefined" || normalizedId === "null") {
+      return;
+    }
+
+    navigate(`/detail/${normalizedId}`);
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const [productsResponse, categoriesResponse] = await Promise.all([
-          productsApi.getProductActive(),
+          productsApi.getHotproducts(),
           categoryApi.getCategoriesActive(),
         ]);
 
@@ -77,8 +88,8 @@ function Products() {
         <div className="products-page-heading">
           <div>
             <span className="products-page-label">PET CORNER</span>
-            <h1>Tất cả sản phẩm</h1>
-            <p>Chọn những sản phẩm tốt nhất cho người bạn nhỏ.</p>
+            <h1>Sản phẩm bán chạy</h1>
+            <p>Những sản phẩm được khách hàng yêu thích và mua nhiều nhất.</p>
           </div>
           <Link to="/" className="products-home-link">← Về trang chủ</Link>
         </div>
@@ -128,15 +139,35 @@ function Products() {
               const salePrice = product.price * (1 - discount / 100);
 
               return (
-                <Link to={`/detail/${product._id}`} className="catalog-product-card" key={product._id}>
-                  <div className="catalog-product-image">
+                <div
+                  key={product._id}
+                  className="catalog-product-card"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openProductDetail(product._id)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      openProductDetail(product._id);
+                    }
+                  }}
+                >
+                  <Link
+                    to={`/detail/${product._id}`}
+                    className="catalog-product-image"
+                    onClick={(event) => event.stopPropagation()}
+                  >
                     {discount > 0 && <span>-{discount}%</span>}
                     <img
                       src={product.image_url?.[0] || "/placeholder-image.jpg"}
                       alt={product.name}
                     />
-                  </div>
-                  <div className="catalog-product-info">
+                  </Link>
+
+                  <div
+                    className="catalog-product-info"
+                    onClick={() => openProductDetail(product._id)}
+                  >
                     <small>
                       {typeof product.category_id === "object"
                         ? product.category_id?.name || "Sản phẩm"
@@ -146,7 +177,7 @@ function Products() {
                     <strong>{formatPrice(salePrice)}</strong>
                     {discount > 0 && <del>{formatPrice(product.price)}</del>}
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>

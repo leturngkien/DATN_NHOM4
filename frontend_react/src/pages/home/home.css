@@ -1026,6 +1026,12 @@ img {
   overflow: hidden;
 }
 
+.pet-page .product-image-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .pet-page .product-image img {
   width: 100%;
   height: 100%;
@@ -1151,6 +1157,15 @@ img {
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.pet-page .product-info h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pet-page .product-info h3 a:hover {
+  color: var(--color-brand);
 }
 
 .pet-page .rating {
