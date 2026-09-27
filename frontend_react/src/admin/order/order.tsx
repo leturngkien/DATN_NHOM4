@@ -390,7 +390,7 @@ const OrderList: React.FC = () => {
           </span>
         </div>
 
-        <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="order-stat-grid mb-5 grid grid-cols-2 gap-3 md:grid-cols-4">
           {[
             { label: 'Tổng đơn hàng', value: orders.length, icon: <ShoppingOutlined />, tone: 'bg-[#f2e8d8] text-[#9a6038]' },
             { label: 'Chờ xử lý', value: orders.filter((order) => order.status === 'PENDING').length, icon: <ClockCircleOutlined />, tone: 'bg-[#f8efdc] text-[#a7782f]' },

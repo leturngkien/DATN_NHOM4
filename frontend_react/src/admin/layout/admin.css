@@ -132,6 +132,22 @@
   border: 1px solid var(--color-line);
 }
 
+.order-stat-grid .admin-card {
+  height: 100%;
+}
+
+.order-stat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  align-items: stretch;
+}
+
+.order-stat-grid .ant-card-body {
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+}
+
 .admin-muted {
   color: var(--color-ink-faint);
 }
@@ -158,5 +174,15 @@
 
   .admin-page-head h1 {
     font-size: 21px;
+  }
+
+  .order-stat-grid {
+    gap: 8px;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .order-stat-grid .ant-card-body {
+    min-height: 84px;
+    padding: 14px !important;
   }
 }
