@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import productsApi from "../../api/productsApi";
 import categoryApi from "../../api/categoryApi";
+import ShopHeader from "../../components/layout/ShopHeader";
+import Footer from "../../components/footer";
 import "./products.css";
 
 type Product = {
@@ -68,8 +70,10 @@ function Products() {
   }, [products, search, selectedCategory]);
 
   return (
-    <main className="products-page">
-      <div className="products-page-container">
+    <>
+      <ShopHeader />
+      <main className="products-page">
+        <div className="products-page-container">
         <div className="products-page-heading">
           <div>
             <span className="products-page-label">PET CORNER</span>
@@ -147,8 +151,10 @@ function Products() {
             })}
           </div>
         )}
-      </div>
-    </main>
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 }
 

@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 // import { usePayOS, PayOSConfig } from "payos-checkout";
 import {
-  ArrowLeft,
   Package,
   CreditCard,
   Truck,
@@ -18,7 +17,6 @@ import {
   ShoppingBag,
   Plus,
   Edit3,
-  LockKeyhole,
 } from "lucide-react";
 import { Button, Form, Input, message, Modal, Select } from "antd";
 import orderApi from "../../api/orderApi";
@@ -29,6 +27,9 @@ import couponApi from "../../api/couponApi";
 import paymentApi from "../../api/paymentApi";
 import { clearProduct, removeProduct } from "../../redux/slices/cartslice";
 import ENV_VARS from "../../../config";
+import "./payment.css";
+import ShopHeader from "../../components/layout/ShopHeader";
+import Footer from "../../components/footer";
 const { Item } = Form;
 
 // Các interface giữ nguyên như cũ
@@ -684,60 +685,9 @@ const Payment = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-[#eef4f1] text-[#203634]">
-        <div className="mx-auto w-full max-w-[1240px] px-4 pb-12 pt-5 sm:px-6 sm:pt-7 lg:px-8">
-          <header className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-[#d7e2dd] pb-5">
-            <button
-              onClick={() => navigate("/cart")}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#55716c] transition hover:text-[#173f3a]"
-            >
-              <ArrowLeft size={17} />
-              Quay lại giỏ hàng
-            </button>
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#174b45] text-white">
-                <ShoppingBag size={19} />
-              </span>
-              <div>
-                <p className="text-sm font-extrabold leading-tight text-[#173f3a]">PET CORNER</p>
-                <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-[#71827d]">
-                  <LockKeyhole size={11} /> Thanh toán an toàn
-                </p>
-              </div>
-            </div>
-          </header>
-
-          <nav aria-label="Tiến trình đặt hàng" className="mb-8 grid max-w-[620px] grid-cols-3">
-            {[
-              { number: "01", label: "Giỏ hàng", complete: true },
-              { number: "02", label: "Giao hàng", complete: true },
-              { number: "03", label: "Thanh toán", complete: false },
-            ].map((step, index) => (
-              <div key={step.number} className="relative flex items-center gap-2.5">
-                {index < 2 && (
-                  <span className="absolute left-8 right-0 top-4 -z-0 h-px bg-[#cad9d3]" />
-                )}
-                <span className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[10px] font-bold ${step.complete ? "border-[#174b45] bg-[#174b45] text-white" : "border-[#d4a15b] bg-[#fff8eb] text-[#9c682d]"}`}>
-                  {step.complete ? <Check size={14} /> : step.number}
-                </span>
-                <span className={`relative z-10 bg-[#eef4f1] pr-2 text-xs font-semibold sm:text-sm ${step.complete ? "text-[#315e55]" : "text-[#8b6945]"}`}>
-                  {step.label}
-                </span>
-              </div>
-            ))}
-          </nav>
-
-          <div className="mb-7 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-            <div>
-              <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#bd684c]">Đơn hàng của bạn</p>
-              <h1 className="text-3xl font-bold leading-tight text-[#183b37] sm:text-[34px]">Hoàn tất thanh toán</h1>
-              <p className="mt-2 max-w-xl text-sm leading-6 text-[#697b76]">Xác nhận nơi nhận hàng và chọn cách thanh toán phù hợp.</p>
-            </div>
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#d9e5df] bg-white px-3 py-1.5 text-xs font-semibold text-[#56746b]">
-              <span className="h-2 w-2 rounded-full bg-[#4e9b76]" />
-              {cartItems.length} sản phẩm
-            </span>
-          </div>
+      <ShopHeader />
+      <div className="payment-page min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
+        <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-10 lg:px-[154px]">
 
           {/* Reorder Notice */}
           {isReorder && (
@@ -911,15 +861,15 @@ const Payment = () => {
             </div>
           )}
           {/* Main Content */}
-          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-7">
+          <div className="payment-layout flex flex-col gap-8 lg:flex-row lg:gap-12">
             {/* Left Column */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="min-w-0 space-y-5"
+              className="w-full space-y-8 lg:w-3/5"
             >
               {/* Shipping Information */}
-              <div className="rounded-2xl p-6 sm:p-8 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.05)] backdrop-blur-sm border border-gray-100">
+              <div className="payment-panel rounded-2xl p-6 sm:p-8 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.05)] backdrop-blur-sm border border-gray-100">
                 <h2 className="mb-6 sm:mb-8 text-xl sm:text-2xl font-semibold flex items-center gap-3 text-gray-800">
                   <div className="p-2 rounded-xl bg-[#FFA500]/10">
                     <MapPin className="text-[#FFA500]" size={24} />
@@ -983,7 +933,7 @@ const Payment = () => {
               </div>
 
               {/* Shipping Method */}
-              <div className="rounded-2xl p-6 sm:p-8 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.05)] backdrop-blur-sm border border-gray-100">
+              <div className="payment-panel rounded-2xl p-6 sm:p-8 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.05)] backdrop-blur-sm border border-gray-100">
                 <h2 className="mb-6 sm:mb-8 text-xl sm:text-2xl font-semibold flex items-center gap-3">
                   <div className="p-2 rounded-xl bg-[#FFA500]/10">
                     <Truck className="text-[#FFA500]" size={24} />
@@ -1003,7 +953,7 @@ const Payment = () => {
                           onClick={() =>
                             !isDisabled && setSelectedShippingMethod(method)
                           }
-                          className={`flex flex-col sm:flex-row sm:justify-between items-start sm:items-center rounded-xl p-4 sm:p-5 transition-all duration-200 ${selectedShippingMethod?._id === method._id
+                          className={`payment-option flex flex-col sm:flex-row sm:justify-between items-start sm:items-center rounded-xl p-4 sm:p-5 transition-all duration-200 ${selectedShippingMethod?._id === method._id
                               ? "border-2 border-[#FFA500] bg-[#FFA500]/5"
                               : isDisabled
                                 ? "bg-gray-100 opacity-60 cursor-not-allowed"
@@ -1052,7 +1002,7 @@ const Payment = () => {
               </div>
 
               {/* Payment Method */}
-              <div className="rounded-2xl p-6 sm:p-8 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.05)] backdrop-blur-sm border border-gray-100">
+              <div className="payment-panel rounded-2xl p-6 sm:p-8 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.05)] backdrop-blur-sm border border-gray-100">
                 <h2 className="mb-6 sm:mb-8 text-xl sm:text-2xl font-semibold flex items-center gap-3">
                   <div className="p-2 rounded-xl bg-[#FFA500]/10">
                     <CreditCard className="text-[#FFA500]" size={24} />
@@ -1067,7 +1017,7 @@ const Payment = () => {
                         whileHover={{ scale: 1.01 }}
                         key={method._id}
                         onClick={() => setSelectedPayment(method._id)}
-                        className={`flex flex-row sm:flex-row items-center sm:items-center sm:justify-between cursor-pointer rounded-xl p-4 sm:p-5 transition-all duration-200 ${selectedPayment === method._id
+                        className={`payment-option flex flex-row sm:flex-row items-center sm:items-center sm:justify-between cursor-pointer rounded-xl p-4 sm:p-5 transition-all duration-200 ${selectedPayment === method._id
                             ? "border-2 border-[#FFA500] bg-[#FFA500]/5"
                             : "bg-gray-50 hover:bg-gray-100 border border-gray-200"
                           }`}
@@ -1114,9 +1064,9 @@ const Payment = () => {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="min-w-0"
+              className="payment-sidebar w-full lg:w-2/5"
             >
-              <div className="sticky top-8 rounded-2xl p-6 sm:p-8 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.05)] backdrop-blur-sm border border-gray-100">
+              <div className="payment-summary sticky top-8 rounded-2xl p-6 sm:p-8 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.05)] backdrop-blur-sm border border-gray-100">
                 <h2 className="mb-6 text-xl sm:text-2xl font-semibold flex items-center gap-3">
                   <div className="p-2 rounded-xl bg-[#FFA500]/10">
                     <ShoppingBag className="text-[#FFA500]" size={24} />
@@ -1131,8 +1081,8 @@ const Payment = () => {
                   ) : (
                     <>
                       {cartItems.map((item) => (
-                        <div key={item.id} className="flex gap-3 sm:gap-4 mb-4 items-start">
-                          <div className="relative h-20 w-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-xl">
+                        <div key={item.id} className="payment-order-item flex gap-3 sm:gap-4 mb-4 items-start">
+                          <div className="payment-order-image relative h-20 w-20 sm:h-24 sm:w-24 flex-shrink-0 overflow-hidden rounded-xl">
                             <img
                               src={item.image}
                               alt={`Hình ảnh sản phẩm ${item.name}`}
@@ -1264,6 +1214,8 @@ const Payment = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
 
       <Modal
         title={

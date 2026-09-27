@@ -6,6 +6,8 @@ import { ArrowLeft } from "lucide-react";
 import { addToCart } from "../../redux/slices/cartslice";
 import productsApi from "../../api/productsApi";
 import Loader from "../../components/loader";
+import ShopHeader from "../../components/layout/ShopHeader";
+import Footer from "../../components/footer";
 import "./product-detail.css";
 
 type PopulatedValue = string | { _id?: string; name?: string; brand_name?: string } | null;
@@ -78,12 +80,16 @@ function ProductDetail() {
 
   if (error || !product) {
     return (
-      <main className="product-detail-page product-detail-state">
-        <h1>{error || "Không tìm thấy sản phẩm."}</h1>
-        <Link to="/" className="product-detail-back">
-          <ArrowLeft size={16} /> Quay lại trang chủ
-        </Link>
-      </main>
+      <>
+        <ShopHeader />
+        <main className="product-detail-page product-detail-state">
+          <h1>{error || "Không tìm thấy sản phẩm."}</h1>
+          <Link to="/" className="product-detail-back">
+            <ArrowLeft size={16} /> Quay lại trang chủ
+          </Link>
+        </main>
+        <Footer />
+      </>
     );
   }
 
@@ -111,8 +117,10 @@ function ProductDetail() {
   };
 
   return (
-    <main className="product-detail-page">
-      <div className="product-detail-container">
+    <>
+      <ShopHeader />
+      <main className="product-detail-page">
+        <div className="product-detail-container">
         <Link to="/" className="product-detail-back">
           <ArrowLeft size={16} /> Quay lại trang chủ
         </Link>
@@ -206,8 +214,10 @@ function ProductDetail() {
             </div>
           )}
         </section>
-      </div>
-    </main>
+        </div>
+      </main>
+      <Footer />
+    </>
   );
 }
 

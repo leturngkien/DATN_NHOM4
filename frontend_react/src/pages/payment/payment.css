@@ -1,0 +1,289 @@
+@import "../../styles/tokens.css";
+
+.payment-page {
+  min-height: 100vh;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+.payment-page * {
+  box-sizing: border-box;
+}
+
+.payment-page > div {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+}
+
+.payment-page h1,
+.payment-page h2,
+.payment-page h3 {
+  color: var(--color-ink);
+}
+
+.payment-page h1 {
+  font-family: var(--font-display);
+  letter-spacing: 0;
+}
+
+.payment-page .bg-gradient-to-br {
+  background: var(--color-paper) !important;
+}
+
+.payment-page .bg-green-50 {
+  background: var(--color-brand-soft) !important;
+  border-color: var(--color-line) !important;
+}
+
+.payment-page .bg-blue-50 {
+  background: var(--color-accent-soft) !important;
+  border-color: var(--color-line) !important;
+}
+
+.payment-page .text-green-500,
+.payment-page .text-green-600 {
+  color: var(--color-success) !important;
+}
+
+.payment-page .text-blue-600,
+.payment-page .text-\[\#FFA500\] {
+  color: var(--color-accent) !important;
+}
+
+.payment-page .bg-\[\#FFA500\],
+.payment-page .bg-\[\#174b45\] {
+  background: var(--color-brand) !important;
+}
+
+.payment-page .bg-\[\#FFA500\]\/10 {
+  background: var(--color-accent-soft) !important;
+}
+
+.payment-page [class*="border-[#FFA500]"] {
+  border-color: var(--color-accent) !important;
+}
+
+.payment-page .text-gray-800 {
+  color: var(--color-ink) !important;
+}
+
+.payment-page .text-gray-500,
+.payment-page .text-gray-600 {
+  color: var(--color-ink-soft) !important;
+}
+
+.payment-page input:not([type="radio"]) {
+  min-height: 46px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  outline: none;
+}
+
+.payment-page input:not([type="radio"]):focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px oklch(63% 0.16 40 / 0.12);
+}
+
+.payment-page input[type="radio"] {
+  accent-color: var(--color-accent);
+}
+
+.payment-panel,
+.payment-summary {
+  border: 1px solid var(--color-line) !important;
+  border-radius: var(--radius-md) !important;
+  background: var(--color-surface) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.payment-panel {
+  padding: 24px !important;
+}
+
+.payment-summary {
+  position: sticky;
+  top: 24px;
+  padding: 24px !important;
+}
+
+.payment-layout {
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .payment-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 3fr) minmax(320px, 2fr);
+    gap: 48px !important;
+  }
+
+  .payment-layout > .payment-sidebar {
+    width: auto !important;
+    min-width: 0;
+  }
+
+  .payment-layout > .payment-sidebar .payment-summary {
+    width: 100%;
+  }
+}
+
+.payment-panel h2,
+.payment-summary h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px !important;
+  color: var(--color-ink) !important;
+  font-size: 19px !important;
+  font-weight: 700;
+}
+
+.payment-panel h2 > div,
+.payment-summary h2 > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px !important;
+  border-radius: var(--radius-sm) !important;
+  background: var(--color-brand-soft) !important;
+}
+
+.payment-panel h2 svg,
+.payment-summary h2 svg {
+  color: var(--color-brand) !important;
+}
+
+.payment-option {
+  min-height: 68px;
+  border: 1px solid var(--color-line) !important;
+  border-radius: var(--radius-sm) !important;
+  background: var(--color-surface) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: border-color var(--dur-fast) ease, background var(--dur-fast) ease !important;
+}
+
+.payment-option:hover {
+  border-color: var(--color-sage-ink) !important;
+  background: var(--color-brand-soft) !important;
+  transform: none !important;
+}
+
+.payment-option[class*="border-[#FFA500]"] {
+  border: 2px solid var(--color-accent) !important;
+  background: var(--color-accent-soft) !important;
+}
+
+.payment-option .rounded-full {
+  border: 1px solid var(--color-line);
+  box-shadow: none;
+}
+
+.payment-summary .border-b {
+  border-color: var(--color-line) !important;
+}
+
+.payment-summary .payment-order-item {
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.payment-summary .payment-order-image {
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 10px !important;
+}
+
+.payment-summary .payment-order-item h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 13px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+}
+
+.payment-summary .payment-order-item p {
+  margin-top: 3px;
+  color: var(--color-ink-soft);
+  font-size: 12px;
+}
+
+.payment-summary .payment-order-item p.mt-2 {
+  margin-top: 5px;
+  color: var(--color-brand);
+  font-size: 13px;
+}
+
+.payment-summary .payment-order-item .ant-btn {
+  padding: 0 4px;
+  font-size: 12px;
+}
+
+.payment-summary .text-blue-500 {
+  color: var(--color-brand) !important;
+}
+
+.payment-summary button.mt-6 {
+  min-height: 50px;
+  border: 0;
+  border-radius: var(--radius-sm) !important;
+  background: var(--color-accent) !important;
+  box-shadow: var(--shadow-accent) !important;
+  font-weight: 700;
+}
+
+.payment-summary button.mt-6:hover {
+  background: var(--color-accent-strong) !important;
+  transform: translateY(-1px);
+}
+
+.payment-page .border-dashed {
+  border-color: var(--color-line-strong) !important;
+  background: var(--color-paper-alt) !important;
+}
+
+.payment-page .fixed.inset-0 {
+  background: oklch(26% 0.03 155 / 0.48) !important;
+}
+
+.payment-page .fixed.inset-0 > div {
+  border: 1px solid var(--color-line) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+@media (max-width: 1024px) {
+  .payment-summary {
+    position: static;
+  }
+
+  .payment-layout > .payment-sidebar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .payment-page {
+    padding-bottom: 48px;
+  }
+
+  .payment-panel,
+  .payment-summary {
+    padding: 18px !important;
+    border-radius: var(--radius-sm) !important;
+  }
+
+  .payment-panel h2,
+  .payment-summary h2 {
+    font-size: 17px !important;
+  }
+}

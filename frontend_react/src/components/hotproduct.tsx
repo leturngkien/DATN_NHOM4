@@ -152,26 +152,21 @@ export default function HotProduct({ data }: { data: Product[] }) {
             >
               <div className="flex">
                 <div className="w-1/4">
-                  <img
-                    src={`${product.image_url[0]}`}
-                    alt={product.name}
-                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      openProductDetail(product._id);
-                    }}
-                  />
+                  <Link to={`/detail/${String(product._id).trim()}`} className="block h-full">
+                    <img
+                      src={`${product.image_url[0]}`}
+                      alt={product.name}
+                      className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
+                    />
+                  </Link>
                 </div>
                 <div className="flex w-3/4 flex-col justify-between p-2">
-                  <div
+                  <Link
+                    to={`/detail/${String(product._id).trim()}`}
                     className="text-xs font-bold text-gray-800 transition-colors hover:text-[#FFA500] sm:text-sm"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      openProductDetail(product._id);
-                    }}
                   >
                     {product.name}
-                  </div>
+                  </Link>
                   <div className="mt-2 flex items-center gap-2">
                     <p className="text-sm font-bold text-[#FFA500] transition-colors duration-300 sm:text-base">
                       {new Intl.NumberFormat("vi-VN", {
@@ -200,7 +195,9 @@ export default function HotProduct({ data }: { data: Product[] }) {
                       to={`/detail/${product._id}`}
                       className="rounded-lg border border-[#FFA500] px-2 py-1 text-center text-xs text-[#D88400] transition-colors hover:bg-[#FFA500] hover:text-white sm:px-3 sm:text-sm"
                       onClick={(event) => {
+                        event.preventDefault();
                         event.stopPropagation();
+                        openProductDetail(product._id);
                       }}
                     >
                       Xem chi tiết
