@@ -200,20 +200,14 @@ function ProductDetail() {
           </div>
         </section>
 
-        <section className="product-description-section">
-          <h2>Thông tin sản phẩm</h2>
-          {details.length > 0 ? (
+        {details.length > 0 && (
+          <section className="product-description-section">
+            <h2>Thông tin sản phẩm</h2>
             <ul>
               {details.map((detail, index) => <li key={`${detail}-${index}`}>{detail}</li>)}
             </ul>
-          ) : (
-            <div>
-              {product.description
-                ? parse(product.description)
-                : "Thông tin sản phẩm đang được cập nhật."}
-            </div>
-          )}
-        </section>
+          </section>
+        )}
         </div>
       </main>
       <Footer />
