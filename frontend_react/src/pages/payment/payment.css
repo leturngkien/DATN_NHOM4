@@ -100,7 +100,7 @@
 }
 
 .payment-panel {
-  padding: 24px !important;
+  padding: 18px !important;
 }
 
 .payment-summary {
@@ -117,7 +117,7 @@
   .payment-layout {
     display: grid !important;
     grid-template-columns: minmax(0, 3fr) minmax(320px, 2fr);
-    gap: 48px !important;
+    gap: 32px !important;
   }
 
   .payment-layout > .payment-sidebar {
@@ -135,7 +135,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 24px !important;
+  margin-bottom: 16px !important;
   color: var(--color-ink) !important;
   font-size: 19px !important;
   font-weight: 700;
@@ -159,7 +159,7 @@
 }
 
 .payment-option {
-  min-height: 68px;
+  min-height: 60px;
   border: 1px solid var(--color-line) !important;
   border-radius: var(--radius-sm) !important;
   background: var(--color-surface) !important;
@@ -186,6 +186,16 @@
 
 .payment-summary .border-b {
   border-color: var(--color-line) !important;
+}
+
+.payment-summary .payment-coupon {
+  margin-bottom: 14px;
+}
+
+.payment-summary .payment-costs {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  row-gap: 8px;
 }
 
 .payment-summary .payment-order-item {

@@ -71,53 +71,6 @@ img {
 }
 
 /* =========================================================
-   TOPBAR
-========================================================= */
-
-.pet-page .topbar {
-  background: var(--color-brand);
-  color: var(--color-white);
-  font-size: var(--text-small);
-}
-
-.pet-page .topbar-inner {
-  min-height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-sm);
-}
-
-.pet-page .topbar-inner > div:first-child {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2xs);
-}
-
-.pet-page .topbar-inner > div:first-child svg {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-}
-
-.pet-page .topbar strong {
-  color: var(--color-sage);
-  font-weight: 800;
-}
-
-.pet-page .topbar-right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  opacity: 0.9;
-}
-
-.pet-page .topbar-right span {
-  display: inline-flex;
-  align-items: center;
-}
-
-/* =========================================================
    HEADER
 ========================================================= */
 
@@ -2581,10 +2534,6 @@ img {
 ========================================================= */
 
 @media (max-width: 850px) {
-  .pet-page .topbar-right {
-    display: none;
-  }
-
   .pet-page .header-inner {
     min-height: 70px;
   }
@@ -2713,10 +2662,6 @@ img {
 @media (max-width: 600px) {
   .pet-page .container {
     width: min(calc(100% - 28px), 1180px);
-  }
-
-  .pet-page .topbar {
-    display: none;
   }
 
   .pet-page .logo-sub {

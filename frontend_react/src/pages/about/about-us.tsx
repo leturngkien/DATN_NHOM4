@@ -1,169 +1,144 @@
-import { ArrowRight, Award, HeartHandshake, ShieldCheck, ShoppingBag, Sparkles, Truck } from "lucide-react";
+import {
+  ArrowRight,
+  Award,
+  HeartHandshake,
+  ShieldCheck,
+  ShoppingBag,
+  Truck,
+} from "lucide-react";
+import Footer from "../../components/footer";
+import ShopHeader from "../../components/layout/ShopHeader";
+import "./about-us.css";
 
 const values = [
   {
-    icon: <HeartHandshake size={28} />,
-    title: "Thương hiệu chăm sóc thật lòng",
-    text: "Pet Corner luôn đặt sự an toàn, sự thoải mái và niềm vui của thú cưng lên hàng đầu trong mọi quyết định của mình.",
+    icon: <HeartHandshake size={24} />,
+    title: "Chăm sóc bằng sự thấu hiểu",
+    text: "Sự an toàn, thoải mái và niềm vui của thú cưng luôn là ưu tiên trong mỗi lựa chọn của chúng tôi.",
   },
   {
-    icon: <ShieldCheck size={28} />,
+    icon: <ShieldCheck size={24} />,
     title: "Sản phẩm đáng tin cậy",
-    text: "Tất cả các mặt hàng đều được chọn lọc kỹ lưỡng, đảm bảo chất lượng, nguồn gốc rõ ràng và phù hợp cho từng nhu cầu của thú cưng.",
+    text: "Sản phẩm được chọn lọc kỹ về chất lượng, nguồn gốc và sự phù hợp với từng người bạn nhỏ.",
   },
   {
-    icon: <Truck size={28} />,
-    title: "Giao hàng nhanh chóng",
-    text: "Chúng tôi mong muốn khách hàng nhận được sản phẩm đúng hẹn và tận dụng trọn vẹn sự tiện lợi trong từng đơn hàng.",
+    icon: <Truck size={24} />,
+    title: "Giao hàng chu đáo",
+    text: "Chúng tôi muốn mỗi đơn hàng đến tay bạn đúng hẹn, thuận tiện và chỉn chu.",
   },
   {
-    icon: <Award size={28} />,
-    title: "Dịch vụ tận tâm",
-    text: "Đội ngũ chuyên gia sẵn sàng hỗ trợ bạn lựa chọn sản phẩm tốt nhất cho mèo, chó và các thú cưng trong gia đình.",
+    icon: <Award size={24} />,
+    title: "Đồng hành tận tâm",
+    text: "Đội ngũ Pet Corner luôn sẵn sàng giúp bạn tìm giải pháp phù hợp cho thú cưng.",
   },
 ];
 
 const stats = [
-  { label: "Sản phẩm được tuyển chọn", value: "500+" },
+  { label: "Sản phẩm tuyển chọn", value: "500+" },
   { label: "Khách hàng tin tưởng", value: "4.9/5" },
-  { label: "Hỗ trợ 24/7", value: "24/7" },
+  { label: "Luôn sẵn sàng hỗ trợ", value: "24/7" },
   { label: "Đổi trả dễ dàng", value: "30 ngày" },
 ];
 
 export default function AboutUsPage() {
   return (
-    <main style={{ background: "linear-gradient(180deg, #f9f5f0 0%, #f4efe8 100%)", minHeight: "100vh", padding: "40px 20px 90px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <section
-          style={{
-            background: "linear-gradient(135deg, #232620 0%, #383b35 45%, #5b4131 100%)",
-            borderRadius: 30,
-            padding: "44px 28px",
-            color: "#fff",
-            boxShadow: "0 22px 50px rgba(35,38,32,0.12)",
-            marginBottom: 30,
-          }}
-        >
-          <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 28, alignItems: "center" }}>
-            <div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 999, padding: "8px 14px", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>
-                <Sparkles size={14} />
-                Về chúng tôi
-              </div>
-              <h1 style={{ margin: "18px 0 14px", fontSize: "clamp(2.4rem, 5vw, 4rem)", lineHeight: 1.08, color: "#fff" }}>
-                Pet Corner là nơi yêu thương cho từng bé thú cưng.
-              </h1>
-              <p style={{ margin: 0, maxWidth: 620, color: "rgba(255,255,255,0.8)", lineHeight: 1.8, fontSize: 17 }}>
-                Chúng tôi tin rằng mỗi thú cưng đều cần một môi trường sống khỏe mạnh, một chế độ dinh dưỡng đúng cách và một người chủ luôn đồng hành bằng tình yêu chân thành.
-              </p>
-            </div>
-
-            <div
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 26,
-                padding: 22,
-                display: "grid",
-                gridTemplateColumns: "repeat(2, minmax(140px, 1fr))",
-                gap: 16,
-              }}
-            >
-              {stats.map((stat) => (
-                <div key={stat.label} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 20, padding: "18px 16px", border: "1px solid rgba(255,255,255,0.06)" }}>
-                  <div style={{ fontSize: 28, fontWeight: 800, color: "#f7c58b", marginBottom: 6 }}>{stat.value}</div>
-                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", lineHeight: 1.5 }}>{stat.label}</div>
-                </div>
-              ))}
-            </div>
+    <div className="about-page">
+      <ShopHeader />
+      <main>
+        <section className="about-hero">
+          <img
+            className="about-hero-image"
+            src="https://images.unsplash.com/photo-1601758064133-2d8f3a3f1f16?auto=format&fit=crop&w=2000&q=90"
+            alt="Thú cưng vui vẻ bên người thân yêu"
+          />
+          <div className="about-hero-overlay" aria-hidden="true" />
+          <div className="about-container about-hero-content">
+            <span className="about-eyebrow">Về Pet Corner</span>
+            <h1>Nơi yêu thương bắt đầu từ những điều nhỏ nhất.</h1>
+            <p>
+              Chúng tôi đồng hành cùng bạn chăm sóc những người bạn bốn chân
+              khỏe mạnh, vui vẻ và được yêu thương mỗi ngày.
+            </p>
+            <a className="about-primary-link" href="/products">
+              Khám phá cửa hàng <ArrowRight size={17} />
+            </a>
           </div>
         </section>
 
-        <section style={{ marginBottom: 30, background: "#fff", borderRadius: 30, padding: "36px 28px", boxShadow: "0 18px 40px rgba(35,38,32,0.06)", border: "1px solid rgba(35,38,32,0.05)" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28, alignItems: "center" }}>
-            <div>
-              <span style={{ color: "#E4572E", fontWeight: 800, letterSpacing: 2, fontSize: 12, textTransform: "uppercase" }}>Câu chuyện của chúng tôi</span>
-              <h2 style={{ margin: "12px 0 14px", fontSize: "clamp(2rem, 3vw, 2.8rem)", lineHeight: 1.2, color: "#232620" }}>
-                Mang đến sự khỏe mạnh và hạnh phúc cho thú cưng mỗi ngày.
-              </h2>
-              <p style={{ margin: 0, color: "#726B5E", lineHeight: 1.8, fontSize: 17 }}>
-                Pet Corner được thành lập với mong muốn trở thành nơi chủ nuôi có thể tìm thấy các sản phẩm phù hợp cho thú cưng của mình. Từ thức ăn, phụ kiện cho đến giải pháp hỗ trợ chăm sóc và tư vấn chuyên môn, mọi thứ đều được xây dựng dựa trên sự tin cậy và niềm yêu thương.
-              </p>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(180px, 1fr))", gap: 18 }}>
-              <div style={{ background: "linear-gradient(180deg, #fffaf3 0%, #fff 100%)", border: "1px solid rgba(35,38,32,0.04)", borderRadius: 24, padding: 22 }}>
-                <div style={{ width: 46, height: 46, borderRadius: 14, background: "rgba(228,87,46,0.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "#E4572E", marginBottom: 14 }}>
-                  <ShoppingBag size={22} />
-                </div>
-                <div style={{ fontWeight: 800, fontSize: 20, color: "#232620", marginBottom: 8 }}>Mục tiêu</div>
-                <div style={{ color: "#726B5E", lineHeight: 1.7 }}>Cung cấp giải pháp chăm sóc thú cưng đúng chuẩn và tiện nghi cho gia đình bạn.</div>
-              </div>
-
-              <div style={{ background: "linear-gradient(180deg, #f5f7f2 0%, #fff 100%)", border: "1px solid rgba(35,38,32,0.04)", borderRadius: 24, padding: 22 }}>
-                <div style={{ width: 46, height: 46, borderRadius: 14, background: "rgba(63,102,64,0.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "#3F6640", marginBottom: 14 }}>
-                  <HeartHandshake size={22} />
-                </div>
-                <div style={{ fontWeight: 800, fontSize: 20, color: "#232620", marginBottom: 8 }}>Giá trị</div>
-                <div style={{ color: "#726B5E", lineHeight: 1.7 }}>Hướng tới sự tin cậy, sự tử tế và sức khỏe bền vững cho thú cưng.</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section style={{ marginBottom: 30 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 22 }}>
-            {values.map((item) => (
-              <div key={item.title} style={{ background: "#fff", border: "1px solid rgba(35,38,32,0.05)", borderRadius: 26, padding: 24, boxShadow: "0 14px 28px rgba(35,38,32,0.04)" }}>
-                <div style={{ width: 52, height: 52, borderRadius: 16, background: "#fff4ee", color: "#E4572E", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-                  {item.icon}
-                </div>
-                <h3 style={{ margin: "0 0 10px", color: "#232620", fontSize: 22, lineHeight: 1.35 }}>{item.title}</h3>
-                <p style={{ margin: 0, color: "#726B5E", lineHeight: 1.8 }}>{item.text}</p>
+        <section className="about-stats" aria-label="Pet Corner qua những con số">
+          <div className="about-container about-stats-grid">
+            {stats.map((stat) => (
+              <div className="about-stat" key={stat.label}>
+                <strong>{stat.value}</strong>
+                <span>{stat.label}</span>
               </div>
             ))}
           </div>
         </section>
 
-        <section
-          style={{
-            background: "linear-gradient(135deg, #fffaf5 0%, #f7f2eb 100%)",
-            borderRadius: 30,
-            border: "1px solid rgba(35,38,32,0.05)",
-            padding: "32px 28px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 20,
-            flexWrap: "wrap",
-            boxShadow: "0 18px 35px rgba(35,38,32,0.05)",
-          }}
-        >
-          <div>
-            <span style={{ color: "#E4572E", fontWeight: 800, letterSpacing: 2, fontSize: 12, textTransform: "uppercase" }}>Pet Corner</span>
-            <h3 style={{ margin: "10px 0 0", color: "#232620", fontSize: "clamp(1.8rem, 3vw, 2.5rem)" }}>Sẵn sàng hỗ trợ bạn tìm giải pháp tốt nhất cho thú cưng.</h3>
-          </div>
+        <section className="about-story">
+          <div className="about-container about-story-grid">
+            <div className="about-story-image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1100&q=85"
+                alt="Chú chó đang tận hưởng thời gian bên gia đình"
+                loading="lazy"
+              />
+              <div className="about-image-note">
+                <HeartHandshake size={20} />
+                <span>Luôn đặt thú cưng lên hàng đầu</span>
+              </div>
+            </div>
 
-          <a
-            href="/contact"
-            style={{
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "#E4572E",
-              color: "#fff",
-              borderRadius: 999,
-              padding: "14px 22px",
-              fontWeight: 700,
-              boxShadow: "0 12px 25px rgba(228,87,46,0.25)",
-            }}
-          >
-            Liên hệ ngay
-            <ArrowRight size={18} />
-          </a>
+            <div className="about-story-copy">
+              <span className="about-section-label">Câu chuyện của chúng tôi</span>
+              <h2>Chăm sóc tốt hơn, để mỗi ngày bên nhau trọn vẹn hơn.</h2>
+              <p>
+                Pet Corner được tạo nên từ mong muốn giúp người nuôi dễ dàng tìm
+                thấy sản phẩm phù hợp, dịch vụ chất lượng và những lời tư vấn
+                đáng tin cậy. Từ thức ăn, phụ kiện đến giải pháp chăm sóc, mọi
+                lựa chọn đều bắt đầu bằng sự quan tâm thật lòng.
+              </p>
+              <ul>
+                <li><ShieldCheck size={18} /> Sản phẩm được chọn lọc kỹ càng</li>
+                <li><HeartHandshake size={18} /> Đội ngũ am hiểu và yêu thú cưng</li>
+                <li><ShoppingBag size={18} /> Trải nghiệm mua sắm tiện lợi, chu đáo</li>
+              </ul>
+            </div>
+          </div>
         </section>
-      </div>
-    </main>
+
+        <section className="about-values">
+          <div className="about-container">
+            <div className="about-values-heading">
+              <span className="about-section-label">Điều làm nên Pet Corner</span>
+              <h2>Tử tế trong từng lựa chọn.</h2>
+            </div>
+            <div className="about-values-grid">
+              {values.map((item) => (
+                <article className="about-value" key={item.title}>
+                  <div className="about-value-icon">{item.icon}</div>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="about-contact">
+          <div className="about-container about-contact-inner">
+            <div>
+              <span className="about-section-label">Pet Corner luôn ở đây</span>
+              <h2>Cùng tìm điều tốt nhất cho người bạn nhỏ của bạn.</h2>
+            </div>
+            <a className="about-primary-link" href="/contact">
+              Liên hệ với chúng tôi <ArrowRight size={17} />
+            </a>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
   );
 }

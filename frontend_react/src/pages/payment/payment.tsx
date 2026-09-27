@@ -861,12 +861,12 @@ const Payment = () => {
             </div>
           )}
           {/* Main Content */}
-          <div className="payment-layout flex flex-col gap-8 lg:flex-row lg:gap-12">
+          <div className="payment-layout flex flex-col gap-5 lg:flex-row lg:gap-8">
             {/* Left Column */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="w-full space-y-8 lg:w-3/5"
+              className="w-full space-y-5 lg:w-3/5"
             >
               {/* Shipping Information */}
               <div className="payment-panel rounded-2xl p-6 sm:p-8 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.05)] backdrop-blur-sm border border-gray-100">
@@ -879,7 +879,7 @@ const Payment = () => {
 
                 {isLoggedIn && selectedAddress ? (
                   <div className="relative">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-6">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-100 pb-4">
                       <div className="flex-1 mb-4 sm:mb-0">
                         <div className="flex flex-wrap items-center gap-3">
                           <p className="font-semibold text-lg text-gray-800">
@@ -910,7 +910,7 @@ const Payment = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                  <div className="text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                     <MapPin size={32} className="mx-auto text-gray-400 mb-3" />
                     <p className="text-gray-500 mb-4">
                       {isLoggedIn
@@ -942,7 +942,7 @@ const Payment = () => {
                 </h2>
 
                 {shippingMethods.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {shippingMethods.map((method) => {
                       const isDisabled =
                         method.delivery_fee === 0 && subtotal < 200000;
@@ -953,7 +953,7 @@ const Payment = () => {
                           onClick={() =>
                             !isDisabled && setSelectedShippingMethod(method)
                           }
-                          className={`payment-option flex flex-col sm:flex-row sm:justify-between items-start sm:items-center rounded-xl p-4 sm:p-5 transition-all duration-200 ${selectedShippingMethod?._id === method._id
+                          className={`payment-option flex flex-col sm:flex-row sm:justify-between items-start sm:items-center rounded-xl p-3 sm:p-4 transition-all duration-200 ${selectedShippingMethod?._id === method._id
                               ? "border-2 border-[#FFA500] bg-[#FFA500]/5"
                               : isDisabled
                                 ? "bg-gray-100 opacity-60 cursor-not-allowed"
@@ -1011,13 +1011,13 @@ const Payment = () => {
                 </h2>
 
                 {paymentMethods.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {paymentMethods.map((method) => (
                       <motion.div
                         whileHover={{ scale: 1.01 }}
                         key={method._id}
                         onClick={() => setSelectedPayment(method._id)}
-                        className={`payment-option flex flex-row sm:flex-row items-center sm:items-center sm:justify-between cursor-pointer rounded-xl p-4 sm:p-5 transition-all duration-200 ${selectedPayment === method._id
+                        className={`payment-option flex flex-row sm:flex-row items-center sm:items-center sm:justify-between cursor-pointer rounded-xl p-3 sm:p-4 transition-all duration-200 ${selectedPayment === method._id
                             ? "border-2 border-[#FFA500] bg-[#FFA500]/5"
                             : "bg-gray-50 hover:bg-gray-100 border border-gray-200"
                           }`}
@@ -1133,7 +1133,7 @@ const Payment = () => {
                     </>
                   )}
                 </div>
-                <div className="mb-6">
+                <div className="payment-coupon mb-6">
                   <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       type="text"
@@ -1160,7 +1160,7 @@ const Payment = () => {
                 </div>
 
                 {/* Order Summary Details */}
-                <div className="mb-6 space-y-3 border-b pb-6">
+                <div className="payment-costs mb-6 space-y-3 border-b pb-6">
                   <div className="flex justify-between text-sm sm:text-base">
                     <span className="text-gray-600">Tạm tính</span>
                     <span className="font-medium">

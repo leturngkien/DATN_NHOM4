@@ -1126,38 +1126,6 @@ function Home() {
     <div className="pet-page">
 
       {/* =====================================================
-          TOP BAR
-      ===================================================== */}
-
-      <div className="topbar">
-        <div className="container topbar-inner">
-          <div>
-            <Phone />
-            <span>
-              Hotline:{" "}
-            </span>
-
-            <strong>
-              1900 6868
-            </strong>
-          </div>
-
-          <div className="topbar-right">
-            <span>
-              Miễn phí vận chuyển
-              cho đơn từ 500K
-            </span>
-
-            <span>•</span>
-
-            <span>
-              Hỗ trợ 24/7
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* =====================================================
           HEADER
       ===================================================== */}
 
