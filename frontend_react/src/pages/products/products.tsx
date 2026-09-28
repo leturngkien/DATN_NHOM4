@@ -50,7 +50,7 @@ function Products() {
       try {
         setLoading(true);
         const [productsResponse, categoriesResponse] = await Promise.all([
-          productsApi.getHotproducts(),
+          productsApi.getProductActive(),
           categoryApi.getCategoriesActive(),
         ]);
 
@@ -88,8 +88,8 @@ function Products() {
         <div className="products-page-heading">
           <div>
             <span className="products-page-label">PET CORNER</span>
-            <h1>Sản phẩm bán chạy</h1>
-            <p>Những sản phẩm được khách hàng yêu thích và mua nhiều nhất.</p>
+            <h1>Tất cả sản phẩm</h1>
+            <p>Khám phá đầy đủ các sản phẩm đang được kinh doanh tại Pet Corner.</p>
           </div>
           <Link to="/" className="products-home-link">← Về trang chủ</Link>
         </div>
