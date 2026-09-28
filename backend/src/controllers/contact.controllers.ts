@@ -51,3 +51,76 @@ export const sendContactMessage = async (req: Request, res: Response): Promise<v
     res.status(500).json({ success: false, message: 'Không thể gửi liên hệ lúc này' });
   }
 };
+
+export const getAllContacts = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const contacts = await contactModel.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, result: contacts });
+  } catch (error) {
+    console.error('Error getting contacts:', error);
+    res.status(500).json({ success: false, message: 'Không thể tải danh sách liên hệ' });
+  }
+};
+
+export const getContactById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const result = await contactModel.findById(id);
+
+    if (!result) {
+      res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn liên hệ' });
+      return;
+    }
+
+    res.status(200).json({ success: true, result });
+  } catch (error) {
+    console.error('Error getting contact by id:', error);
+    res.status(500).json({ success: false, message: 'Không thể tải tin nhắn liên hệ' });
+  }
+};
+
+export const updateContactStatus = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body as { status?: 'new' | 'replied' | 'closed' };
+    const validStatuses = ['new', 'replied', 'closed'];
+
+    if (!status || !validStatuses.includes(status)) {
+      res.status(400).json({ success: false, message: 'Trạng thái không hợp lệ' });
+      return;
+    }
+
+    const updatedContact = await contactModel.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedContact) {
+      res.status(404).json({ success: false, message: 'Tin nhắn liên hệ không tồn tại' });
+      return;
+    }
+
+    res.status(200).json({ success: true, message: 'Cập nhật trạng thái thành công', data: updatedContact });
+  } catch (error) {
+    console.error('Error updating contact status:', error);
+    res.status(500).json({ success: false, message: 'Không thể cập nhật trạng thái liên hệ' });
+  }
+};
+
+export const deleteContact = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const deletedContact = await contactModel.findByIdAndDelete(id);
+
+    if (!deletedContact) {
+      res.status(404).json({ success: false, message: 'Tin nhắn liên hệ không tồn tại' });
+      return;
+    }
+
+    res.status(200).json({ success: true, message: 'Xóa tin nhắn liên hệ thành công' });
+  } catch (error) {
+    console.error('Error deleting contact:', error);
+    res.status(500).json({ success: false, message: 'Không thể xóa tin nhắn liên hệ' });
+  }
+};

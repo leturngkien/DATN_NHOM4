@@ -13,6 +13,7 @@ import {
   DashboardOutlined,
   TeamOutlined,
   ShoppingCartOutlined,
+  MailOutlined,
 } from "@ant-design/icons";
 import clearLocalStorageExceptCarts from "../../config/clearLocalStorage";
 import { readStoredUser } from "./requireAdmin";
@@ -29,6 +30,7 @@ const MENU_ITEMS = [
   { key: "/admin/brands", icon: <ShopOutlined />, label: "Thương hiệu" },
   { key: "/admin/tags", icon: <TagOutlined />, label: "Tag" },
   { key: "/admin/blogs", icon: <FileTextOutlined />, label: "Bài viết" },
+  { key: "/admin/contacts", icon: <MailOutlined />, label: "Liên hệ" },
 ];
 
 const THEME = {

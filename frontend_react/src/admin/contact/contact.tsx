@@ -1,151 +1,242 @@
-import { useState, type FC } from "react";
-import { Button, Card, Col, Form, Input, Row, Typography, message } from "antd";
+import { useEffect, useMemo, useState } from "react";
 import {
-	EnvironmentOutlined,
-	FacebookFilled,
-	InstagramOutlined,
-	MailOutlined,
-	PhoneOutlined,
-	SendOutlined,
-} from "@ant-design/icons";
+  App,
+  Button,
+  Card,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Table,
+  Tag,
+  Typography,
+} from "antd";
+import { DeleteOutlined, SearchOutlined, MailOutlined } from "@ant-design/icons";
 import contactApi from "../../api/contactApi";
 
-const { Paragraph, Text, Title } = Typography;
+const { Title, Text } = Typography;
+const { Option } = Select;
 
-interface ContactFormValues {
-	name: string;
-	email: string;
-	phone?: string;
-	message: string;
+interface ContactRow {
+  _id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+  status: "new" | "replied" | "closed";
+  createdAt?: string;
 }
 
-const contactItems = [
-	{
-		icon: <PhoneOutlined />,
-		label: "Hotline",
-		value: "0853665735",
-		href: "tel:0853665735",
-	},
-	{
-		icon: <MailOutlined />,
-		label: "Email",
-		value: "petcorner993@gmail.com",
-		href: "mailto:petcorner993@gmail.com",
-	},
-	{
-		icon: <EnvironmentOutlined />,
-		label: "Địa chỉ",
-		value: "116 Nguyễn Văn Thủ, P. Đa Kao, Q. 1, TP. HCM",
-		href: "https://maps.google.com/?q=116+Nguyen+Van+Thu+Da+Kao+Quan+1+TPHCM",
-	},
-];
-
-const Contact: FC = () => {
-	const [form] = Form.useForm<ContactFormValues>();
-	const [submitting, setSubmitting] = useState(false);
-
-	const handleSubmit = async (values: ContactFormValues) => {
-		setSubmitting(true);
-		try {
-			await contactApi.send(values);
-			message.success("Gửi liên hệ thành công");
-			form.resetFields();
-		} catch (error: any) {
-			console.error("Không thể gửi liên hệ:", error);
-			message.error(error?.response?.data?.message || "Không thể gửi liên hệ lúc này");
-		} finally {
-			setSubmitting(false);
-		}
-	};
-
-	return (
-		<main className="min-h-screen bg-[#F7F5EF] px-4 py-10 sm:px-8 lg:px-[154px] lg:py-16">
-			<section className="mx-auto max-w-6xl">
-				<div className="mb-10 max-w-2xl">
-					<Text className="font-semibold uppercase tracking-[0.18em] text-[#E4572E]">
-						Pet Corner
-					</Text>
-					<Title className="!mb-3 !mt-3 !font-display !text-4xl !text-[#232620] sm:!text-5xl">
-						Liên hệ với chúng tôi
-					</Title>
-					<Paragraph className="!mb-0 !text-base !leading-7 !text-[#726B5E]">
-						Bạn cần tư vấn sản phẩm hoặc hỗ trợ đơn hàng? Hãy để lại lời nhắn,
-						đội ngũ Pet Corner sẽ phản hồi sớm nhất.
-					</Paragraph>
-				</div>
-
-				<Row gutter={[32, 32]} align="stretch">
-					<Col xs={24} lg={9}>
-						<Card className="h-full !border-0 !bg-[#232620] !shadow-none" bodyStyle={{ padding: 32 }}>
-							<Title level={3} className="!mb-2 !text-white">
-								Thông tin cửa hàng
-							</Title>
-							<Paragraph className="!mb-8 !text-[#D8D5CA]">
-								Những người bạn đồng hành đáng tin cậy cho hành trình chăm sóc thú cưng.
-							</Paragraph>
-							<div className="flex flex-col gap-6">
-								{contactItems.map((item) => (
-									<div key={item.label} className="flex gap-4">
-										<div className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#E4572E] text-lg text-white">
-											{item.icon}
-										</div>
-										<div>
-											<Text className="block text-xs uppercase tracking-wider text-[#B7B8A9]">
-												{item.label}
-											</Text>
-											<a
-												href={item.href}
-												target={item.href.startsWith("http") ? "_blank" : undefined}
-												rel={item.href.startsWith("http") ? "noreferrer" : undefined}
-												className="mt-1 block text-sm leading-6 text-white hover:text-[#F5AE16]"
-											>
-												{item.value}
-											</a>
-										</div>
-									</div>
-								))}
-							</div>
-							<div className="mt-10 flex gap-3 border-t border-white/15 pt-6">
-								<a aria-label="Facebook" href="#" className="text-2xl text-white hover:text-[#F5AE16]"><FacebookFilled /></a>
-								<a aria-label="Instagram" href="#" className="text-2xl text-white hover:text-[#F5AE16]"><InstagramOutlined /></a>
-							</div>
-						</Card>
-					</Col>
-
-					<Col xs={24} lg={15}>
-						<Card className="h-full !border-0 !shadow-sm" bodyStyle={{ padding: 32 }}>
-							<Title level={3} className="!mb-7 !text-[#232620]">
-								Gửi tin nhắn
-							</Title>
-							<Form form={form} layout="vertical" onFinish={handleSubmit}>
-								<Row gutter={16}>
-									<Col xs={24} md={12}>
-										<Form.Item name="name" label="Họ tên" rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}>
-											<Input placeholder="Nguyễn Văn A" />
-										</Form.Item>
-									</Col>
-									<Col xs={24} md={12}>
-										<Form.Item name="email" label="Email" rules={[{ required: true, type: "email", message: "Email chưa hợp lệ" }]}>
-											<Input placeholder="you@example.com" />
-										</Form.Item>
-									</Col>
-								</Row>
-								<Form.Item name="phone" label="Số điện thoại">
-									<Input placeholder="0853665735" />
-								</Form.Item>
-								<Form.Item name="message" label="Nội dung" rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}>
-									<Input.TextArea rows={6} placeholder="Bạn muốn Pet Corner hỗ trợ điều gì?" />
-								</Form.Item>
-								<Button type="primary" htmlType="submit" icon={<SendOutlined />} size="large" loading={submitting}>
-									Gửi liên hệ
-								</Button>
-							</Form>
-						</Card>
-					</Col>
-				</Row>
-			</section>
-		</main>
-	);
+const statusColors: Record<string, string> = {
+  new: "gold",
+  replied: "blue",
+  closed: "green",
 };
 
-export default Contact;
+const statusLabels: Record<string, string> = {
+  new: "Mới",
+  replied: "Đã phản hồi",
+  closed: "Đã đóng",
+};
+
+const formatDate = (value?: string) => {
+  if (!value) return "Chưa rõ";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};
+
+function AdminContact() {
+  const { message, modal } = App.useApp();
+  const [contacts, setContacts] = useState<ContactRow[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  const fetchContacts = async () => {
+    try {
+      setLoading(true);
+      const response = await contactApi.getAll();
+      const data = response?.result || response?.data || [];
+      setContacts(Array.isArray(data) ? data : []);
+    } catch (error: any) {
+      console.error("Load contacts failed:", error);
+      message.error(error?.response?.data?.message || "Không tải được danh sách liên hệ");
+      setContacts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  const filteredContacts = useMemo(() => {
+    const keyword = search.toLowerCase();
+    return contacts.filter((item) => {
+      const matchSearch =
+        !keyword ||
+        [item.name, item.email, item.phone, item.message].some((value) =>
+          String(value || "").toLowerCase().includes(keyword)
+        );
+
+      const matchStatus = statusFilter === "all" || item.status === statusFilter;
+      return matchSearch && matchStatus;
+    });
+  }, [contacts, search, statusFilter]);
+
+  const handleStatusChange = async (id: string, status: "new" | "replied" | "closed") => {
+    try {
+      await contactApi.updateStatus(id, status);
+      message.success("Cập nhật trạng thái thành công");
+      fetchContacts();
+    } catch (error: any) {
+      console.error("Update status failed:", error);
+      message.error(error?.response?.data?.message || "Không thể cập nhật trạng thái");
+    }
+  };
+
+  const handleDelete = (record: ContactRow) => {
+    modal.confirm({
+      title: "Xác nhận xóa liên hệ",
+      content: `Bạn có chắc chắn muốn xóa tin nhắn của ${record.name}?`,
+      okText: "Xóa",
+      okButtonProps: { danger: true },
+      cancelText: "Hủy",
+      onOk: async () => {
+        try {
+          await contactApi.delete(record._id);
+          message.success("Xóa tin nhắn thành công");
+          fetchContacts();
+        } catch (error: any) {
+          console.error("Delete contact failed:", error);
+          message.error(error?.response?.data?.message || "Không thể xóa tin nhắn");
+        }
+      },
+    });
+  };
+
+  const columns = [
+    {
+      title: "Khách hàng",
+      key: "customer",
+      render: (_: any, record: ContactRow) => (
+        <div>
+          <div style={{ fontWeight: 600 }}>{record.name || "Không rõ"}</div>
+          <div style={{ color: "#666" }}>{record.email || "—"}</div>
+        </div>
+      ),
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "phone",
+      key: "phone",
+      render: (value: string) => value || "—",
+    },
+    {
+      title: "Nội dung",
+      dataIndex: "message",
+      key: "message",
+      render: (value: string) => (
+        <div style={{ maxWidth: 420, whiteSpace: "pre-wrap" }}>{value || "—"}</div>
+      ),
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (value: ContactRow["status"], record: ContactRow) => (
+        <Select
+          value={value}
+          style={{ width: 155 }}
+          onChange={(nextStatus) => handleStatusChange(record._id, nextStatus)}
+          options={Object.entries(statusLabels).map(([key, label]) => ({
+            value: key,
+            label: <Tag color={statusColors[key] || "default"}>{label}</Tag>,
+          }))}
+        />
+      ),
+    },
+    {
+      title: "Ngày gửi",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (value: string) => formatDate(value),
+    },
+    {
+      title: "Hành động",
+      key: "action",
+      render: (_: any, record: ContactRow) => (
+        <Button
+          danger
+          icon={<DeleteOutlined />}
+          onClick={() => handleDelete(record)}
+        >
+          Xóa
+        </Button>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <div className="admin-page-head">
+        <div>
+          <Title level={2} style={{ margin: 0 }}>
+            Quản lý liên hệ
+          </Title>
+          <Text type="secondary">Xem, phân loại và xử lý tin nhắn khách hàng</Text>
+        </div>
+      </div>
+
+      <Card className="admin-card">
+        <Space direction="vertical" style={{ width: "100%" }} size="middle">
+          <Space wrap>
+            <Input
+              allowClear
+              prefix={<SearchOutlined />}
+              placeholder="Tìm theo tên, email, số điện thoại, nội dung"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ width: 360 }}
+            />
+
+            <Select
+              value={statusFilter}
+              onChange={setStatusFilter}
+              style={{ width: 180 }}
+            >
+              <Option value="all">Tất cả trạng thái</Option>
+              <Option value="new">Mới</Option>
+              <Option value="replied">Đã phản hồi</Option>
+              <Option value="closed">Đã đóng</Option>
+            </Select>
+          </Space>
+
+          <Table
+            rowKey="_id"
+            loading={loading}
+            columns={columns}
+            dataSource={filteredContacts}
+            bordered
+            pagination={{
+              pageSize: 8,
+              showSizeChanger: true,
+              pageSizeOptions: [5, 8, 10, 20],
+            }}
+            locale={{ emptyText: "Chưa có tin nhắn nào" }}
+          />
+        </Space>
+      </Card>
+    </div>
+  );
+}
+
+export default AdminContact;
