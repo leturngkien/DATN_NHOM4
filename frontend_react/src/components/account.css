@@ -13,6 +13,28 @@
   margin: 0 auto;
 }
 
+.account-tabs {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.account-tab {
+  padding: 0 2px 12px;
+  border-bottom: 2px solid transparent;
+  color: var(--color-ink-soft);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.account-tab:hover,
+.account-tab-active {
+  border-bottom-color: var(--color-accent);
+  color: var(--color-ink);
+}
+
 .account-heading {
   display: flex;
   align-items: flex-end;

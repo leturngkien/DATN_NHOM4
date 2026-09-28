@@ -28,6 +28,7 @@ import AdminTag from "./admin/tag/tag";
 import AdminPost from "./admin/post/post";
 import PageLayout from "./components/layout/PageLayout";
 import Account from "./components/account";
+import MyOrders from "./pages/orders/my-orders";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Account /> },
       { path: "account", element: <Account /> },
+      { path: "orders", element: <MyOrders /> },
       { path: "*", element: <Account /> },
     ],
   },

@@ -1,5 +1,11 @@
 import api from "./axios";
 const orderApi = {
+  getByUserId: async (userId) => {
+    const response = await api.get("/v1/getOrderByUserId", {
+      params: { userId },
+    });
+    return response.data;
+  },
   getAll: async () => {
     const response = await api.get("/v1/orders");
     return {

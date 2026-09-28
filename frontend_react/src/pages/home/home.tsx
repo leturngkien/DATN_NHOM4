@@ -44,6 +44,7 @@ import {
   SearchX,
   Stethoscope,
   UserRound,
+  ClipboardList,
   ChevronDown,
   Settings,
   LogOut,
@@ -1253,6 +1254,16 @@ function Home() {
                     />
 
                     <div className="user-menu-dropdown">
+                      <a href="/userprofile/account">
+                        <UserRound />
+                        Hồ sơ của tôi
+                      </a>
+
+                      <a href="/userprofile/orders">
+                        <ClipboardList />
+                        Đơn hàng của tôi
+                      </a>
+
                       {(currentUser.role ===
                         "admin" ||
                         currentUser.role ===
