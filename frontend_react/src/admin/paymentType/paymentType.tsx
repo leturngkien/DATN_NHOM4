@@ -1163,7 +1163,7 @@ const Payment = () => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={applyCoupon}
-                      className="rounded-xl bg-[#22a6df] px-4 py-2 text-sm sm:text-base font-medium text-white"
+                      className="rounded-xl bg-[#22a6df] px-4 py-2 text-sm sm:text-base font-medium !text-white hover:bg-[#1a85b3]"
                     >
                       Áp dụng
                     </motion.button>

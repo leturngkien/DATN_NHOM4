@@ -29,8 +29,6 @@ import {
   ShieldCheck,
   MessageCircle,
   Undo2,
-  Bath,
-  Home as HomeIcon,
   Gift,
   CheckCircle2,
   Mail,
@@ -42,7 +40,6 @@ import {
   Music2,
   Loader2,
   SearchX,
-  Stethoscope,
   UserRound,
   ClipboardList,
   ChevronDown,
@@ -1160,7 +1157,7 @@ function Home() {
               Sản phẩm
             </a>
 
-            <a href="#services">
+            <a href="/services">
               Dịch vụ
             </a>
 
@@ -1344,7 +1341,7 @@ function Home() {
                 </a>
 
                 <a
-                  href="#services"
+                  href="/services"
                   className="secondary-button"
                 >
                   Khám phá dịch vụ
@@ -1911,113 +1908,6 @@ function Home() {
         )}
 
         {/* =====================================================
-            SERVICES
-        ===================================================== */}
-
-        <section
-          className="section services-section"
-          id="services"
-        >
-          <div className="container">
-
-            <div className="center-heading">
-
-              <span className="section-label">
-                DỊCH VỤ
-              </span>
-
-              <h2>
-                Chăm sóc bé{" "}
-                <span>
-                  toàn diện
-                </span>
-              </h2>
-
-              <p>
-                Không chỉ bán sản phẩm,
-                Pet Corner đồng hành
-                cùng bạn
-                <br />
-                trong từng khoảnh khắc
-                chăm sóc thú cưng.
-              </p>
-
-            </div>
-
-            <div className="service-cards">
-
-              <div className="big-service-card">
-
-                <div className="big-service-icon">
-                  <Bath />
-                </div>
-
-                <h3>
-                  Grooming & Spa
-                </h3>
-
-                <p>
-                  Tắm, cắt tỉa và chăm
-                  sóc lông chuyên nghiệp
-                  cho thú cưng.
-                </p>
-
-                <a href="#services">
-                  Tìm hiểu thêm →
-                </a>
-
-              </div>
-
-              <div className="big-service-card">
-
-                <div className="big-service-icon">
-                  <Stethoscope />
-                </div>
-
-                <h3>
-                  Chăm sóc sức khỏe
-                </h3>
-
-                <p>
-                  Tư vấn dinh dưỡng và
-                  chăm sóc sức khỏe cho
-                  người bạn nhỏ.
-                </p>
-
-                <a href="#services">
-                  Tìm hiểu thêm →
-                </a>
-
-              </div>
-
-              <div className="big-service-card">
-
-                <div className="big-service-icon">
-                  <HomeIcon />
-                </div>
-
-                <h3>
-                  Pet Hotel
-                </h3>
-
-                <p>
-                  Không gian nghỉ dưỡng
-                  an toàn, sạch sẽ và
-                  đầy yêu thương.
-                </p>
-
-                <a href="#services">
-                  Tìm hiểu thêm →
-                </a>
-
-              </div>
-
-            </div>
-
-          </div>
-        </section>
-
-        {/* =====================================================
             ABOUT
         ===================================================== */}
 
@@ -2563,7 +2453,7 @@ function Home() {
               Danh mục
             </a>
 
-            <a href="#services">
+            <a href="/services">
               Dịch vụ
             </a>
 
