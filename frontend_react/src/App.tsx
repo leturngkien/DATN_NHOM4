@@ -16,6 +16,7 @@ import PostPage from "./pages/post/post";
 import PostDetailPage from "./pages/post/post-detail";
 import ContactPage from "./pages/contact/contact";
 import AboutUsPage from "./pages/about/about-us";
+import ServicesPage from "./pages/services/services";
 import AdminLayout from "./admin/layout/adminLayout";
 import RequireAdmin from "./admin/layout/requireAdmin";
 import AdminDashboard from "./admin/dashboard/dashboard";
@@ -29,6 +30,7 @@ import AdminPost from "./admin/post/post";
 import AdminContact from "./admin/contact/contact";
 import PageLayout from "./components/layout/PageLayout";
 import Account from "./components/account";
+import MyOrders from "./pages/orders/my-orders";
 
 const router = createBrowserRouter([
   {
@@ -58,6 +60,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Account /> },
       { path: "account", element: <Account /> },
+      { path: "orders", element: <MyOrders /> },
       { path: "*", element: <Account /> },
     ],
   },
@@ -88,6 +91,13 @@ const router = createBrowserRouter([
   {
     path: "/contact",
     element: <ContactPage />,
+  },
+  {
+    path: "/services",
+    element: <PageLayout />,
+    children: [
+      { index: true, element: <ServicesPage /> },
+    ],
   },
   {
     path: "/detail/:id",

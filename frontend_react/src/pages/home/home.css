@@ -1475,86 +1475,9 @@ img {
    SERVICES
 ========================================================= */
 
-.pet-page .services-section {
-  background: var(--color-paper);
-}
-
 .pet-page .center-heading {
   text-align: center;
   margin-bottom: var(--space-xl);
-}
-
-.pet-page .center-heading p {
-  color: var(--color-ink-soft);
-  line-height: 1.7;
-  font-size: var(--text-small);
-  max-width: 46ch;
-  margin: var(--space-sm) auto 0;
-}
-
-.pet-page .service-cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-md);
-}
-
-.pet-page .big-service-card {
-  min-height: 235px;
-  padding: var(--space-lg);
-  border: 1px solid var(--color-line);
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  transition:
-    transform var(--dur-base) var(--ease-out),
-    box-shadow var(--dur-base) var(--ease-out),
-    border-color var(--dur-base) var(--ease-out);
-}
-
-.pet-page .big-service-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--color-line-strong);
-  box-shadow: var(--shadow-md);
-}
-
-.pet-page .big-service-icon {
-  width: 58px;
-  height: 58px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--color-accent-soft);
-  color: var(--color-accent-strong);
-  border-radius: var(--radius-md);
-}
-
-.pet-page .big-service-icon svg {
-  width: 27px;
-  height: 27px;
-}
-
-.pet-page .big-service-card h3 {
-  color: var(--color-ink);
-  font-size: 18px;
-  margin: var(--space-md) 0 var(--space-2xs);
-}
-
-.pet-page .big-service-card p {
-  color: var(--color-ink-soft);
-  font-size: var(--text-small);
-  line-height: 1.7;
-  min-height: 42px;
-}
-
-.pet-page .big-service-card a {
-  display: inline-block;
-  margin-top: var(--space-xs);
-  color: var(--color-brand);
-  font-size: var(--text-small);
-  font-weight: 800;
-}
-
-.pet-page .big-service-card a:hover {
-  color: var(--color-accent-strong);
 }
 
 /* =========================================================
@@ -1865,9 +1788,14 @@ img {
   gap: var(--space-2xl);
 }
 
-.pet-page .footer-logo .logo-icon {
-  background: oklch(100% 0 0 / 0.12);
-  color: var(--color-sage);
+.pet-page .footer-logo-image {
+  display: block;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  border-radius: 8px;
+  background: #fff;
+  object-fit: contain;
 }
 
 .pet-page .footer-logo .logo-name {
@@ -2642,8 +2570,7 @@ img {
     padding: 0;
   }
 
-  .pet-page .reviews-grid,
-  .pet-page .service-cards {
+  .pet-page .reviews-grid {
     grid-template-columns: 1fr;
   }
 

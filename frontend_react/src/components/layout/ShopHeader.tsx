@@ -20,7 +20,9 @@ export default function ShopHeader() {
       ? "products"
       : location.pathname === "/about-us"
         ? "about"
-        : "";
+        : location.pathname === "/services"
+          ? "services"
+          : "";
   const accountInitials = user?.fullname?.trim().slice(0, 2).toUpperCase() || "TK";
 
   return (
@@ -34,7 +36,7 @@ export default function ShopHeader() {
           <nav className="shop-nav" aria-label="Điều hướng chính">
             <button className={activePage === "home" ? "active" : ""} aria-current={activePage === "home" ? "page" : undefined} onClick={() => navigate("/")}>Trang chủ</button>
             <button className={activePage === "products" ? "active" : ""} aria-current={activePage === "products" ? "page" : undefined} onClick={() => navigate("/products")}>Sản phẩm</button>
-            <button className={location.pathname === "/" && location.hash === "#services" ? "active" : ""} onClick={() => navigate("/#services")}>Dịch vụ</button>
+            <button className={activePage === "services" ? "active" : ""} aria-current={activePage === "services" ? "page" : undefined} onClick={() => navigate("/services")}>Dịch vụ</button>
             <button className={activePage === "about" ? "active" : ""} aria-current={activePage === "about" ? "page" : undefined} onClick={() => navigate("/about-us")}>Về chúng tôi</button>
           </nav>
 

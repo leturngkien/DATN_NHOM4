@@ -10,6 +10,7 @@ import {
 } from "antd";
 import { DatePicker } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import userApi from "../api/userApi";
 import "./account.css";
@@ -175,6 +176,10 @@ export default function Account() {
     return (
         <main className="account-page">
             <div className="account-shell">
+                <nav className="account-tabs" aria-label="Khu vực tài khoản">
+                    <Link className="account-tab account-tab-active" to="/userprofile/account">Hồ sơ của tôi</Link>
+                    <Link className="account-tab" to="/userprofile/orders">Đơn hàng của tôi</Link>
+                </nav>
                 <header className="account-heading">
                     <div>
                         <span>THÔNG TIN TÀI KHOẢN</span>
