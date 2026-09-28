@@ -15,7 +15,7 @@
 }
 
 .footer-brand-title { display: flex; align-items: center; gap: 10px; }
-.footer-brand-mark { width: 43px; height: 43px; display: grid; place-items: center; border-radius: 13px; background: #d6e3a5; color: #10261c; font: 700 24px Georgia, serif; }
+.footer-brand-logo { display: block; width: 52px; height: 52px; flex: 0 0 52px; border-radius: 8px; object-fit: contain; background: #fff; }
 .footer-brand-title strong, .footer-brand-title small { display: block; }
 .footer-brand-title strong { font: 700 20px Georgia, serif; letter-spacing: .5px; }
 .footer-brand-title small { margin-top: 2px; color: #c9d2b1; font-size: 8px; letter-spacing: 1.8px; font-weight: 700; }

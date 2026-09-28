@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Mail, MapPin, Phone, Twitter } from "lucide-react";
+import logoImage from "../pages/img/logo.jpg";
 import "./footer.css";
 
 const shopLinks = ["Dành cho chó", "Dành cho mèo", "Thức ăn", "Phụ kiện"];
@@ -10,7 +11,7 @@ export default function Footer() {
       <div className="site-footer-main">
         <section className="footer-brand">
           <div className="footer-brand-title">
-            <span className="footer-brand-mark">P</span>
+            <img className="footer-brand-logo" src={logoImage} alt="Pet Corner" />
             <span>
               <strong>PET CORNER</strong>
               <small>YOUR PET&apos;S HAPPY PLACE</small>

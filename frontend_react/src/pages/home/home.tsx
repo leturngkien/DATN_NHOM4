@@ -2501,9 +2501,7 @@ function Home() {
               className="logo footer-logo"
               href="#home"
             >
-              <div className="logo-icon">
-                <PawPrint />
-              </div>
+              <img className="footer-logo-image" src={logoImage} alt="Pet Corner" />
 
               <div>
 
